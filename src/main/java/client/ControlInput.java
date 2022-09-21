@@ -1,4 +1,4 @@
-package com.swingapp;
+package client;
 
 import java.awt.event.*;
 

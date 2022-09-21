@@ -1,9 +1,9 @@
-package com.swingapp;
+package client;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import com.swingapp.gameObjects.*;
+import client.gameObjects.*;
 
 import java.awt.*;
 import java.awt.image.*;

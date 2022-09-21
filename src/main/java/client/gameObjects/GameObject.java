@@ -1,4 +1,4 @@
-package com.swingapp.gameObjects;
+package client.gameObjects;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

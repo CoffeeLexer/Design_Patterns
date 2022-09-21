@@ -1,10 +1,10 @@
-package com.swingapp.gameObjects;
+package client.gameObjects;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.Position;
 
-import com.swingapp.ControlInput;
+import client.ControlInput;
 
 import java.awt.*;
 import java.awt.image.*;

@@ -1,4 +1,4 @@
-package com.swingapp.gameObjects;
+package client.gameObjects;
 
 public class Wall extends GameObject {
 
