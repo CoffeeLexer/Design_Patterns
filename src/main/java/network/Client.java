@@ -81,5 +81,7 @@ public class Client {
     public static void main(String[] args) {
         //  Testing purposes only
         Client client = new Client();
+        client.username = "big tiddy";
+        client.Message("White people cringe");
     }
 }
