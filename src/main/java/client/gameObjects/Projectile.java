@@ -1,19 +1,5 @@
 package client.gameObjects;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.text.Position;
-
-import client.controls.ControlInput;
-import client.controls.ControlListener;
-
-import java.awt.*;
-import java.awt.image.*;
-import java.io.File;
-import java.io.IOException;
-import java.awt.event.*;
 import java.awt.geom.*;
-import java.awt.geom.Point2D.Float;
 
 public class Projectile extends GameObject {
     private float movementSpeed = 15; // pixels per frame
@@ -27,14 +13,10 @@ public class Projectile extends GameObject {
 
       float angleRadians = (angle) % 360;
       Point2D.Float direction = getTrajectory();
-      System.out.println("calculated trajectory:");
-      System.out.println(new Point2D.Float(direction.x, direction.y));
 
       this.flyingXSpeed = direction.x * movementSpeed * (float) Math.sin(Math.toRadians(angleRadians));
       this.flyingYSpeed = direction.y * movementSpeed * (float) Math.cos(Math.toRadians(angleRadians));
-      System.out.println("Projectile speed (x, y):");
-      System.out.println(this.flyingXSpeed);
-      System.out.println(this.flyingYSpeed);
+
     }
 
     private void fly() {
