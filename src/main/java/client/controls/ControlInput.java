@@ -3,8 +3,6 @@ package client.controls;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-import io.netty.handler.codec.string.LineEncoder;
-
 import java.awt.geom.*;
 
 public class ControlInput implements KeyListener {
