@@ -1,6 +1,7 @@
 package client;
 
 import javax.swing.*;
+import client.controls.ControlInput;
 import java.awt.*;
 import java.awt.geom.*;
 

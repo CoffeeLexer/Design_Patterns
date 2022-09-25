@@ -1,8 +1,17 @@
-package client;
+package client.controls;
 
 import java.awt.event.*;
+import java.util.ArrayList;
+
+import io.netty.handler.codec.string.LineEncoder;
+
+import java.awt.geom.*;
 
 public class ControlInput implements KeyListener {
+
+    private ArrayList<ControlListener> listeners;
+
+    private static ControlInput _instance = new ControlInput();
 
     public float y = 0;
     public float x = 0;
@@ -12,17 +21,30 @@ public class ControlInput implements KeyListener {
     private boolean aPresed = false;
     private boolean dPresed = false;
 
-    private ControlInput() {
+    public static ControlInput getInstance() {
+        return _instance;
     }
 
-    private static ControlInput _instance;
+    private ControlInput() {
+        listeners = new ArrayList<>();
+    }
 
-    public static ControlInput getInstance() {
-        if(_instance == null){
-            _instance = new ControlInput();
+    public static void addControlListener(ControlListener listener) {
+        if (!_instance.listeners.contains(listener)) {
+            _instance.listeners.add(listener);
         }
+    }
 
-        return _instance;
+    private void invokeMovement() {
+        for (ControlListener controlListener : listeners) {
+            controlListener.onMove(new Point2D.Float(x, y));
+        }
+    }
+
+    private void invokeFire() {
+        for (ControlListener controlListener : listeners) {
+            controlListener.onFire();
+        }
     }
 
     @Override
@@ -32,7 +54,11 @@ public class ControlInput implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        float px = x, py = y;
         switch (e.getKeyChar()) {
+            case ' ':
+                invokeFire();
+                break;
             case 'w':
                 wPresed = true;
                 y = -1;
@@ -49,6 +75,10 @@ public class ControlInput implements KeyListener {
                 dPresed = true;
                 x = 1;
                 break;
+        }
+
+        if (px != x || py != y) {
+            invokeMovement();
         }
     }
 
@@ -72,5 +102,7 @@ public class ControlInput implements KeyListener {
                 x = aPresed ? -1 : 0;
                 break;
         }
+
+        invokeMovement();
     }
 }

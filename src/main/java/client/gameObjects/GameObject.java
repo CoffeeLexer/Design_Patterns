@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.awt.event.*;
 import java.awt.geom.*;
 
-public class GameObject {
+public abstract class GameObject {
 
     public boolean enabled = true;
 
@@ -77,19 +77,21 @@ public class GameObject {
     }
 
     public BufferedImage getImage() {
-        BufferedImage newImageFromBuffer = new BufferedImage((int)Math.ceil(boxSize), (int)Math.ceil(boxSize), BufferedImage.TYPE_INT_ARGB);
+        BufferedImage newImageFromBuffer = new BufferedImage((int) Math.ceil(boxSize), (int) Math.ceil(boxSize),
+                BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics2D = newImageFromBuffer.createGraphics();
-        
+
         AffineTransform at = new AffineTransform();
         at.setToRotation(Math.toRadians(rotation), boxSize / 2, boxSize / 2);
         at.translate((boxSize - width) / 2, (boxSize - height) / 2);
         graphics2D.setTransform(at);
         graphics2D.drawImage(texture, 0, 0, width, height, null);
         graphics2D.dispose();
-        
+
         return newImageFromBuffer;
     }
 
     public void update() {
+
     }
 }

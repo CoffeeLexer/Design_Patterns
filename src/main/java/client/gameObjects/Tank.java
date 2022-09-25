@@ -4,7 +4,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.Position;
 
-import client.ControlInput;
+import client.controls.ControlInput;
+import client.controls.ControlListener;
 
 import java.awt.*;
 import java.awt.image.*;
@@ -12,12 +13,13 @@ import java.io.File;
 import java.io.IOException;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.awt.geom.Point2D.Float;
 
-public class Tank extends GameObject {
+public class Tank extends GameObject implements ControlListener {
     public float movementSpeed = 5f;
     public float rotationSpeed = 1f;
 
-    public ControlInput movementInput = ControlInput.getInstance();
+    private Point2D.Float movement = new Point2D.Float(0, 0);
 
     BufferedImage tankImage;
 
@@ -29,6 +31,11 @@ public class Tank extends GameObject {
         super(imagePath, 100, true);
         setPosition(x, y);
         this.rotation = angle;
+    }
+
+    public Tank listensToInput() {
+        ControlInput.addControlListener(this);
+        return this;
     }
 
     public void drive(float direction) {
@@ -44,7 +51,17 @@ public class Tank extends GameObject {
 
     @Override
     public void update() {
-        drive(movementInput.y);
-        rotate(movementInput.x);
+        drive(movement.y);
+        rotate(movement.x);
+    }
+
+    @Override
+    public void onMove(Point2D.Float input) {
+        movement = input;
+    }
+
+    @Override
+    public void onFire() {
+        System.out.println("Tank shoots");
     }
 }
