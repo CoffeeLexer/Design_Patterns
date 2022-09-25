@@ -13,10 +13,14 @@ public class Projectile extends GameObject {
 
       float angleRadians = (angle) % 360;
       Point2D.Float direction = getTrajectory();
+      System.out.println("calculated trajectory:");
+      System.out.println(new Point2D.Float(direction.x, direction.y));
 
       this.flyingXSpeed = direction.x * movementSpeed * (float) Math.sin(Math.toRadians(angleRadians));
       this.flyingYSpeed = direction.y * movementSpeed * (float) Math.cos(Math.toRadians(angleRadians));
-
+      System.out.println("Projectile speed (x, y):");
+      System.out.println(this.flyingXSpeed);
+      System.out.println(this.flyingYSpeed);
     }
 
     private void fly() {
