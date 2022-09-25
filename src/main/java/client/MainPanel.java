@@ -25,7 +25,7 @@ public class MainPanel extends JPanel implements ActionListener {
 
         gameObjects = new ArrayList<GameObject>();
         addObject(new Wall("images/wall-blue.jpg"));
-        addObject(new Tank("images/tank-blue.png").listensToInput());
+        addObject(new Tank("images/tank-green.png").listensToInput());
 
         timer.start();
     }

@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 
 public class Client {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("TankumShot 0.1");
+        JFrame frame = new JFrame("Family friendly title 0.2");
 
         network.Client c = new network.Client();
 
