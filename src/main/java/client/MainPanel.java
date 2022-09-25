@@ -15,16 +15,18 @@ import java.awt.geom.*;
 
 public class MainPanel extends JPanel implements ActionListener {
 
-    ArrayList<GameObject> gameObjects;
+    private static ArrayList<GameObject> gameObjects;
 
     Timer timer = new Timer(1000 / 60, this);
 
     public MainPanel() {
         setPreferredSize(new Dimension(1920, 1080));
         setOpaque(true);
+
         gameObjects = new ArrayList<GameObject>();
-        gameObjects.add(new Wall("wall.jpg"));
-        gameObjects.add(new Tank("thebible2.jpg").listensToInput());
+        addObject(new Wall("images/wall-blue.jpg"));
+        addObject(new Tank("images/tank-green.png").listensToInput());
+
         timer.start();
     }
 
@@ -37,6 +39,10 @@ public class MainPanel extends JPanel implements ActionListener {
             Point2D.Float goPosition = gameObject.getPosition();
             g2d.drawImage(resized, null, (int) Math.round(goPosition.getX()), (int) Math.round(goPosition.getY()));
         }
+    }
+
+    public static void addObject(GameObject obj) {
+        gameObjects.add(obj);
     }
 
     public void paint(Graphics g) {
