@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.util.Optional;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -14,15 +15,16 @@ public abstract class GameObject {
 
     public boolean enabled = true;
 
-    protected Point2D.Float position;
-    protected float rotation; // In degrees
+    public Point2D.Float position;
+    public int layer;
+    public float rotation; // In degrees
 
     protected int width;
     protected int height;
 
     private double boxSize;
 
-    BufferedImage texture;
+    private BufferedImage texture;
 
     protected GameObject() {
     }
@@ -74,6 +76,11 @@ public abstract class GameObject {
 
     public float getAngle() {
         return rotation;
+    }
+
+    public void renderOn(Graphics2D g2d) {
+        BufferedImage image = getImage();
+        g2d.drawImage(image, null, (int) Math.round(position.getX()), (int) Math.round(position.getY()));
     }
 
     public BufferedImage getImage() {

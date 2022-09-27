@@ -1,4 +1,4 @@
-package client;
+package client.panels;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -21,28 +21,25 @@ public class MainPanel extends JPanel implements ActionListener {
 
     public MainPanel() {
         setPreferredSize(new Dimension(1920, 1080));
-        setOpaque(true);
+        setBounds(0, 0, 1920, 1080); 
+        setOpaque(false);
         gameObjects = new ArrayList<GameObject>();
-        gameObjects.add(new Wall("wall.jpg"));
         gameObjects.add(new Tank("thebible2.jpg").listensToInput());
         timer.start();
     }
 
     private void updateObjects(Graphics2D g2d) {
-        for (GameObject gameObject : gameObjects) {
+        gameObjects.forEach((gameObject) -> {
             if (gameObject.enabled) {
                 gameObject.update();
             }
-            BufferedImage resized = gameObject.getImage();
-            Point2D.Float goPosition = gameObject.getPosition();
-            g2d.drawImage(resized, null, (int) Math.round(goPosition.getX()), (int) Math.round(goPosition.getY()));
-        }
+            gameObject.renderOn(g2d);
+        });
     }
 
-    public void paint(Graphics g) {
-        super.paint(g);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setBackground(Color.WHITE);
         updateObjects(g2d);
         getToolkit().sync();
     }
