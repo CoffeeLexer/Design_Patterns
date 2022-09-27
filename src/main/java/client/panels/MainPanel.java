@@ -15,7 +15,7 @@ import java.awt.geom.*;
 
 public class MainPanel extends JPanel implements ActionListener {
 
-    ArrayList<GameObject> gameObjects;
+    private static ArrayList<GameObject> gameObjects;
 
     Timer timer = new Timer(1000 / 60, this);
 
@@ -24,7 +24,7 @@ public class MainPanel extends JPanel implements ActionListener {
         setBounds(0, 0, 1920, 1080); 
         setOpaque(false);
         gameObjects = new ArrayList<GameObject>();
-        gameObjects.add(new Tank("thebible2.jpg").listensToInput());
+        gameObjects.add(new Tank("images/tank-blue.png").listensToInput());
         timer.start();
     }
 
@@ -35,6 +35,10 @@ public class MainPanel extends JPanel implements ActionListener {
             }
             gameObject.renderOn(g2d);
         });
+    }
+
+    public static void addObject(GameObject obj) {
+        gameObjects.add(obj);
     }
 
     public void paintComponent(Graphics g) {

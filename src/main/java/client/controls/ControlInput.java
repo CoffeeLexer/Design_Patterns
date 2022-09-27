@@ -2,8 +2,17 @@ package client.controls;
 
 import java.awt.event.*;
 import java.util.ArrayList;
-
+import java.util.HashSet;
 import java.awt.geom.*;
+import java.util.HashMap;
+
+//  key codes:
+//  w:      87
+//  s:      83
+//  d:      68
+//  a:      65
+//  space:  32
+//  shift:  16
 
 public class ControlInput implements KeyListener {
 
@@ -14,10 +23,7 @@ public class ControlInput implements KeyListener {
     public float y = 0;
     public float x = 0;
 
-    private boolean wPresed = false;
-    private boolean sPresed = false;
-    private boolean aPresed = false;
-    private boolean dPresed = false;
+    private HashSet<Character> pressedKeys = new HashSet<>();
 
     public static ControlInput getInstance() {
         return _instance;
@@ -39,6 +45,11 @@ public class ControlInput implements KeyListener {
         }
     }
 
+    private void invokeAbility(Object ability) {
+        // for later
+        System.out.println("ability");
+    }
+
     private void invokeFire() {
         for (ControlListener controlListener : listeners) {
             controlListener.onFire();
@@ -52,28 +63,33 @@ public class ControlInput implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        // System.out.println(e.getKeyChar());
         float px = x, py = y;
         switch (e.getKeyChar()) {
+            case '￿': // shift
+                if (!pressedKeys.contains('￿')) {
+                    invokeAbility(null);
+                }
             case ' ':
-                invokeFire();
+                if (!pressedKeys.contains(' ')) {
+                    invokeFire();
+                }
                 break;
             case 'w':
-                wPresed = true;
                 y = -1;
                 break;
             case 'a':
-                aPresed = true;
                 x = -1;
                 break;
             case 's':
-                sPresed = true;
                 y = 1;
                 break;
             case 'd':
-                dPresed = true;
                 x = 1;
                 break;
         }
+
+        pressedKeys.add(e.getKeyChar());
 
         if (px != x || py != y) {
             invokeMovement();
@@ -84,22 +100,20 @@ public class ControlInput implements KeyListener {
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyChar()) {
             case 'w':
-                wPresed = false;
-                y = sPresed ? 1 : 0;
+                y = pressedKeys.contains('s') ? 1 : 0;
                 break;
             case 's':
-                sPresed = false;
-                y = wPresed ? -1 : 0;
+                y = pressedKeys.contains('w') ? -1 : 0;
                 break;
             case 'a':
-                aPresed = false;
-                x = dPresed ? 1 : 0;
+                x = pressedKeys.contains('d') ? 1 : 0;
                 break;
             case 'd':
-                dPresed = false;
-                x = aPresed ? -1 : 0;
+                x = pressedKeys.contains('a') ? -1 : 0;
                 break;
         }
+
+        pressedKeys.remove(e.getKeyChar());
 
         invokeMovement();
     }

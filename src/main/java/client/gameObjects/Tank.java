@@ -6,6 +6,7 @@ import javax.swing.text.Position;
 
 import client.controls.ControlInput;
 import client.controls.ControlListener;
+import client.panels.MainPanel;
 
 import java.awt.*;
 import java.awt.image.*;
@@ -16,9 +17,9 @@ import java.awt.geom.*;
 import java.awt.geom.Point2D.Float;
 
 public class Tank extends GameObject implements ControlListener {
-    public float movementSpeed = 5f;
-    public float rotationSpeed = 1f;
-
+    private float movementSpeed = 5f;
+    private float rotationSpeed = 3f;
+    private static int tankSize = 60;
     private Point2D.Float movement = new Point2D.Float(0, 0);
 
     BufferedImage tankImage;
@@ -28,7 +29,7 @@ public class Tank extends GameObject implements ControlListener {
     }
 
     public Tank(float x, float y, float angle, String imagePath) {
-        super(imagePath, 100, true);
+        super(imagePath, tankSize, true);
         setPosition(x, y);
         this.rotation = angle;
     }
@@ -62,6 +63,13 @@ public class Tank extends GameObject implements ControlListener {
 
     @Override
     public void onFire() {
-        System.out.println("Tank shoots");
+        Point2D.Float currentPosition = getPosition();
+        String projectileImage = "images/tank-projectile.png";
+
+        // projectile spawns on the center of the tank
+        float xCoords = currentPosition.x + tankSize / 2;
+        float yCoords = currentPosition.y + tankSize / 2;
+
+        MainPanel.addObject(new Projectile(xCoords, yCoords, this.rotation, projectileImage));
     }
 }

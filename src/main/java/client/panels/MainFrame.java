@@ -24,7 +24,7 @@ public class MainFrame extends JFrame {
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                GameObject wall = new Wall("wall.jpg");
+                GameObject wall = new Wall("images/wall-blue.jpg");
                 staticPanel.addGameObject(wall, j, i);
             }
         }
