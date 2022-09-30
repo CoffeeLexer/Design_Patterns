@@ -62,6 +62,15 @@ public class Tank extends GameObject implements ControlListener {
     }
 
     @Override
+    public void renderOn(Graphics2D g2d) {
+        // Float corner = getUpperLeftCorner();
+        // g2d.setStroke(new BasicStroke(10));
+        // g2d.setColor(Color.RED);
+        // g2d.drawLine((int) corner.x, (int) corner.y, (int) corner.x, (int) corner.y);
+        g2d.drawImage(getImage(), null, (int) Math.round(position.getX()), (int) Math.round(position.getY()));
+    }
+
+    @Override
     public void onFire() {
         Point2D.Float currentPosition = getPosition();
         String projectileImage = "images/tank-projectile.png";

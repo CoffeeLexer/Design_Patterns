@@ -15,20 +15,22 @@ public class MainFrame extends JFrame {
 
     JLayeredPane layeredPane;
 
-    public MainFrame(){
+
+
+    public MainFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         layeredPane = new JLayeredPane();
-        layeredPane.setBounds(0, 0, 1920, 1080); 
+        layeredPane.setBounds(0, 0, 1920, 1080);
         MainPanel panel = new MainPanel();
-        StaticPanel staticPanel = new StaticPanel(100, 10, 10);
+        StaticPanel staticPanel = new StaticPanel(100, 16, 9);
 
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                GameObject wall = new Wall("images/wall-blue.jpg");
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 16; j++) {
+                GameObject wall = new Wall("images/wall-blue.jpg", 100);
                 staticPanel.addGameObject(wall, j, i);
             }
         }
-        
+
         layeredPane.add(staticPanel, 1);
         staticPanel.repaint();
         layeredPane.add(panel, 0);
@@ -39,5 +41,7 @@ public class MainFrame extends JFrame {
         setVisible(true);
         setLocationRelativeTo(null);
     }
+
+
 
 }

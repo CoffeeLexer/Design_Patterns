@@ -2,6 +2,9 @@ package client.gameObjects;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import client.GameEngine;
+
 import java.awt.*;
 import java.awt.image.*;
 import java.io.File;
@@ -22,7 +25,7 @@ public abstract class GameObject {
     protected int width;
     protected int height;
 
-    private double boxSize;
+    protected float boxSize;
 
     private BufferedImage texture;
 
@@ -67,6 +70,10 @@ public abstract class GameObject {
         return this;
     }
 
+    public BufferedImage getTexture() {
+        return texture;
+    }
+
     public Point2D.Float getPosition() {
         if (position == null) {
             position = new Point2D.Float(0, 0);
@@ -74,13 +81,22 @@ public abstract class GameObject {
         return new Point2D.Float((float) position.getX(), (float) position.getY());
     }
 
+    @Deprecated
+    public Point2D.Float getUpperLeftCorner() {
+        if (position == null) {
+            position = new Point2D.Float(0, 0);
+        }
+        return new Point2D.Float((float) position.getX() + (boxSize - width) / 2,
+                (float) position.getY() + (boxSize - height) / 2);
+    }
+
     public float getAngle() {
         return rotation;
     }
 
     public void renderOn(Graphics2D g2d) {
-        BufferedImage image = getImage();
-        g2d.drawImage(image, null, (int) Math.round(position.getX()), (int) Math.round(position.getY()));
+        g2d.drawImage(getImage(), null, (int) (position.x - (boxSize - width) / 2),
+                (int) (position.y - (boxSize - height) / 2));
     }
 
     public BufferedImage getImage() {
@@ -98,5 +114,6 @@ public abstract class GameObject {
         return newImageFromBuffer;
     }
 
-    public void update() {}
+    public void update() {
+    }
 }
