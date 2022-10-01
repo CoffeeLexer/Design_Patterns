@@ -2,86 +2,101 @@ package network;
 
 import network.data.Handshake;
 import network.data.Message;
+import network.data.Payload;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.InetSocketAddress;
+import java.nio.channels.SocketChannel;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class Client {
-    private static final int defaultPort = 8080;
-
-    Socket socket = null;
-    ObjectOutputStream oos = null;
-    ObjectInputStream ois = null;
-
-    String host = null;
-    int port = -1;
+    private SocketChannel client = null;
+    private Map<Handshake.Method, Consumer<Void>> functions = null;
+    private boolean listening = false;
 
     public Client() {
         try {
-            this.host = InetAddress.getLocalHost().getHostName();
-            this.port = defaultPort;
-        } catch (UnknownHostException ignored) {}
+            client = SocketChannel.open(new InetSocketAddress("localhost", 8080));
+            client.configureBlocking(true);
+            functions = new TreeMap<>();
+            Login();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public Client(int port) {
+    public void On(Handshake.Method invoker, Consumer<Void> function) throws Exception {
+        if(!listening) functions.put(invoker, function);
+        else throw new Exception("Adding listener after Listen() was invoked!");
+    }
+
+    private void _listen() {
+        System.out.println("Listening");
+        while (true) {
+            try {
+                Payload payload = Communicator.Read(client);
+                if(functions.containsKey(payload.method))
+                    functions.get(payload.method).accept(null);
+            }
+            catch (Exception e) {
+                if(e.getMessage().equalsIgnoreCase("connection reset")) {
+                    System.out.println(e.getMessage());
+                    return;
+                }
+                e.printStackTrace();
+            }
+        }
+    }
+    public void Listen() {
+        listening = true;
+        new Thread(this::_listen).start();
+    }
+    private void Login() {
+        Payload payload = new Payload(Handshake.Method.login, null);
         try {
-            this.host = InetAddress.getLocalHost().getHostName();
-            this.port = port;
-        } catch (UnknownHostException ignored) {}
-    }
-
-    public Client(String host, int port) {
-        this.host = host;
-        this.port = defaultPort;
-    }
-
-    private void Connect(Handshake.Method type) {
-        try {
-            socket = new Socket(host, port);
-            oos = new ObjectOutputStream(socket.getOutputStream());
-            ois = new ObjectInputStream(socket.getInputStream());
-
-            Handshake h = new Handshake();
-            h.method = type;
-
-            oos.writeObject(h);
-        } catch (IOException ignored) {}
-    }
-
-    private void Disconnect() {
-        try {
-            socket.close();
-            socket = null;
-
-            ois.close();
-            ois = null;
-
-            oos.close();
-            oos = null;
-        } catch (IOException ignored) {}
-    }
-    private String username = "unknown";
-    public void Message(String content) {
-        Connect(Handshake.Method.message);
-
-        network.data.Message m = new network.data.Message();
-        m.author = username;
-        m.content = content;
-        try {
-            oos.writeObject(m);
-        } catch (IOException ignored) {}
-
-        Disconnect();
+            Communicator.Write(client, payload);
+            client.finishConnect();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
-        //  Testing purposes only
-        Client client = new Client();
-        client.username = "big tiddy";
-        client.Message("White people cringe");
+        Client c1 = new Client();
+        Client c2 = new Client();
+
+        try {
+            c1.On(Handshake.Method.ping, (Void) -> {
+                System.out.println("OI Someone pinged me!!!");
+                try {
+                    Message m = new Message();
+                    m.author = "Joe";
+                    m.content = "Stop pinging me server!";
+                    Payload payload = new Payload(Handshake.Method.message, m);
+                    Communicator.Write(c1.client, payload);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            c2.On(Handshake.Method.ping, (Void) -> {
+                System.out.println("F*ck you Pingger!!!");
+            });
+
+//            TimeUnit.SECONDS.sleep(2);
+            c1.Listen();
+            c2.Listen();
+//            TimeUnit.SECONDS.sleep(2);
+
+            Payload payload = new Payload(Handshake.Method.ping);
+            Communicator.Write(c1.client, payload);
+            TimeUnit.MINUTES.sleep(5);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

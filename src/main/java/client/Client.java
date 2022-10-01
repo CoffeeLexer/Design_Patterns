@@ -12,7 +12,7 @@ public class Client {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Family friendly title 0.2");
 
-        network.Client c = new network.Client();
+
 
         JPanel panel = new JPanel();
         BoxLayout boxLayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
@@ -22,7 +22,7 @@ public class Client {
         jb1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                c.Message("Start");
+
             }
         });
 

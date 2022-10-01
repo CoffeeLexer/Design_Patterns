@@ -2,9 +2,13 @@ package network.data;
 
 import java.io.Serializable;
 
-public class Handshake implements Serializable {
+public abstract class Handshake implements Serializable {
     public enum Method {
-        empty,
+        //  Reserved for server-client communication
+        empty,  // Default method property
+        login,  // Client login method
+
+        //  Can be modified
         echo,
         ping,
         shutdown,
