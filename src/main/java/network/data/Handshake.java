@@ -12,7 +12,9 @@ public abstract class Handshake implements Serializable {
         echo,
         ping,
         shutdown,
-        message
+        message,
+        notify,
+        observer
     }
     public Method method = Method.empty;
 }

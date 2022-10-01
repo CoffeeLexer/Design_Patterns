@@ -59,6 +59,7 @@ public class Client {
         try {
             Communicator.Write(client, payload);
             client.finishConnect();
+            Communicator.Read(client);
         }
         catch (Exception e) {
             e.printStackTrace();

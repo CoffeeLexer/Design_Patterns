@@ -6,12 +6,13 @@ import java.awt.*;
 import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.Buffer;
 import java.util.Optional;
 import java.awt.event.*;
 import java.awt.geom.*;
 
-public abstract class GameObject {
+public abstract class GameObject implements Serializable {
 
     public boolean enabled = true;
 

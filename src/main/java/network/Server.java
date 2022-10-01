@@ -4,36 +4,61 @@ import network.data.Handshake;
 import network.data.Message;
 import network.data.Payload;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.SocketException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Server {
 
     private Selector selector = null;
     private ServerSocketChannel serverSocket = null;
-    private Map<Handshake.Method, Consumer<Void>> functions = null;
+    private Map<Handshake.Method, Function<SocketChannel, Consumer<Payload>>> functions = null;
 
-    public Server() throws Exception {
-        //  Create Selector
-        selector = Selector.open();
+    public Server() {
+        try {
+            functions = new TreeMap<>();
+            //  Create Selector
+            selector = Selector.open();
 
-        //  Open socket server
-        serverSocket = ServerSocketChannel.open();
-        serverSocket.bind(new InetSocketAddress("localhost", 8080));
-        serverSocket.configureBlocking(false);
+            //  Open socket server
+            serverSocket = ServerSocketChannel.open();
+            serverSocket.bind(new InetSocketAddress("localhost", 8080));
+            serverSocket.configureBlocking(false);
 
-        //  Binding master channel (Client binder)
-        serverSocket.register(selector, SelectionKey.OP_ACCEPT);
+            //  Binding master channel (Client binder)
+            serverSocket.register(selector, SelectionKey.OP_ACCEPT);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void On(Handshake.Method invoker, Function<SocketChannel, Consumer<Payload>> function) throws Exception {
+        functions.put(invoker, function);
+    }
+    public void Notify(Payload payload) {
+        try {
+            Set<SelectionKey> sK = selector.keys();
+            for (SelectionKey k : sK) {
+                if (!k.isReadable() | !k.isValid()) continue;
+                System.out.printf("\tPinging: %s\n", k.attachment());
+                SocketChannel c = (SocketChannel) k.channel();
+                Communicator.Write(c, payload);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    void Listen() throws Exception {
         boolean active = true;
         Set<SelectionKey> selectionKeys = null;
         Iterator<SelectionKey> iterator = null;
@@ -71,7 +96,7 @@ public class Server {
                     try {
                         payload = Communicator.Read(client);
                     }
-                    catch (SocketException e) {
+                    catch (SocketException | InterruptedException e) {
                         if(e.getMessage().equalsIgnoreCase("connection reset")) {
                             System.out.printf("\t%s: Client Disconnected!\n", key.attachment());
                             client.close();
@@ -80,25 +105,8 @@ public class Server {
                         e.printStackTrace();
                     }
                     System.out.printf("\t%s: %s\n", key.attachment(), payload.method);
-                    switch (payload.method) {
-                        case login -> {
-                            System.out.printf("\tlogin\n");
-                        }
-                        case message -> {
-                            Message m = payload.GetData();
-                            System.out.printf("\t%s: %s\n", m.author, m.content);
-                        }
-                        case ping -> {
-                            Set<SelectionKey> sK = selector.keys();
-                            for (SelectionKey k : sK) {
-                                if (!k.isReadable() | !k.isValid()) continue;
-                                System.out.printf("\tPinging: %s\n", k.attachment());
-                                SocketChannel c = (SocketChannel) k.channel();
-                                Payload payload1 = new Payload(Handshake.Method.ping);
-                                Communicator.Write(c, payload1);
-                            }
-                        }
-                    }
+                    if(functions.containsKey(payload.method))
+                        functions.get(payload.method).apply(client).accept(payload);
                 }
 
                 //  Should not be reached. If is used, create issue.
@@ -115,5 +123,22 @@ public class Server {
     }
     public static void main(String[] args) throws Exception {
         Server server = new Server();
+        server.On(Handshake.Method.login, client -> payload -> {
+            Payload payload1 = new Payload(Handshake.Method.login);
+            try {
+                Communicator.Write(client, payload1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        server.On(Handshake.Method.message, client -> payload -> {
+            Message m = payload.GetData();
+            System.out.printf("\t%s: %s\n", m.author, m.content);
+        });
+        server.On(Handshake.Method.ping, client -> payload -> {
+            Payload payload1 = new Payload(Handshake.Method.ping);
+            server.Notify(payload1);
+        });
+        server.Listen();
     }
 }
