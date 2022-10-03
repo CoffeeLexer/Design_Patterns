@@ -3,6 +3,9 @@ package client.panels;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.geom.*;
+
+import client.components.Renderer;
+import client.components.Transform;
 import client.gameObjects.GameObject;
 
 public class StaticPanel extends JPanel {
@@ -19,7 +22,9 @@ public class StaticPanel extends JPanel {
     }
 
     public void addGameObject(GameObject gameObject, int x, int y) {
-        gameObject.position = new Point2D.Float(x * size, y * size);
+        gameObject.addComponent(new Transform());
+        Transform transform = gameObject.getComponent(Transform.Key());
+        transform.position = new Point2D.Float(x * size, y * size);
         grid[y][x] = gameObject;
     }
 
@@ -30,7 +35,8 @@ public class StaticPanel extends JPanel {
             for (int x = 0; x < grid[y].length; x++) {
                 GameObject go = grid[y][x];
                 if (go != null) {
-                    go.renderOn(g2d);
+                    client.components.Renderer renderer = go.getComponent(Renderer.Key());
+                    renderer.renderOn(g2d);
                 }
             }
         }

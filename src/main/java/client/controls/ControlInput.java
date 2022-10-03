@@ -23,7 +23,7 @@ public class ControlInput implements KeyListener {
     public float y = 0;
     public float x = 0;
 
-    private HashSet<Character> pressedKeys = new HashSet<>();
+    private HashSet<Integer> pressedKeys = new HashSet<>();
 
     public static ControlInput getInstance() {
         return _instance;
@@ -63,57 +63,65 @@ public class ControlInput implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+
         // System.out.println(e.getKeyChar());
         float px = x, py = y;
-        switch (e.getKeyChar()) {
-            case '￿': // shift
-                if (!pressedKeys.contains('￿')) {
+        switch (transformKey(e)) {
+            case 16: // shift
+                if (!pressedKeys.contains(16)) {
                     invokeAbility(null);
                 }
-            case ' ':
-                if (!pressedKeys.contains(' ')) {
+                break;
+            case 32:
+                if (!pressedKeys.contains(32)) {
                     invokeFire();
                 }
                 break;
-            case 'w':
+            case (int)'W':
                 y = -1;
                 break;
-            case 'a':
+            case (int)'A':
                 x = -1;
                 break;
-            case 's':
+            case (int)'S':
                 y = 1;
                 break;
-            case 'd':
+            case (int)'D':
                 x = 1;
                 break;
         }
 
-        pressedKeys.add(e.getKeyChar());
+        pressedKeys.add(transformKey(e));
 
         if (px != x || py != y) {
             invokeMovement();
         }
     }
-
+    private int transformKey(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+        if(keyCode >= (int)'a' && keyCode <= (int)'z') {
+            keyCode += ((int)'A' - (int)'a');
+        }
+        return keyCode;
+    }
     @Override
     public void keyReleased(KeyEvent e) {
-        switch (e.getKeyChar()) {
-            case 'w':
-                y = pressedKeys.contains('s') ? 1 : 0;
+        switch (transformKey(e)) {
+            case (int)'W':
+                y = pressedKeys.contains((int)'S') ? 1 : 0;
                 break;
-            case 's':
-                y = pressedKeys.contains('w') ? -1 : 0;
+            case (int)'S':
+                y = pressedKeys.contains((int)'W') ? -1 : 0;
                 break;
-            case 'a':
-                x = pressedKeys.contains('d') ? 1 : 0;
+            case (int)'A':
+                x = pressedKeys.contains((int)'D') ? 1 : 0;
                 break;
-            case 'd':
-                x = pressedKeys.contains('a') ? -1 : 0;
+            case (int)'D':
+                x = pressedKeys.contains((int)'A') ? -1 : 0;
                 break;
         }
 
-        pressedKeys.remove(e.getKeyChar());
+        pressedKeys.remove(transformKey(e));
 
         invokeMovement();
     }

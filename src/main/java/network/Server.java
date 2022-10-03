@@ -1,6 +1,9 @@
 package network;
 
+import client.gameObjects.GameComponent;
+import client.gameObjects.GameObject;
 import network.data.Handshake;
+import network.data.Linker;
 import network.data.Message;
 import network.data.Payload;
 
@@ -20,7 +23,7 @@ public class Server {
 
     private Selector selector = null;
     private ServerSocketChannel serverSocket = null;
-    private Map<Handshake.Method, Function<SocketChannel, Consumer<Payload>>> functions = null;
+    private Map<Handshake.Method, Function<Object, Function<SocketChannel, Consumer<Payload>>>> functions = null;
 
     public Server() {
         try {
@@ -34,13 +37,13 @@ public class Server {
             serverSocket.configureBlocking(false);
 
             //  Binding master channel (Client binder)
-            serverSocket.register(selector, SelectionKey.OP_ACCEPT);
+            serverSocket.register(selector, SelectionKey.OP_ACCEPT, 0);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void On(Handshake.Method invoker, Function<SocketChannel, Consumer<Payload>> function) throws Exception {
+    public void On(Handshake.Method invoker, Function<Object, Function<SocketChannel, Consumer<Payload>>> function) throws Exception {
         functions.put(invoker, function);
     }
     public void Notify(Payload payload) {
@@ -48,7 +51,6 @@ public class Server {
             Set<SelectionKey> sK = selector.keys();
             for (SelectionKey k : sK) {
                 if (!k.isReadable() | !k.isValid()) continue;
-                System.out.printf("\tPinging: %s\n", k.attachment());
                 SocketChannel c = (SocketChannel) k.channel();
                 Communicator.Write(c, payload);
             }
@@ -56,6 +58,17 @@ public class Server {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public int availableID() {
+        Set<SelectionKey> sK = selector.keys();
+        Set<Integer> ids = new HashSet<>();
+        for (SelectionKey k : sK) {
+            ids.add((Integer) k.attachment());
+        }
+        for(int i = 0;; i++)
+            if(!ids.contains(i))
+                return i;
     }
 
     void Listen() throws Exception {
@@ -83,9 +96,9 @@ public class Server {
                     SocketChannel client = serverSocket.accept();
                     client.configureBlocking(false);
                     // TODO: Centralize ATTACHMENT parameter
-                    int rng = new Random().nextInt();
-                    System.out.printf("\t%s: Client Joined\n", rng);
-                    client.register(selector, SelectionKey.OP_READ, rng);
+                    int id = availableID();
+                    System.out.printf("\t%s: Client Joined\n", id);
+                    client.register(selector, SelectionKey.OP_READ, id);
                 }
 
                 //  Client sending data to server
@@ -106,7 +119,7 @@ public class Server {
                     }
                     System.out.printf("\t%s: %s\n", key.attachment(), payload.method);
                     if(functions.containsKey(payload.method))
-                        functions.get(payload.method).apply(client).accept(payload);
+                        functions.get(payload.method).apply(key.attachment()).apply(client).accept(payload);
                 }
 
                 //  Should not be reached. If is used, create issue.
@@ -121,9 +134,18 @@ public class Server {
             }
         }
     }
+    public static int availableID(Map<Integer, GameObject> map) {
+        for(int i = 0;; i++)
+            if(!map.containsKey(i))
+                return i;
+    }
     public static void main(String[] args) throws Exception {
+        //  Server Instance Possible singleton
         Server server = new Server();
-        server.On(Handshake.Method.login, client -> payload -> {
+        //  All objects
+        Map<Integer, GameObject> gameObjects = new TreeMap<>();
+
+        server.On(Handshake.Method.login, clientID -> client -> payload -> {
             Payload payload1 = new Payload(Handshake.Method.login);
             try {
                 Communicator.Write(client, payload1);
@@ -131,13 +153,26 @@ public class Server {
                 e.printStackTrace();
             }
         });
-        server.On(Handshake.Method.message, client -> payload -> {
-            Message m = payload.GetData();
-            System.out.printf("\t%s: %s\n", m.author, m.content);
+        server.On(Handshake.Method.updateComponent, clientID -> client -> payload -> {
+            GameComponent gameComponent = payload.GetData();
+            gameObjects.get(gameComponent.gameObject.uniqueID).updateComponent(gameComponent);
+            server.Notify(payload);
         });
-        server.On(Handshake.Method.ping, client -> payload -> {
-            Payload payload1 = new Payload(Handshake.Method.ping);
-            server.Notify(payload1);
+        server.On(Handshake.Method.createGameObject, clientID -> client -> payload -> {
+            GameObject o = payload.GetData();
+            o.uniqueID = Server.availableID(gameObjects);
+            gameObjects.put(o.uniqueID, o);
+            Payload payload1 = new Payload(Handshake.Method.createGameObjectConfirm, o);
+            try {
+                Communicator.Write(client, payload1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Payload payload2 = new Payload(Handshake.Method.createGameObject, o);
+            server.Notify(payload2);
+        });
+        server.On(Handshake.Method.linkerUpdate, clientID -> client -> payload -> {
+
         });
         server.Listen();
     }

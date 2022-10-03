@@ -1,8 +1,12 @@
 package client.gameObjects;
 
-public class Wall extends GameObject {
+import client.components.Renderer;
 
+import java.io.Serializable;
+
+public class Wall extends GameObject implements Serializable {
     public Wall(String imagePath) {
-        super(imagePath, 100, 100);
+        addComponent(new Renderer(imagePath, 100, 100));
+        tag = "Static";
     }
 }

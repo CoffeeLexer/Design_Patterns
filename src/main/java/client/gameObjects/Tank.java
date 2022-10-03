@@ -4,6 +4,9 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.Position;
 
+import client.components.Controller;
+import client.components.Renderer;
+import client.components.Transform;
 import client.controls.ControlInput;
 import client.controls.ControlListener;
 import client.panels.MainPanel;
@@ -17,59 +20,42 @@ import java.awt.geom.*;
 import java.awt.geom.Point2D.Float;
 
 public class Tank extends GameObject implements ControlListener {
-    private float movementSpeed = 5f;
-    private float rotationSpeed = 3f;
-    private static int tankSize = 60;
-    private Point2D.Float movement = new Point2D.Float(0, 0);
 
-    BufferedImage tankImage;
+
 
     public Tank(String imagePath) {
         this(100, 100, 0, imagePath);
+        tag = "Dynamic";
     }
 
     public Tank(float x, float y, float angle, String imagePath) {
-        super(imagePath, tankSize, true);
-        setPosition(x, y);
-        this.rotation = angle;
+        addComponent(new Transform().setPosition(x, y).setRotation(angle));
+        addComponent(new Renderer(imagePath, Controller.TankSize(), true));
+        tag = "Dynamic";
     }
 
     public Tank listensToInput() {
+        addComponent(new Controller());
         ControlInput.addControlListener(this);
         return this;
     }
 
-    public void drive(float direction) {
-        float x = -direction * movementSpeed * (float) Math.sin(Math.toRadians(rotation));
-        float y = direction * movementSpeed * (float) Math.cos(Math.toRadians(rotation));
-        position.setLocation(position.getX() + x, position.getY() + y);
-    }
-
-    public void rotate(float direction) {
-        rotation += (direction * rotationSpeed);
-        rotation %= 360;
-    }
-
-    @Override
-    public void update() {
-        drive(movement.y);
-        rotate(movement.x);
-    }
-
     @Override
     public void onMove(Point2D.Float input) {
-        movement = input;
+        Controller controller = getComponent(Controller.Key());
+        controller.movement = input;
     }
 
     @Override
     public void onFire() {
-        Point2D.Float currentPosition = getPosition();
+        Transform transform = getComponent(Transform.Key());
+        Point2D.Float currentPosition = transform.getPosition();
         String projectileImage = "images/tank-projectile.png";
 
         // projectile spawns on the center of the tank
-        float xCoords = currentPosition.x + tankSize / 2;
-        float yCoords = currentPosition.y + tankSize / 2;
+        float xCoords = currentPosition.x + Controller.TankSize() / 2;
+        float yCoords = currentPosition.y + Controller.TankSize() / 2;
 
-        MainPanel.addObject(new Projectile(xCoords, yCoords, this.rotation, projectileImage));
+        MainPanel.addObject(new Projectile(xCoords, yCoords, transform.rotation, projectileImage));
     }
 }

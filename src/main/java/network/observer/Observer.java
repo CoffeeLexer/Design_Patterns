@@ -1,5 +1,11 @@
 package network.observer;
 
-public abstract class Observer {
-    abstract void Update();
+import java.io.Serializable;
+
+public abstract class Observer<T extends Serializable> {
+    protected Subject<T> subject;
+    protected T state;
+    void Update() {
+        state = subject.GetState();
+    }
 }

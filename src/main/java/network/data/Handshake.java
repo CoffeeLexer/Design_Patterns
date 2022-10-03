@@ -14,7 +14,21 @@ public abstract class Handshake implements Serializable {
         shutdown,
         message,
         notify,
-        observer
+        observer,
+        test,
+
+        createComponent,
+        setComponent,
+        destroyComponent,
+        updateComponent,
+
+        createGameObject,
+        createGameObjectConfirm,
+        setGameObject,
+        destroyGameObject,
+        updateGameObject,
+
+        linkerUpdate,
     }
     public Method method = Method.empty;
 }

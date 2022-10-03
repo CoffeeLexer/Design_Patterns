@@ -1,44 +1,41 @@
 package client.panels;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import client.components.Renderer;
 import client.gameObjects.*;
+import network.Client;
 
 import java.awt.*;
-import java.awt.image.*;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.event.*;
-import java.awt.geom.*;
 
 public class MainPanel extends JPanel implements ActionListener {
-
-    private static ArrayList<GameObject> gameObjects;
-
     Timer timer = new Timer(1000 / 60, this);
 
     public MainPanel() {
         setPreferredSize(new Dimension(1920, 1080));
         setBounds(0, 0, 1920, 1080); 
         setOpaque(false);
-        gameObjects = new ArrayList<GameObject>();
-        gameObjects.add(new Tank("images/tank-blue.png").listensToInput());
+        Tank gameObject = (Tank)Client.getInstance().addGameObject(new Tank("images/tank-yellow.png"));
+        gameObject.listensToInput();
         timer.start();
     }
 
     private void updateObjects(Graphics2D g2d) {
-        gameObjects.forEach((gameObject) -> {
-            if (gameObject.enabled) {
-                gameObject.update();
+        Client.getInstance().foreach((gameObject -> {
+            if(gameObject.tag.equals("Dynamic")) {
+                if (gameObject.active) {
+                    gameObject.update();
+                }
+                client.components.Renderer renderer = gameObject.getComponent(Renderer.Key());
+                renderer.renderOn(g2d);
             }
-            gameObject.renderOn(g2d);
-        });
+        }));
     }
 
     public static void addObject(GameObject obj) {
-        gameObjects.add(obj);
+        Client.getInstance().addGameObject(obj);
     }
 
     public void paintComponent(Graphics g) {

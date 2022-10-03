@@ -12,7 +12,9 @@ public class Communicator {
         //  Allocate 1xINT compatible buffer (INT is datatype of array size)
         ByteBuffer buffer = ByteBuffer.allocate(4);
         //  Setting upcoming objects size
+        buffer.rewind();
         int size = client.read(buffer);
+        buffer.flip();
         int objectSize = buffer.getInt(0);
         buffer.clear();
         //  Closed connection from Client-Side. Needs closing from server side
@@ -35,9 +37,14 @@ public class Communicator {
         //  Push size of object
         bb.putInt(bytes.length);
         //  Push object
-        bb.put(bytes).flip();
+        bb.put(bytes);
+        bb.flip();
         //  Send object
-        client.write(bb);
-        bb.clear();
+        //client.write(bb);
+
+        while(bb.remaining() > 0) {
+            int written = client.write(bb);
+        }
+        bb.compact();
     }
 }

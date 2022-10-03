@@ -1,103 +1,54 @@
 package client.gameObjects;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.*;
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
-import java.nio.Buffer;
-import java.util.Optional;
-import java.awt.event.*;
-import java.awt.geom.*;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.function.Consumer;
 
 public abstract class GameObject implements Serializable {
 
-    public boolean enabled = true;
+    public int uniqueID = -1;
+    Map<String, GameComponent> components;
+    public String tag = "Default";
 
-    public Point2D.Float position;
-    public int layer;
-    public float rotation; // In degrees
-
-    protected int width;
-    protected int height;
-
-    private double boxSize;
-
-    private BufferedImage texture;
-
-    protected GameObject() {
+    public GameObject() {
+        components = new TreeMap<>();
+        start();
+    }
+    public void foreach(Consumer<? super GameComponent> function) {
+        components.values().forEach(function);
+    }
+    public void start() {
+        this.foreach(GameComponent::start);
+    }
+    public void update() {
+        this.foreach(GameComponent::update);
+        this.foreach(GameComponent::sync);
     }
 
-    public GameObject(String imagePath, Integer width, Integer height) {
-        setTexture(imagePath);
-        setDimensions(width, height);
+    public void destroy() {
+        this.foreach(GameComponent::destroy);
     }
 
-    public GameObject(String imagePath) {
-        setTexture(imagePath);
-        setDimensions(texture.getWidth(), texture.getHeight());
+    public void render() {
+        this.foreach(GameComponent::render);
     }
 
-    public GameObject(String imagePath, int size, boolean isWidth) {
-        setTexture(imagePath);
-        if (isWidth) {
-            setDimensions(size, (int) ((float) size * texture.getHeight() / texture.getWidth()));
-        } else {
-            setDimensions((int) ((float) size * texture.getWidth() / texture.getHeight()), size);
-        }
+    public <T extends GameComponent> void addComponent(T component) {
+        component.gameObject = this;
+        if(!components.containsKey(component.key()))
+            components.put(component.key(), component);
+    }
+    public <T extends GameComponent> void updateComponent(T component) {
+        component.gameObject = this;
+        components.put(component.key(), component);
+    }
+    public <T extends GameComponent> void removeComponent(String key) {
+        components.remove(key);
+    }
+    public <T extends GameComponent> T getComponent(String key) {
+        return (T)components.get(key);
     }
 
-    private void setTexture(String imagePath) {
-        try {
-            texture = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {
-            System.out.println("Resource was not found: " + imagePath);
-        }
-    }
-
-    private void setDimensions(int width, int height) {
-        this.height = height;
-        this.width = width;
-        boxSize = (int) Math.round(Point2D.distance(0, 0, width, height));
-    }
-
-    public GameObject setPosition(float x, float y) {
-        this.position = new Point2D.Float(x, y);
-        return this;
-    }
-
-    public Point2D.Float getPosition() {
-        if (position == null) {
-            position = new Point2D.Float(0, 0);
-        }
-        return new Point2D.Float((float) position.getX(), (float) position.getY());
-    }
-
-    public float getAngle() {
-        return rotation;
-    }
-
-    public void renderOn(Graphics2D g2d) {
-        BufferedImage image = getImage();
-        g2d.drawImage(image, null, (int) Math.round(position.getX()), (int) Math.round(position.getY()));
-    }
-
-    public BufferedImage getImage() {
-        BufferedImage newImageFromBuffer = new BufferedImage((int) Math.ceil(boxSize), (int) Math.ceil(boxSize),
-                BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics2D = newImageFromBuffer.createGraphics();
-
-        AffineTransform at = new AffineTransform();
-        at.setToRotation(Math.toRadians(rotation), boxSize / 2, boxSize / 2);
-        at.translate((boxSize - width) / 2, (boxSize - height) / 2);
-        graphics2D.setTransform(at);
-        graphics2D.drawImage(texture, 0, 0, width, height, null);
-        graphics2D.dispose();
-
-        return newImageFromBuffer;
-    }
-
-    public void update() {}
+    public boolean active = true;
 }
