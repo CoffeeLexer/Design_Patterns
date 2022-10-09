@@ -6,6 +6,7 @@ import javax.swing.text.Position;
 
 import client.controls.ControlInput;
 import client.controls.ControlListener;
+import client.gameObjects.projectiles.Projectile;
 import client.panels.MainPanel;
 
 import java.awt.*;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.geom.Point2D.Float;
+
+import java.util.concurrent.TimeUnit;
 
 public class Tank extends GameObject implements ControlListener {
     private float movementSpeed = 5f;
@@ -71,14 +74,22 @@ public class Tank extends GameObject implements ControlListener {
     }
 
     @Override
-    public void onFire() {
+    public void onFire(char keyName) {
         Point2D.Float currentPosition = getPosition();
         String projectileImage = "images/tank-projectile.png";
 
-        // projectile spawns on the center of the tank
+        // projectile spawns at the center of the tank
         float xCoords = currentPosition.x + tankSize / 2;
         float yCoords = currentPosition.y + tankSize / 2;
 
-        MainPanel.addObject(new Projectile(xCoords, yCoords, this.rotation, projectileImage));
+        String projectileAlgorithm = "";
+
+        if (keyName == 'n') {
+            projectileAlgorithm = "straight";
+        } else if (keyName == 'm') {
+            projectileAlgorithm = "fragmenting";
+        }
+
+        MainPanel.addObject(new Projectile(xCoords, yCoords, this.rotation, projectileImage, projectileAlgorithm));
     }
 }
