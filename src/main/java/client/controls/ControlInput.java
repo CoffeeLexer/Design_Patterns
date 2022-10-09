@@ -50,9 +50,9 @@ public class ControlInput implements KeyListener {
         System.out.println("ability");
     }
 
-    private void invokeFire() {
+    private void invokeFire(char keyName) {
         for (ControlListener controlListener : listeners) {
-            controlListener.onFire();
+            controlListener.onFire(keyName);
         }
     }
 
@@ -70,10 +70,10 @@ public class ControlInput implements KeyListener {
                 if (!pressedKeys.contains('￿')) {
                     invokeAbility(null);
                 }
-            case ' ':
-                if (!pressedKeys.contains(' ')) {
-                    invokeFire();
-                }
+                break;
+            case 'n':
+            case 'm':
+                invokeFire(e.getKeyChar());
                 break;
             case 'w':
                 y = -1;

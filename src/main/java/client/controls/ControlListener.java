@@ -5,7 +5,5 @@ import java.awt.geom.*;
 public interface ControlListener {
 
     public void onMove(Point2D.Float input);
-    public void onFire();
-
-    // ...
+    public void onFire(char keyName);
 }

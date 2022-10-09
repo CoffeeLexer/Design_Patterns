@@ -114,6 +114,6 @@ public abstract class GameObject {
         return newImageFromBuffer;
     }
 
-    public void update() {
-    }
+    public void update() {}
+    public void beforeCollide() {}
 }

@@ -39,6 +39,11 @@ public class MainPanel extends JPanel implements ActionListener {
 
     public static void addObject(GameObject obj) {
         gameObjects.add(obj);
+        imitateCollideAfterDelay(obj);
+    }
+
+    public static void deleteObject(GameObject obj) {
+        gameObjects.remove(obj);
     }
 
     public void paintComponent(Graphics g) {
@@ -52,4 +57,18 @@ public class MainPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         repaint();
     }
+
+    // FOR TESTING
+    private static void imitateCollideAfterDelay(GameObject obj) {
+        Timer collideTimer = new Timer(600, new ActionListener()
+        {
+            public void actionPerformed(ActionEvent ae)
+            {
+                obj.beforeCollide();
+                deleteObject(obj);
+            }
+        });
+        collideTimer.setRepeats(false);
+        collideTimer.start();
+      }
 }
