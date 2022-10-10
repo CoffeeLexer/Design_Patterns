@@ -3,13 +3,10 @@ package client.components;
 import client.Assets;
 import client.gameObjects.GameComponent;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class Renderer extends GameComponent {
     private Integer width;

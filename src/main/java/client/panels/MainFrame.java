@@ -1,16 +1,8 @@
 package client.panels;
 
 import javax.swing.*;
-import javax.swing.text.AbstractDocument.LeafElement;
 
-import client.controls.ControlInput;
-import client.gameObjects.*;
-import network.Client;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
-import java.util.ArrayList;
+import client.controls.Controller;
 
 public class MainFrame extends JFrame {
 
@@ -33,8 +25,7 @@ public class MainFrame extends JFrame {
 //        layeredPane.add(staticPanel, 1);
 //        staticPanel.repaint();
         layeredPane.add(panel, 0);
-
-        addKeyListener(ControlInput.getInstance());
+        addKeyListener(Controller.getInstance());
         add(layeredPane);
         pack();
         setVisible(true);

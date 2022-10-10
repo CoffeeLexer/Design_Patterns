@@ -1,7 +1,6 @@
 package client.components;
 
 import client.gameObjects.GameComponent;
-import client.gameObjects.GameObject;
 
 import java.awt.geom.Point2D;
 

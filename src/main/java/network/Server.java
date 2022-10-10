@@ -3,13 +3,10 @@ package network;
 import client.gameObjects.GameComponent;
 import client.gameObjects.GameObject;
 import network.data.Handshake;
-import network.data.Linker;
-import network.data.Message;
 import network.data.Payload;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.SocketException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -103,7 +100,7 @@ public class Server {
 
                 //  Client sending data to server
                 if(key.isValid() && key.isReadable()) {
-                    System.out.printf("Readable: %s\n", key.attachment());
+//                    System.out.printf("Readable: %s\n", key.attachment());
                     SocketChannel client = (SocketChannel) key.channel();
                     Payload payload = null;
                     try {
@@ -117,7 +114,7 @@ public class Server {
                         }
                         e.printStackTrace();
                     }
-                    System.out.printf("\t%s: %s\n", key.attachment(), payload.method);
+//                    System.out.printf("\t%s: %s\n", key.attachment(), payload.method);
                     if(functions.containsKey(payload.method))
                         functions.get(payload.method).apply(key.attachment()).apply(client).accept(payload);
                 }
@@ -146,9 +143,13 @@ public class Server {
         Map<Integer, GameObject> gameObjects = new TreeMap<>();
 
         server.On(Handshake.Method.login, clientID -> client -> payload -> {
-            Payload payload1 = new Payload(Handshake.Method.login);
             try {
+                Payload payload1 = new Payload(Handshake.Method.login);
                 Communicator.Write(client, payload1);
+                for(GameObject obj: gameObjects.values()) {
+                    Payload payload2 = new Payload(Handshake.Method.createGameObject, obj);
+                    Communicator.Write(client, payload2);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

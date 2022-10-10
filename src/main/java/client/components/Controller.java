@@ -1,10 +1,13 @@
 package client.components;
 
+import client.controls.ControllerListener;
 import client.gameObjects.GameComponent;
+import client.gameObjects.Projectile;
+import client.panels.MainPanel;
 
 import java.awt.geom.Point2D;
 
-public class Controller extends GameComponent {
+public class Controller extends GameComponent implements ControllerListener {
     private float movementSpeed = 5f;
     private float rotationSpeed = 3f;
     private static int tankSize = 60;
@@ -22,6 +25,10 @@ public class Controller extends GameComponent {
         transform.rotation += (direction * rotationSpeed);
         transform.rotation %= 360;
     }
+    @Override
+    public void sync() {
+
+    }
 
     @Override
     public void update() {
@@ -35,5 +42,23 @@ public class Controller extends GameComponent {
     }
     public static String Key() {
         return "Controller";
+    }
+
+    @Override
+    public void onMove(Point2D.Float input) {
+        movement = input;
+    }
+
+    @Override
+    public void onFire() {
+        Transform transform = gameObject.getComponent(Transform.Key());
+        Point2D.Float currentPosition = transform.getPosition();
+        String projectileImage = "images/tank-projectile.png";
+
+        // projectile spawns on the center of the tank
+        float xCoords = currentPosition.x + (float)Controller.TankSize() / 2;
+        float yCoords = currentPosition.y + (float)Controller.TankSize() / 2;
+
+        MainPanel.addObject(new Projectile(xCoords, yCoords, transform.rotation, projectileImage));
     }
 }

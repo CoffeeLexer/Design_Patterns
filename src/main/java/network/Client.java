@@ -3,7 +3,6 @@ package network;
 import client.gameObjects.GameComponent;
 import client.gameObjects.GameObject;
 import network.data.Handshake;
-import network.data.Linker;
 import network.data.Payload;
 
 import java.io.IOException;
@@ -19,12 +18,33 @@ import java.util.function.Consumer;
 public class Client {
     public static String hostname = "localhost";
     public static int port = 8080;
-    Thread listener = null;
-    Map<Integer, GameObject> gameObjects = null;
-    BlockingQueue<Payload> blockingQueue;
+    private Thread listener = null;
+    private Map<Integer, GameObject> gameObjects = null;
+    private BlockingQueue<Payload> blockingQueue;
     private SocketChannel client = null;
     private Map<Handshake.Method, Consumer<Payload>> functions = null;
     private boolean listening = false;
+    public GameObject getGameObject(int uniqueID) {
+        return gameObjects.get(uniqueID);
+    }
+    public GameObject setGameObject(GameObject obj) {
+        return gameObjects.put(obj.uniqueID, obj);
+    }
+    public GameObject createGameObject(GameObject obj) {
+        Payload payload = new Payload(Handshake.Method.createGameObject, obj);
+        GameObject syncObject = null;
+        try {
+            Communicator.Write(client, payload);
+            Payload responsePayload = blockingQueue.take();
+            syncObject = responsePayload.GetData();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return syncObject;
+    }
     public static Client getInstance() {
         return instance;
     }
@@ -61,7 +81,6 @@ public class Client {
             e.printStackTrace();
         }
     }
-
     //  Connecting to server
     public void Connect() {
         try {
