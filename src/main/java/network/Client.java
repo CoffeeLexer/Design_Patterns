@@ -12,71 +12,27 @@ import java.nio.channels.SocketChannel;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class Client {
+    public static String hostname = "localhost";
+    public static int port = 8080;
+    Thread listener = null;
+    Map<Integer, GameObject> gameObjects = null;
+    BlockingQueue<Payload> blockingQueue;
     private SocketChannel client = null;
     private Map<Handshake.Method, Consumer<Payload>> functions = null;
     private boolean listening = false;
-
-    public void Connect() {
-        try {
-            client = SocketChannel.open(new InetSocketAddress("localhost", 8080));
-            client.configureBlocking(true);
-            functions = new TreeMap<>();
-            Login();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static Client getInstance() {
+        return instance;
     }
-
-    public void On(Handshake.Method invoker, Consumer<Payload> function) throws Exception {
-        if(!listening) functions.put(invoker, function);
-        else throw new Exception("Adding listener after Listen() was invoked!");
-    }
-
-    private void _listen() {
-        System.out.println("Listening");
-        while (true) {
-            try {
-                Payload payload = Communicator.Read(client);
-                if(functions.containsKey(payload.method))
-                    functions.get(payload.method).accept(payload);
-            }
-            catch (Exception e) {
-                if(e.getMessage().equalsIgnoreCase("connection reset")) {
-                    System.out.println(e.getMessage());
-                    return;
-                }
-                e.printStackTrace();
-            }
-        }
-    }
-    Thread listener = null;
-    public void Listen() {
-        listening = true;
-        listener = new Thread(this::_listen);
-        listener.start();
-    }
-    private void Login() {
-        Payload payload = new Payload(Handshake.Method.login, null);
-        try {
-            Communicator.Write(client, payload);
-            client.finishConnect();
-            Communicator.Read(client);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    Map<Integer, GameObject> gameObjects = null;
-
-    private static Client instance = new Client();
+    //  Singletons creation
+    private static final Client instance = new Client();
     private Client() {
         Connect();
+        Login();
         gameObjects = new TreeMap<>();
         blockingQueue = new LinkedBlockingQueue<>();
         try {
@@ -105,31 +61,64 @@ public class Client {
             e.printStackTrace();
         }
     }
-    public void foreach(Consumer<? super GameObject> function) {
-        gameObjects.values().forEach(function);
-    }
-    public static Client getInstance() {
-        return instance;
-    }
-    public int availableID() {
-        for(int i = 0; true; i++)
-            if(!gameObjects.containsKey(i))
-                return i;
-    }
-    BlockingQueue<Payload> blockingQueue;
-    public GameObject addGameObject(GameObject gameObject) {
-        Payload payload = new Payload(Handshake.Method.createGameObject, gameObject);
+
+    //  Connecting to server
+    public void Connect() {
         try {
-            Communicator.Write(client, payload);
-            payload = blockingQueue.take();
-            gameObject = payload.GetData();
+            //  Connect to server
+            client = SocketChannel.open(new InetSocketAddress(hostname, port));
+            client.configureBlocking(true);
+            //  Create map for functions (attention for GET BY INDEX speed)
+            functions = new TreeMap<>();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
+        }
+    }
+    //  Stabilize connection (sometimes without received message server ignores socket's data)
+    private void Login() {
+        Payload payload = new Payload(Handshake.Method.login, null);
+        try {
+            Communicator.Write(client, payload);
+            client.finishConnect();
+            Communicator.Read(client);
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
-        gameObjects.put(gameObject.uniqueID, gameObject);
-        return gameObject;
+    }
+    //  Add function listener for functions coming from server
+    //  Listen() should be last function. Therefore, On() throws exception, if you are adding listener after Client listening
+    public void On(Handshake.Method invoker, Consumer<Payload> function) throws Exception {
+        if(!listening) functions.put(invoker, function);
+        else throw new Exception("Adding listener after Listen() was invoked!");
+    }
+    //  worker threads function for listening for server and invoking functions
+    private void _listen() {
+        System.out.println("Listening");
+        while (true) {
+            try {
+                Payload payload = Communicator.Read(client);
+                if(functions.containsKey(payload.method))
+                    functions.get(payload.method).accept(payload);
+            }
+            catch (Exception e) {
+                if(e.getMessage().equalsIgnoreCase("connection reset")) {
+                    System.out.println(e.getMessage());
+                    return;
+                }
+                e.printStackTrace();
+            }
+        }
+    }
+    //  Launching new thread for listening servers notifications
+    public void Listen() {
+        listening = true;
+        listener = new Thread(this::_listen);
+        listener.start();
+    }
+    //  Invoke function for all game objects
+    public void foreach(Consumer<? super GameObject> function) {
+        gameObjects.values().forEach(function);
     }
     public void update(GameComponent gameComponent) {
         Payload payload = new Payload(Handshake.Method.updateComponent, gameComponent);

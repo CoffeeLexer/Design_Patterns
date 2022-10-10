@@ -171,9 +171,6 @@ public class Server {
             Payload payload2 = new Payload(Handshake.Method.createGameObject, o);
             server.Notify(payload2);
         });
-        server.On(Handshake.Method.linkerUpdate, clientID -> client -> payload -> {
-
-        });
         server.Listen();
     }
 }
