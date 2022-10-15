@@ -60,7 +60,7 @@ public class MainPanel extends JPanel implements ActionListener {
 
     // FOR TESTING
     private static void imitateCollideAfterDelay(GameObject obj) {
-        Timer collideTimer = new Timer(600, new ActionListener()
+        Timer collideTimer = new Timer(1500, new ActionListener()
         {
             public void actionPerformed(ActionEvent ae)
             {

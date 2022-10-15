@@ -8,6 +8,7 @@ import client.controls.ControlInput;
 import client.controls.ControlListener;
 import client.gameObjects.projectiles.Projectile;
 import client.panels.MainPanel;
+import client.panels.StaticPanel;
 
 import java.awt.*;
 import java.awt.image.*;
@@ -19,7 +20,7 @@ import java.awt.geom.Point2D.Float;
 
 import java.util.concurrent.TimeUnit;
 
-public class Tank extends GameObject implements ControlListener {
+public class Tank extends GameObject implements ControlListener, Prototype {
     private float movementSpeed = 5f;
     private float rotationSpeed = 3f;
     private static int tankSize = 60;
@@ -62,6 +63,43 @@ public class Tank extends GameObject implements ControlListener {
     @Override
     public void onMove(Point2D.Float input) {
         movement = input;
+    }
+
+    @Override
+    public void onClone() {
+        Tank clone = this.cloneDeep();
+        MainPanel.addObject(clone);
+        clone.movement.y = -1;
+        clone.movement.x = 0;
+        clone.explode(1000);
+        //System.out.println(System.identityHashCode(clone)); //object hashcodes
+        //System.out.println(System.identityHashCode(this));
+    }
+
+    @Override
+    public Tank cloneShallow() {
+        return this;
+    }
+
+    @Override
+    public Tank cloneDeep() {
+        return new Tank(position.x, position.y, rotation, "images/tank-green.png");
+    }
+
+    public void explode(int delay) {
+        Tank tank = this;
+        Timer timer = new Timer(delay, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                Projectile projectile = new Projectile(position.x + tankSize / 2, position.y + tankSize / 2, 0, "images/tank-projectile.png", "fragmenting");
+                projectile.beforeCollide();
+                MainPanel.deleteObject(tank);
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+        
+
     }
 
     @Override

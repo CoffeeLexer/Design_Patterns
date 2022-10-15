@@ -56,6 +56,12 @@ public class ControlInput implements KeyListener {
         }
     }
 
+    private void invokeClone() {
+        for (ControlListener controlListener : listeners) {
+            controlListener.onClone();
+        }
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -86,6 +92,9 @@ public class ControlInput implements KeyListener {
                 break;
             case 'd':
                 x = 1;
+                break;
+            case 'c':
+                invokeClone();
                 break;
         }
 
