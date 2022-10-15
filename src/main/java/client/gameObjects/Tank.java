@@ -38,6 +38,12 @@ public class Tank extends GameObject implements ControlListener, Prototype {
         this.rotation = angle;
     }
 
+    public Tank(float x, float y, float angle, BufferedImage texture) {
+        super(texture, tankSize, true);
+        setPosition(x, y);
+        this.rotation = angle;
+    }
+
     public Tank listensToInput() {
         ControlInput.addControlListener(this);
         return this;
@@ -67,7 +73,7 @@ public class Tank extends GameObject implements ControlListener, Prototype {
 
     @Override
     public void onClone() {
-        Tank clone = this.cloneDeep();
+        Tank clone = this.cloneShallow();
         MainPanel.addObject(clone);
         clone.movement.y = -1;
         clone.movement.x = 0;
@@ -78,12 +84,18 @@ public class Tank extends GameObject implements ControlListener, Prototype {
 
     @Override
     public Tank cloneShallow() {
-        return this;
+        return new Tank(position.x, position.y, rotation, getTexture());
     }
 
     @Override
     public Tank cloneDeep() {
-        return new Tank(position.x, position.y, rotation, "images/tank-green.png");
+        Point2D.Float pos = new Point2D.Float(position.x, position.y);
+        Point2D.Float rot = new Point2D.Float(rotation, rotation); //workaround for new float
+        ColorModel cm = getTexture().getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster =  getTexture().copyData(null);
+        BufferedImage img = new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+        return new Tank(pos.x, pos.y, rot.x, img);
     }
 
     public void explode(int delay) {

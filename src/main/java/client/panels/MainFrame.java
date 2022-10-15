@@ -23,11 +23,12 @@ public class MainFrame extends JFrame {
         layeredPane.setBounds(0, 0, 1920, 1080);
         MainPanel panel = new MainPanel();
         StaticPanel staticPanel = new StaticPanel(100, 16, 9);
-
+        Wall wall = new Wall("images/wall-blue.jpg", 100);
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 16; j++) {
-                GameObject wall = new Wall("images/wall-blue.jpg", 100);
-                staticPanel.addGameObject(wall, j, i);
+                GameObject clone = wall.cloneShallow();
+                //System.out.println(System.identityHashCode(clone.getTexture()));
+                staticPanel.addGameObject(clone, j, i);
             }
         }
 

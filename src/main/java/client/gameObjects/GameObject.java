@@ -42,8 +42,27 @@ public abstract class GameObject {
         setDimensions(texture.getWidth(), texture.getHeight());
     }
 
+    public GameObject(BufferedImage texture) {
+        setTexture(texture);
+        setDimensions(texture.getWidth(), texture.getHeight());
+    }
+
+    public GameObject(BufferedImage texture, Integer width, Integer height) {
+        setTexture(texture);
+        setDimensions(width, height);
+    }
+
     public GameObject(String imagePath, int size, boolean isWidth) {
         setTexture(imagePath);
+        if (isWidth) {
+            setDimensions(size, (int) ((float) size * texture.getHeight() / texture.getWidth()));
+        } else {
+            setDimensions((int) ((float) size * texture.getWidth() / texture.getHeight()), size);
+        }
+    }
+
+    public GameObject(BufferedImage texture, int size, boolean isWidth) {
+        setTexture(texture);
         if (isWidth) {
             setDimensions(size, (int) ((float) size * texture.getHeight() / texture.getWidth()));
         } else {
@@ -57,6 +76,10 @@ public abstract class GameObject {
         } catch (IOException e) {
             System.out.println("Resource was not found: " + imagePath);
         }
+    }
+
+    private void setTexture(BufferedImage texture) {
+        this.texture = texture;
     }
 
     private void setDimensions(int width, int height) {
