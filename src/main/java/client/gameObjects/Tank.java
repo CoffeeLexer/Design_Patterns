@@ -73,7 +73,7 @@ public class Tank extends GameObject implements ControlListener, Prototype {
 
     @Override
     public void onClone() {
-        Tank clone = this.cloneShallow();
+        Tank clone = this.cloneDeep();
         MainPanel.addObject(clone);
         clone.movement.y = -1;
         clone.movement.x = 0;
