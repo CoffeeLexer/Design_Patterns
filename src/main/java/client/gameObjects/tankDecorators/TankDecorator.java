@@ -21,4 +21,8 @@ public abstract class TankDecorator extends Tank {
   public void decorate(double a, double b) {
     wrappee.decorate(a, b);
   }
+
+  public void decorate(double a, double b, String color) {
+    wrappee.decorate(a, b, color);
+  }
 }
