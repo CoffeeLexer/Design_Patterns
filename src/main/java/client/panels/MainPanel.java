@@ -4,6 +4,10 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import client.gameObjects.*;
+import client.gameObjects.tankDecorators.HealthDecorator;
+import client.gameObjects.tankDecorators.LabelDecorator;
+import client.gameObjects.tankDecorators.ShieldDecorator;
+import client.gameObjects.tankDecorators.TankDecorator;
 
 import java.awt.*;
 import java.awt.image.*;
@@ -23,8 +27,12 @@ public class MainPanel extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(1920, 1080));
         setBounds(0, 0, 1920, 1080); 
         setOpaque(false);
+
         gameObjects = new ArrayList<GameObject>();
-        gameObjects.add(new Tank("images/tank-yellow.png").listensToInput());
+        Tank decoratedTank = new LabelDecorator(new HealthDecorator(new ShieldDecorator(new Tank("images/tank-yellow.png")))).listensToInput();
+        decoratedTank.decorate();
+
+        gameObjects.add(decoratedTank);
         timer.start();
     }
 

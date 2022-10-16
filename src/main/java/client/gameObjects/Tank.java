@@ -7,6 +7,7 @@ import javax.swing.text.Position;
 import client.controls.ControlInput;
 import client.controls.ControlListener;
 import client.gameObjects.projectiles.Projectile;
+import client.gameObjects.tankDecorators.ITankDecorator;
 import client.panels.MainPanel;
 
 import java.awt.*;
@@ -19,7 +20,9 @@ import java.awt.geom.Point2D.Float;
 
 import java.util.concurrent.TimeUnit;
 
-public class Tank extends GameObject implements ControlListener {
+public class Tank extends GameObject implements ControlListener, ITankDecorator {
+    private double maxHealth = 3;
+    private double currentHealth = 3;
     private float movementSpeed = 5f;
     private float rotationSpeed = 3f;
     private static int tankSize = 60;
@@ -31,6 +34,12 @@ public class Tank extends GameObject implements ControlListener {
         this(100, 100, 0, imagePath);
     }
 
+    public Tank(Tank tank) {
+        super(tank.imagePath, tankSize, true);
+        setPosition(tank.getPosition().x, tank.getPosition().y);
+        this.rotation = tank.getAngle();
+    }
+
     public Tank(float x, float y, float angle, String imagePath) {
         super(imagePath, tankSize, true);
         setPosition(x, y);
@@ -40,6 +49,17 @@ public class Tank extends GameObject implements ControlListener {
     public Tank listensToInput() {
         ControlInput.addControlListener(this);
         return this;
+    }
+
+    // amount can be positive or negative.
+    // * positive when adding shield
+    // * negative when taking damage
+    public void updateHealth(double amount) {
+        this.currentHealth = this.currentHealth + amount;
+    }
+
+    public double getHealth() {
+        return this.currentHealth;
     }
 
     public void drive(float direction) {
@@ -91,5 +111,10 @@ public class Tank extends GameObject implements ControlListener {
         }
 
         MainPanel.addObject(new Projectile(xCoords, yCoords, this.rotation, projectileImage, projectileAlgorithm));
+    }
+
+    @Override
+    public void decorate() {
+        System.out.println("decorating!!!!");
     }
 }

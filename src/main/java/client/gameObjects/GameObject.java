@@ -21,6 +21,7 @@ public abstract class GameObject {
     public Point2D.Float position;
     public int layer;
     public float rotation; // In degrees
+    public String imagePath;
 
     protected int width;
     protected int height;
@@ -52,6 +53,7 @@ public abstract class GameObject {
     }
 
     private void setTexture(String imagePath) {
+        this.imagePath = imagePath;
         try {
             texture = ImageIO.read(new File(imagePath));
         } catch (IOException e) {
