@@ -24,7 +24,7 @@ public class MainPanel extends JPanel implements ActionListener {
         setBounds(0, 0, 1920, 1080); 
         setOpaque(false);
         gameObjects = new ArrayList<GameObject>();
-        gameObjects.add(new Tank("images/tank-blue.png").listensToInput());
+        gameObjects.add(new Tank("images/tank-yellow.png").listensToInput());
         timer.start();
     }
 

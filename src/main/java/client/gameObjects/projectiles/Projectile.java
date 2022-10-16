@@ -17,7 +17,7 @@ public class Projectile extends GameObject {
       this.algorithm = new FragmentingAlgorithm();
     }
 
-    this.rotation = angle - 90; // image is horizontal so rotate it by 90 degrees
+    this.rotation = angle;
     setPosition(x, y);
 
     this.flyingXSpeed = movementSpeed * (float) Math.sin(Math.toRadians(angle % 360));
