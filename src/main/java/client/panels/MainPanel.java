@@ -29,10 +29,11 @@ public class MainPanel extends JPanel implements ActionListener {
         setOpaque(false);
 
         gameObjects = new ArrayList<GameObject>();
-        Tank decoratedTank = new LabelDecorator(new HealthDecorator(new ShieldDecorator(new Tank("images/tank-yellow.png")))).listensToInput();
-        decoratedTank.decorate();
+        Tank tank = new LabelDecorator(new HealthDecorator(new ShieldDecorator(new Tank("images/tank-yellow.png")))).listensToInput();
+        tank.decorate(tank.getCurrentHP(), tank.getMaxHP());
+        tank.decorate("Test tank name");
 
-        gameObjects.add(decoratedTank);
+        gameObjects.add(tank);
         timer.start();
     }
 

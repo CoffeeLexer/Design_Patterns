@@ -6,4 +6,5 @@ public interface ControlListener {
 
     public void onMove(Point2D.Float input);
     public void onFire(char keyName);
+    public void onShieldActivated();
 }

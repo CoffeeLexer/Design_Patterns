@@ -21,8 +21,9 @@ import java.awt.geom.Point2D.Float;
 import java.util.concurrent.TimeUnit;
 
 public class Tank extends GameObject implements ControlListener, ITankDecorator {
-    private double maxHealth = 3;
-    private double currentHealth = 3;
+    private double maxHP = 3;
+    private double currentHP = 2.5;
+    private double shieldAmount = 0;
     private float movementSpeed = 5f;
     private float rotationSpeed = 3f;
     private static int tankSize = 60;
@@ -51,15 +52,20 @@ public class Tank extends GameObject implements ControlListener, ITankDecorator 
         return this;
     }
 
-    // amount can be positive or negative.
-    // * positive when adding shield
-    // * negative when taking damage
-    public void updateHealth(double amount) {
-        this.currentHealth = this.currentHealth + amount;
+    public double getShieldAmount() {
+        return this.shieldAmount;
     }
 
-    public double getHealth() {
-        return this.currentHealth;
+    public double getMaxHP() {
+        return this.maxHP;
+    }
+
+    public double getCurrentHP() {
+        return this.currentHP;
+    }
+
+    public void setShield(double amount) {
+        this.shieldAmount = amount;
     }
 
     public void drive(float direction) {
@@ -114,7 +120,19 @@ public class Tank extends GameObject implements ControlListener, ITankDecorator 
     }
 
     @Override
-    public void decorate() {
-        System.out.println("decorating!!!!");
+    public void onShieldActivated() {
+        // for decoration testing create a toggle functionality
+        if (this.shieldAmount > 0) {
+            this.shieldAmount = 0;
+        } else {
+            this.shieldAmount = 1;
+        }
+
+        // this calls decorators that override this function from TankDecorator abstract class
+        decorate(this.shieldAmount);
     }
+
+    @Override public void decorate(String text) {}
+    @Override public void decorate(double amount) {}
+    @Override public void decorate(double a, double b) {}
 }

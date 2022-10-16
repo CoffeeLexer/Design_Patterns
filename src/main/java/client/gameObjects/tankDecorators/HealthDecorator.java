@@ -11,9 +11,9 @@ public class HealthDecorator extends TankDecorator {
     System.out.println("display health " + current + " / " + max);
   }
 
-  @Override public void decorate()
+  @Override
+  public void decorate(double a, double b)
   {
-    wrappee.decorate();
-    displayHealth(2.5, 3);
+    displayHealth(a, b);
   }
 }

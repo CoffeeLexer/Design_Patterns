@@ -50,6 +50,12 @@ public class ControlInput implements KeyListener {
         System.out.println("ability");
     }
 
+    private void invokeShield() {
+        for (ControlListener controlListener : listeners) {
+            controlListener.onShieldActivated();
+        }
+    }
+
     private void invokeFire(char keyName) {
         for (ControlListener controlListener : listeners) {
             controlListener.onFire(keyName);
@@ -74,6 +80,9 @@ public class ControlInput implements KeyListener {
             case 'n':
             case 'm':
                 invokeFire(e.getKeyChar());
+                break;
+            case 'p':
+                invokeShield();
                 break;
             case 'w':
                 y = -1;

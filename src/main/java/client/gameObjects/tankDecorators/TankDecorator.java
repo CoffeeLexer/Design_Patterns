@@ -10,7 +10,15 @@ public abstract class TankDecorator extends Tank {
     this.wrappee = decoratedTank;
   }
 
-  public void decorate() {
-    wrappee.decorate();
+  public void decorate(String text) {
+    wrappee.decorate(text);
+  }
+
+  public void decorate(double amount) {
+    wrappee.decorate(amount);
+  }
+
+  public void decorate(double a, double b) {
+    wrappee.decorate(a, b);
   }
 }

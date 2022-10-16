@@ -7,18 +7,21 @@ public class ShieldDecorator extends TankDecorator {
       super(decoratedTank);
   }
 
-  // For example if current HP is 3 but you have a shield of 1
-  // and you get hit for 1 damage, your HP should stay at 3
-  // because total HP = tank HP + shield amount
-  // * if amount is 0, then it means the shield should be disabled
   public void setShield(double amount) {
-    System.out.println("setting shield " + amount);
-    wrappee.updateHealth(amount);
+    System.out.println("setting shield to " + amount);
+    System.out.println("shield before " + wrappee.getShieldAmount());
+    wrappee.setShield(amount);
+    System.out.println("shield after " + wrappee.getShieldAmount());
   }
 
-  @Override public void decorate()
+  public void renderShield() {
+    System.out.println("render shield");
+  }
+
+  @Override
+  public void decorate(double amount)
   {
-    wrappee.decorate();
-    setShield(1);
+    setShield(amount);
+    renderShield();
   }
 }

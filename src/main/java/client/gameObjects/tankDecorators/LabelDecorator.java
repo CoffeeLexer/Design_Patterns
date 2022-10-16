@@ -11,9 +11,9 @@ public class LabelDecorator extends TankDecorator {
     System.out.println("display label " + text);
   }
 
-  @Override public void decorate()
+  @Override
+  public void decorate(String text)
   {
-    wrappee.decorate();
-    displayLabel("test1");
+    displayLabel(text);
   }
 }
