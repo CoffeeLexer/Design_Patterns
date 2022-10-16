@@ -121,7 +121,7 @@ public class Tank extends GameObject implements ControlListener, ITankDecorator 
 
     @Override
     public void onShieldActivated() {
-        // for decoration testing create a toggle functionality
+        // create shield toggle functionality for Decoration testing
         if (this.shieldAmount > 0) {
             this.shieldAmount = 0;
             decorate(this.currentHP, this.maxHP);
@@ -137,5 +137,5 @@ public class Tank extends GameObject implements ControlListener, ITankDecorator 
     @Override public void decorate(String text) {}
     @Override public void decorate(double amount) {}
     @Override public void decorate(double a, double b) {}
-    @Override public void decorate(double a, double b, String color) {}
+    @Override public void decorate(double a, double b, String modifier) {}
 }

@@ -22,8 +22,8 @@ public class HealthDecorator extends TankDecorator {
   }
 
   @Override
-  public void decorate(double a, double b, String color)
+  public void decorate(double a, double b, String modifier)
   {
-    displayHealth(a, b, color);
+    displayHealth(a, b, modifier);
   }
 }
