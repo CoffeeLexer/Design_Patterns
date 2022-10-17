@@ -4,31 +4,17 @@ import java.io.Serializable;
 
 public abstract class Handshake implements Serializable {
     public enum Method {
-        //  Reserved for server-client communication
-        empty,  // Default method property
-        login,  // Client login method
-
-        //  Can be modified
-        echo,
-        ping,
-        shutdown,
-        message,
-        notify,
-        observer,
-        test,
-
-        createComponent,
-        setComponent,
-        destroyComponent,
-        updateComponent,
-
-        createGameObject,
-        createGameObjectConfirm,
+        empty,
+        login,
+        info,
+        keyPressed,
+        keyReleased,
+        keyTyped,
+        joinGame,
         setGameObject,
-        destroyGameObject,
-        updateGameObject,
-
-        linkerUpdate,
+        syncEngine,
+        removeGameObject,
+        tagPlayer,
     }
     public Method method = Method.empty;
 }

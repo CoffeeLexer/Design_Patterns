@@ -1,7 +1,6 @@
 package client.components;
 
-import client.Assets;
-import client.gameObjects.GameComponent;
+import client.utilities.Assets;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -13,6 +12,9 @@ public class Renderer extends GameComponent {
     private Integer height;
     private String imagePath;
     private double boxSize;
+    public void setTexture(String newTexture) {
+        imagePath = newTexture;
+    }
 
     public Renderer(String imagePath, Integer width, Integer height) {
         this.imagePath = imagePath;
@@ -58,7 +60,7 @@ public class Renderer extends GameComponent {
 
         return newImageFromBuffer;
     }
-    public void renderOn(Graphics2D g2d) {
+    public void render(Graphics2D g2d) {
         BufferedImage image = getImage();
         Point2D.Float position = ((Transform)this.gameObject.getComponent(Transform.Key())).position;
         g2d.drawImage(image, null, (int) Math.round(position.getX()), (int) Math.round(position.getY()));
@@ -70,5 +72,10 @@ public class Renderer extends GameComponent {
     }
     public static String Key() {
         return "Renderer";
+    }
+
+    @Override
+    public Renderer clone() {
+        return new Renderer(this.imagePath, this.width, this.height);
     }
 }

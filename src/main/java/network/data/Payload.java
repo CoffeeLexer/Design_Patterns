@@ -11,7 +11,7 @@ public class Payload extends Handshake implements Serializable {
     public Payload(Method m) {
         method = m;
     }
-    public <T extends Serializable> Payload(Method m, T data) {
+    public Payload(Method m, Object data) {
         this(m);
         object = data;
     }
