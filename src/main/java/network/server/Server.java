@@ -4,6 +4,8 @@ import network.client.ClientWorker;
 import network.data.Connection;
 import network.data.Handshake;
 import network.data.Payload;
+import network.factories.LevelFactory;
+import network.factories.CityFactory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -20,34 +22,35 @@ public class Server {
     private ReentrantLock clientLock = null;
     private List<Connection> connections = null;
 
+    private LevelFactory levelFactory;
+
     private Server() {
-        try
-        {
+        try {
             connections = new ArrayList<>();
             workers = new ThreadGroup("ClientListeners");
             serverSocket = new ServerSocket(port);
             clientLock = new ReentrantLock();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
     private static final Server instance = new Server();
+
     public static Server GetInstance() {
         return instance;
     }
+
     public void CloseConnection(Connection connection) {
         clientLock.lock();
         connections.remove(connection);
         clientLock.unlock();
     }
+
     public void Listen() {
-        try
-        {
+        try {
             boolean active = true;
-            while(active)
-            {
+            while (active) {
                 Socket clientSocket = serverSocket.accept();
                 clientLock.lock();
 
@@ -58,11 +61,10 @@ public class Server {
                 connection.input = new ObjectInputStream(clientSocket.getInputStream());
                 connection.lock = new ReentrantLock();
 
-                Payload payload = (Payload)connection.input.readObject();
-                if(payload.method == Handshake.Method.login) {
+                Payload payload = (Payload) connection.input.readObject();
+                if (payload.method == Handshake.Method.login) {
                     connection.udpPort = payload.GetData();
-                }
-                else {
+                } else {
                     System.out.println("First Invoking must be Method login!");
                 }
                 connections.add(connection);
@@ -71,18 +73,18 @@ public class Server {
 
                 clientLock.unlock();
             }
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
+
     public void Info() {
         System.out.printf("Current client count: %s\n", workers.activeCount());
         SEngine.GetInstance().Info();
     }
+
     public void NotifyTCP(Payload payload) {
         clientLock.lock();
         var i = connections.iterator();
@@ -91,19 +93,17 @@ public class Server {
             var connection = i.next();
 
             connection.lock.lock();
-            try
-            {
+            try {
                 connection.output.writeObject(payload);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
-            }
-            finally {
+            } finally {
                 connection.lock.unlock();
             }
         }
         clientLock.unlock();
     }
+
     public void NotifyUDP(Payload payload) {
         clientLock.lock();
         var i = connections.iterator();
@@ -114,7 +114,14 @@ public class Server {
         }
         clientLock.unlock();
     }
+
+    private void initializeGame() {
+        levelFactory = new CityFactory(32, 18, 60);
+        levelFactory.buildLevel();
+    }
+
     public static void main(String[] args) {
+        Server.GetInstance().initializeGame();
         Server.GetInstance().Listen();
     }
 }
