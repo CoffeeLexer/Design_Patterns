@@ -2,7 +2,7 @@ package network.server;
 
 import client.components.ConstantRotation;
 import client.components.ConstantSpeed;
-import client.components.Weapon;
+import client.components.weapon.Weapon;
 import client.gameObjects.Tank;
 
 import java.awt.event.KeyEvent;

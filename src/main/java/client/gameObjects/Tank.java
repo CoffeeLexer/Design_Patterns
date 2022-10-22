@@ -1,6 +1,7 @@
 package client.gameObjects;
 
 import client.components.*;
+import client.components.weapon.Weapon;
 
 public class Tank extends GameObject {
     public Tank(String imagePath) {
