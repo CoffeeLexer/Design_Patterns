@@ -21,4 +21,8 @@ public class OnDestroy extends GameComponent {
     public static String Key() {
         return "OnDestroy";
     }
+    @Override
+    public OnDestroy clone() {
+        return new OnDestroy(function);
+    }
 }

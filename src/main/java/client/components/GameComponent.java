@@ -11,4 +11,6 @@ public abstract class GameComponent implements Serializable, Cloneable {
     public void update(float delta) {}
     public void render(Graphics2D g2d) {}
     public void destroy() {}
+    @Override
+    public abstract GameComponent clone();
 }

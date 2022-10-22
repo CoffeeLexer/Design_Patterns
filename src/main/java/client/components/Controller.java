@@ -12,5 +12,8 @@ public class Controller extends GameComponent  {
     public static String Key() {
         return "Controller";
     }
-
+    @Override
+    public Controller clone() {
+        return new Controller();
+    }
 }

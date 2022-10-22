@@ -24,4 +24,8 @@ public class Weapon extends GameComponent {
                         "images/tank-projectile.png")
                         .setAlgorithm(new FragmentingAlgorithm(30, TimeUnit.MILLISECONDS, 500)));
     }
+    @Override
+    public Weapon clone() {
+        return new Weapon();
+    }
 }

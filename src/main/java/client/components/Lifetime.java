@@ -11,6 +11,9 @@ public class Lifetime extends GameComponent{
     public Lifetime(TimeUnit unit, long duration) {
         end = System.currentTimeMillis() + unit.toMillis(duration);
     }
+    public Lifetime(long end) {
+        this.end = end;
+    }
     @Override
     public void update(float delta) {
         if(System.currentTimeMillis() > end) {
@@ -24,5 +27,9 @@ public class Lifetime extends GameComponent{
     }
     public static String Key() {
         return "Lifetime";
+    }
+    @Override
+    public Lifetime clone() {
+        return new Lifetime(end);
     }
 }

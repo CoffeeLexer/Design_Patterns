@@ -1,6 +1,7 @@
 package client.gameObjects;
 
 import client.components.GameComponent;
+import client.components.Prototype;
 import client.components.Renderer;
 import client.components.Transform;
 
@@ -9,7 +10,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class GameObject implements Serializable {
+public class GameObject implements Serializable, Prototype {
     public boolean newState = true;
     public int uniqueID = -1;
     Map<String, GameComponent> components;
@@ -51,6 +52,24 @@ public class GameObject implements Serializable {
         obj.addComponent(((Renderer) this.getComponent(Renderer.Key())).clone());
         obj.tag = this.tag;
         obj.uniqueID = this.uniqueID;
+        return obj;
+    }
+    @Override
+    public GameObject cloneShallow() {
+        GameObject obj = new GameObject();
+        obj.components = this.components;
+        obj.tag = this.tag;
+        return obj;
+    }
+    @Override
+    public GameObject cloneDeep() {
+        GameObject obj = new GameObject();
+        for (Map.Entry<String, GameComponent> entry : components.entrySet()) {
+            GameComponent gc = entry.getValue();
+            obj.addComponent(gc.clone());
+        }
+        System.out.println("clone");
+        obj.tag = this.tag;
         return obj;
     }
 }

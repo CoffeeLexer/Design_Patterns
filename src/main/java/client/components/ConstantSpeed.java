@@ -17,4 +17,8 @@ public class ConstantSpeed extends GameComponent{
         Transform transform = gameObject.getComponent(Transform.Key());
         transform.moveForward(speed * delta);
     }
+    @Override
+    public ConstantSpeed clone() {
+        return new ConstantSpeed(speed);
+    }
 }

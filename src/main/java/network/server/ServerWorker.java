@@ -62,6 +62,9 @@ public class ServerWorker implements Runnable {
                             case KeyEvent.VK_SPACE -> {
                                 KeyboardEvents.Shoot(tank);
                             }
+                            case KeyEvent.VK_C -> {
+                                KeyboardEvents.Clone(tank);
+                            }
                         }
                     }
                     case joinGame -> {

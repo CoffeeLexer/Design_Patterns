@@ -17,4 +17,8 @@ public class ConstantRotation extends GameComponent {
         Transform transform = gameObject.getComponent(Transform.Key());
         transform.rotate(speed * delta);
     }
+    @Override
+    public ConstantRotation clone() {
+        return new ConstantRotation(speed);
+    }
 }

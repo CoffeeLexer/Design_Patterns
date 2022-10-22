@@ -20,4 +20,8 @@ public abstract class ProjectileAlgorithm extends GameComponent {
     Transform transform = gameObject.getComponent(Transform.Key());
     fly(transform, delta);
   }
+  @Override
+  public ProjectileAlgorithm clone() {
+    return null;
+  }
 }
