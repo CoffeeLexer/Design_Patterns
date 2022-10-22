@@ -1,119 +1,56 @@
 package client.gameObjects;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-
-import client.GameEngine;
+import client.components.GameComponent;
+import client.components.Renderer;
+import client.components.Transform;
 
 import java.awt.*;
-import java.awt.image.*;
-import java.io.File;
-import java.io.IOException;
-import java.nio.Buffer;
-import java.util.Optional;
-import java.awt.event.*;
-import java.awt.geom.*;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.TreeMap;
 
-public abstract class GameObject {
+public class GameObject implements Serializable {
+    public boolean newState = true;
+    public int uniqueID = -1;
+    Map<String, GameComponent> components;
+    public Tag tag = Tag.Undefined;
 
-    public boolean enabled = true;
-
-    public Point2D.Float position;
-    public int layer;
-    public float rotation; // In degrees
-
-    protected int width;
-    protected int height;
-
-    protected float boxSize;
-
-    private BufferedImage texture;
-
-    protected GameObject() {
+    public GameObject() {
+        components = new TreeMap<>();
     }
 
-    public GameObject(String imagePath, Integer width, Integer height) {
-        setTexture(imagePath);
-        setDimensions(width, height);
+    public void update(float delta) {
+        components.values().forEach(e -> e.update(delta));
     }
 
-    public GameObject(String imagePath) {
-        setTexture(imagePath);
-        setDimensions(texture.getWidth(), texture.getHeight());
+    public void destroy() {
+        components.values().forEach(GameComponent::destroy);
     }
 
-    public GameObject(String imagePath, int size, boolean isWidth) {
-        setTexture(imagePath);
-        if (isWidth) {
-            setDimensions(size, (int) ((float) size * texture.getHeight() / texture.getWidth()));
-        } else {
-            setDimensions((int) ((float) size * texture.getWidth() / texture.getHeight()), size);
-        }
+    public void render(Graphics2D g2d) {
+        components.values().forEach(e -> e.render(g2d));
     }
 
-    private void setTexture(String imagePath) {
-        try {
-            texture = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {
-            System.out.println("Resource was not found: " + imagePath);
-        }
+    public <T extends GameComponent> void addComponent(T component) {
+        component.gameObject = this;
+        if (!components.containsKey(component.key()))
+            components.put(component.key(), component);
     }
 
-    private void setDimensions(int width, int height) {
-        this.height = height;
-        this.width = width;
-        boxSize = (int) Math.round(Point2D.distance(0, 0, width, height));
+    public <T extends GameComponent> void removeComponent(String key) {
+        components.remove(key);
     }
 
-    public GameObject setPosition(float x, float y) {
-        this.position = new Point2D.Float(x, y);
-        return this;
+    public <T extends GameComponent> T getComponent(String key) {
+        return (T) components.get(key);
     }
 
-    public BufferedImage getTexture() {
-        return texture;
+    public GameObject ClientParse() {
+        GameObject obj = new GameObject();
+        obj.addComponent(((Transform) this.getComponent(Transform.Key())).clone());
+        obj.addComponent(((Renderer) this.getComponent(Renderer.Key())).clone());
+        obj.tag = this.tag;
+        obj.uniqueID = this.uniqueID;
+        return obj;
     }
-
-    public Point2D.Float getPosition() {
-        if (position == null) {
-            position = new Point2D.Float(0, 0);
-        }
-        return new Point2D.Float((float) position.getX(), (float) position.getY());
-    }
-
-    @Deprecated
-    public Point2D.Float getUpperLeftCorner() {
-        if (position == null) {
-            position = new Point2D.Float(0, 0);
-        }
-        return new Point2D.Float((float) position.getX() + (boxSize - width) / 2,
-                (float) position.getY() + (boxSize - height) / 2);
-    }
-
-    public float getAngle() {
-        return rotation;
-    }
-
-    public void renderOn(Graphics2D g2d) {
-        g2d.drawImage(getImage(), null, (int) (position.x - (boxSize - width) / 2),
-                (int) (position.y - (boxSize - height) / 2));
-    }
-
-    public BufferedImage getImage() {
-        BufferedImage newImageFromBuffer = new BufferedImage((int) Math.ceil(boxSize), (int) Math.ceil(boxSize),
-                BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics2D = newImageFromBuffer.createGraphics();
-
-        AffineTransform at = new AffineTransform();
-        at.setToRotation(Math.toRadians(rotation), boxSize / 2, boxSize / 2);
-        at.translate((boxSize - width) / 2, (boxSize - height) / 2);
-        graphics2D.setTransform(at);
-        graphics2D.drawImage(texture, 0, 0, width, height, null);
-        graphics2D.dispose();
-
-        return newImageFromBuffer;
-    }
-
-    public void update() {}
-    public void beforeCollide() {}
 }

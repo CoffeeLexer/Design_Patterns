@@ -1,20 +1,21 @@
 package client.gameObjects;
 
-import java.awt.*;
-import java.awt.image.*;
+import client.components.Renderer;
+import client.components.Transform;
 
-public class Wall extends GameObject {
+import java.io.Serializable;
 
-    public Wall(String imagePath, int width) {
-        super(imagePath, width, width);
-        boxSize = width;
+public class Wall extends GameObject implements Serializable {
+    
+    public Wall(String imagePath, float x, float y) {
+        addComponent(new Transform().setPosition(x, y));
+        addComponent(new Renderer(imagePath, 100, 100));
+        tag = Tag.Static;
     }
 
-    public void renderOn(Graphics2D g2d) {
-        g2d.drawImage(getImage(), null, (int) position.x,(int) position.y);
-    }
-
-    public BufferedImage getImage() {
-        return getTexture();
+    public Wall(String imagePath) {
+        addComponent(new Transform().setPosition(0, 0));
+        addComponent(new Renderer(imagePath, 100, 100));
+        tag = Tag.Static;
     }
 }
