@@ -20,7 +20,9 @@ public class UDPReceiver {
                 socket = new DatagramSocket(port);
                 break;
             } catch (SocketException e) {
-                if(e.getMessage().equals("Address already in use"))
+                System.out.println(e.getMessage());
+                if(e.getMessage().equals("Address already in use")
+                    || e.getMessage().equals("Address already in use: bind"))
                     continue;
                 throw new RuntimeException(e);
             }
