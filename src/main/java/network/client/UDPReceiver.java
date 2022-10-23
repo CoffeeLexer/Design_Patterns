@@ -44,6 +44,10 @@ public class UDPReceiver {
                 size |= (data[3-i] & 0xff) << (i << 3);
             }
 
+            if (size < 0) {
+                return null;
+            }
+
             byte[] buffer = new byte[size];
             packet = new DatagramPacket(buffer, buffer.length);
             socket.receive(packet);

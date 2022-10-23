@@ -1,11 +1,10 @@
 package client.components.weapon;
-
 import java.util.concurrent.TimeUnit;
-
 import client.components.GameComponent;
 import client.components.Transform;
 import client.gameObjects.Projectile;
 import network.server.SEngine;
+import java.awt.event.KeyEvent;
 
 public class Weapon extends GameComponent {
     int parentSize;
@@ -23,16 +22,30 @@ public class Weapon extends GameComponent {
         return "Weapon";
     }
 
-    public void shoot() {
+    public void shoot(int keyCode) {
         Transform transform = gameObject.getComponent(Transform.Key());
 
         // get the center coordinates of the parent object
         float xCoords = transform.position.x + this.parentSize / 2;
-        float yCoords = transform.position.y + this.parentSize / 2;
+        float yCoords = transform.position.y + this.parentSize / 4;
 
-        SEngine.GetInstance()
-                .Add(new Projectile(xCoords, yCoords, transform.rotation,
-                        "images/tank-projectile.png")
-                        .setAlgorithm(new ShotgunAlgorithm(20, TimeUnit.MILLISECONDS, 500)));
+        Projectile projectile = new Projectile(xCoords, yCoords, transform.rotation, "images/tank-projectile.png");
+
+        switch (keyCode) {
+            case KeyEvent.VK_N -> {
+                projectile.setAlgorithm(new StraightFlyAlgorithm(30, TimeUnit.MILLISECONDS, 400));
+            }
+            case KeyEvent.VK_M -> {
+                projectile.setAlgorithm(new FragmentingAlgorithm(30, TimeUnit.MILLISECONDS, 400));
+            }
+            case KeyEvent.VK_J -> {
+                projectile.setAlgorithm(new ShotgunAlgorithm(20, TimeUnit.MILLISECONDS, 400));
+            }
+            case KeyEvent.VK_K -> {
+                projectile.setAlgorithm(new HoverAlgorithm(10, TimeUnit.MILLISECONDS, 400));
+            }
+        }
+
+        SEngine.GetInstance().Add(projectile);
     }
 }

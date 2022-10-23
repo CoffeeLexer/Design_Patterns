@@ -1,14 +1,10 @@
 package client.components.weapon;
-
-import java.awt.geom.*;
 import java.util.concurrent.TimeUnit;
-
 import client.components.Transform;
 import client.gameObjects.Projectile;
 import network.server.SEngine;
 
 public class FragmentingAlgorithm extends ProjectileAlgorithm {
-
   private long end;
   private float speed;
 

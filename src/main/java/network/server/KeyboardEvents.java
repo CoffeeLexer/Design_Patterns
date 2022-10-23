@@ -32,8 +32,8 @@ public class KeyboardEvents {
         if(keysPressed.contains(KeyEvent.VK_DOWN)) speed -= Constants.drivingSpeed;
         cs.speed = Math.min(Math.max(speed, -Constants.drivingSpeed), Constants.drivingSpeed);
     }
-    public static void Shoot(Tank tank) {
+    public static void Shoot(Tank tank, int keyCode) {
         Weapon weapon = tank.getComponent(Weapon.Key());
-        weapon.shoot();
+        weapon.shoot(keyCode);
     }
 }

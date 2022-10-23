@@ -1,14 +1,9 @@
 package client.components.weapon;
-
-import java.awt.geom.*;
-import java.awt.geom.Point2D.Float;
-
 import client.components.GameComponent;
 import client.components.Transform;
 import client.gameObjects.Projectile;
 
 public abstract class ProjectileAlgorithm extends GameComponent {
-
   public abstract void fly(Transform transform, float delta);
 
   public void setProjectile(Projectile projectile) {

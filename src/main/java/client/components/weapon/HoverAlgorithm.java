@@ -4,7 +4,7 @@ import client.components.Transform;
 import client.gameObjects.Projectile;
 import network.server.SEngine;
 
-public class ShotgunAlgorithm extends ProjectileAlgorithm {
+public class HoverAlgorithm extends ProjectileAlgorithm {
   private long duration;
   private float speed;
 
@@ -17,7 +17,7 @@ public class ShotgunAlgorithm extends ProjectileAlgorithm {
             .setAlgorithm(new StraightFlyAlgorithm(speed, TimeUnit.MILLISECONDS, duration)));
   }
 
-  public ShotgunAlgorithm(float speed, TimeUnit unit, long duration) {
+  public HoverAlgorithm(float speed, TimeUnit unit, long duration) {
     this.duration = duration;
     this.speed = speed;
   }
