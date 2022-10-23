@@ -33,16 +33,16 @@ public class Weapon extends GameComponent {
 
         switch (keyCode) {
             case KeyEvent.VK_N -> {
-                projectile.setAlgorithm(new StraightFlyAlgorithm(30, TimeUnit.MILLISECONDS, 400));
+                projectile.setAlgorithm(new StraightFlyAlgorithm(30, TimeUnit.MILLISECONDS, 300));
             }
             case KeyEvent.VK_M -> {
-                projectile.setAlgorithm(new FragmentingAlgorithm(30, TimeUnit.MILLISECONDS, 400));
+                projectile.setAlgorithm(new FragmentingAlgorithm(30, TimeUnit.MILLISECONDS, 300));
             }
             case KeyEvent.VK_J -> {
-                projectile.setAlgorithm(new ShotgunAlgorithm(20, TimeUnit.MILLISECONDS, 400));
+                projectile.setAlgorithm(new ShotgunAlgorithm(20, TimeUnit.MILLISECONDS, 300));
             }
             case KeyEvent.VK_K -> {
-                projectile.setAlgorithm(new HoverAlgorithm(10, TimeUnit.MILLISECONDS, 400));
+                projectile.setAlgorithm(new HoverAlgorithm(15, TimeUnit.MILLISECONDS, 300));
             }
         }
 

@@ -10,8 +10,8 @@ import java.util.Set;
 
 public class KeyboardEvents {
     public static class Constants {
-        public static final float drivingSpeed = 1.75f;
-        public static final float rotationSpeed = 1.0f;
+        public static final float drivingSpeed = 3f;
+        public static final float rotationSpeed = 2.25f;
     }
 
     public static void Rotate(Tank tank, Set<Integer> keysPressed) {

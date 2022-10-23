@@ -1,34 +1,38 @@
 package client.components.weapon;
 import java.util.concurrent.TimeUnit;
 import client.components.Transform;
-import client.gameObjects.Projectile;
 import network.server.SEngine;
 
 public class HoverAlgorithm extends ProjectileAlgorithm {
-  private long duration;
-  private float speed;
+  private long firstFlyDuration;
+  private long rotateDuration;
+  private long secondFlyDuration;
+  private float flySpeed;
 
-  public void createShell(float rotation) {
-    String shellImage = "images/shell.png";
-    Transform transform = gameObject.getComponent(Transform.Key());
-
-    SEngine.GetInstance()
-        .Add(new Projectile(transform.position.x, transform.position.y, rotation, shellImage)
-            .setAlgorithm(new StraightFlyAlgorithm(speed, TimeUnit.MILLISECONDS, duration)));
-  }
+  private int rotationSpeed = 5;
+  private int rotateDurationInMs = 1450;
 
   public HoverAlgorithm(float speed, TimeUnit unit, long duration) {
-    this.duration = duration;
-    this.speed = speed;
+    this.flySpeed = speed;
+
+    long currentTime = System.currentTimeMillis();
+    this.firstFlyDuration = currentTime + unit.toMillis(duration);
+    this.rotateDuration = this.firstFlyDuration + unit.toMillis(rotateDurationInMs);
+    this.secondFlyDuration = this.rotateDuration + unit.toMillis(duration);
   }
 
   @Override
   public void fly(Transform transform, float delta) {
-    SEngine.GetInstance().Destroy(gameObject);
-    createShell(transform.rotation);
-    createShell(transform.rotation - 8);
-    createShell(transform.rotation + 8);
-    return;
+    long currentTime = System.currentTimeMillis();
+    if (currentTime <= firstFlyDuration) {
+      transform.moveForward(flySpeed * delta);
+    } else if (currentTime <= rotateDuration) {
+      transform.rotate(rotationSpeed * delta);
+    } else if (currentTime <= secondFlyDuration) {
+      transform.moveForward((flySpeed * 2) * delta);
+    } else {
+      SEngine.GetInstance().Destroy(gameObject);
+    }
   }
 
   @Override
