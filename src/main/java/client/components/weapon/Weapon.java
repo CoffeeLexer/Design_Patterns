@@ -8,6 +8,12 @@ import client.gameObjects.Projectile;
 import network.server.SEngine;
 
 public class Weapon extends GameComponent {
+    int parentSize;
+
+    public Weapon(int size) {
+        this.parentSize = size;
+    }
+
     @Override
     public String key() {
         return Weapon.Key();
@@ -19,9 +25,14 @@ public class Weapon extends GameComponent {
 
     public void shoot() {
         Transform transform = gameObject.getComponent(Transform.Key());
+
+        // get the center coordinates of the parent object
+        float xCoords = transform.position.x + this.parentSize / 2;
+        float yCoords = transform.position.y + this.parentSize / 2;
+
         SEngine.GetInstance()
-                .Add(new Projectile(transform.position.x, transform.position.y, transform.rotation,
+                .Add(new Projectile(xCoords, yCoords, transform.rotation,
                         "images/tank-projectile.png")
-                        .setAlgorithm(new FragmentingAlgorithm(30, TimeUnit.MILLISECONDS, 500)));
+                        .setAlgorithm(new ShotgunAlgorithm(20, TimeUnit.MILLISECONDS, 500)));
     }
 }
