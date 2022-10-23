@@ -24,33 +24,34 @@ public class Tank extends GameObject implements ControlListener, ITankDecorator 
     private double maxHP = 3;
     private double currentHP = 2.5;
     private double shieldAmount = 0;
-    private float movementSpeed = 5f;
+    public float movementSpeed = 5f;
     private float rotationSpeed = 3f;
-    private static int tankSize = 60;
+    public static int tankSize = 60;
     private Point2D.Float movement = new Point2D.Float(0, 0);
-
-    BufferedImage tankImage;
 
     public Tank(String imagePath) {
         this(100, 100, 0, imagePath);
+        ControlInput.addControlListener(this);
     }
 
     public Tank(Tank tank) {
         super(tank.imagePath, tankSize, true);
         setPosition(tank.getPosition().x, tank.getPosition().y);
         this.rotation = tank.getAngle();
+        ControlInput.addControlListener(this);
     }
 
     public Tank(float x, float y, float angle, String imagePath) {
         super(imagePath, tankSize, true);
         setPosition(x, y);
         this.rotation = angle;
+        ControlInput.addControlListener(this);
     }
 
-    public Tank listensToInput() {
-        ControlInput.addControlListener(this);
-        return this;
-    }
+    // public Tank listensToInput() {
+    //     ControlInput.addControlListener(this);
+    //     return this;
+    // }
 
     public double getShieldAmount() {
         return this.shieldAmount;
@@ -92,10 +93,10 @@ public class Tank extends GameObject implements ControlListener, ITankDecorator 
 
     @Override
     public void renderOn(Graphics2D g2d) {
-        // Float corner = getUpperLeftCorner();
-        // g2d.setStroke(new BasicStroke(10));
-        // g2d.setColor(Color.RED);
-        // g2d.drawLine((int) corner.x, (int) corner.y, (int) corner.x, (int) corner.y);
+        Float corner = getUpperLeftCorner();
+        g2d.setStroke(new BasicStroke(10));
+        g2d.setColor(Color.RED);
+        g2d.drawLine((int) corner.x, (int) corner.y, (int) corner.x, (int) corner.y);
         g2d.drawImage(getImage(), null, (int) Math.round(position.getX()), (int) Math.round(position.getY()));
     }
 
@@ -125,17 +126,27 @@ public class Tank extends GameObject implements ControlListener, ITankDecorator 
         if (this.shieldAmount > 0) {
             this.shieldAmount = 0;
             decorate(this.currentHP, this.maxHP);
+            // resetTexture();
         } else {
             this.shieldAmount = 1;
             decorate(this.currentHP + this.shieldAmount, this.maxHP, "blue");
+            // setTexture("images/shielded-tank.png");
         }
 
         decorate(this.shieldAmount);
     }
 
-    // these calls decorators that override these functions
     @Override public void decorate(String text) {}
-    @Override public void decorate(double amount) {}
+    @Override public void decorate(double amount) {
+        System.out.println("yooooo " + amount);
+        if (amount > 0) {
+            System.out.println("parent render shield");
+            setTexture("images/shielded-tank.png");
+        } else {
+            System.out.println("parent RESET shield");
+            resetTexture();
+        }
+    }
     @Override public void decorate(double a, double b) {}
     @Override public void decorate(double a, double b, String modifier) {}
 }

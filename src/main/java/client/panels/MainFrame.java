@@ -20,7 +20,7 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         layeredPane = new JLayeredPane();
-        layeredPane.setBounds(0, 0, 1920, 1080);
+        layeredPane.setBounds(0, 0, 1280, 1024);
         MainPanel panel = new MainPanel();
         StaticPanel staticPanel = new StaticPanel(100, 16, 9);
 
@@ -38,6 +38,7 @@ public class MainFrame extends JFrame {
         addKeyListener(ControlInput.getInstance());
         add(layeredPane);
         pack();
+        setSize(1280, 1024);
         setVisible(true);
         setLocationRelativeTo(null);
     }

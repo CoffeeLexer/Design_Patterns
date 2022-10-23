@@ -7,7 +7,7 @@ public class LabelDecorator extends TankDecorator {
       super(decoratedTank);
   }
 
-  public void displayLabel(String text) {
+  private void displayLabel(String text) {
     System.out.println("display label " + text);
   }
 
@@ -15,5 +15,6 @@ public class LabelDecorator extends TankDecorator {
   public void decorate(String text)
   {
     displayLabel(text);
+    wrappee.decorate(text);
   }
 }

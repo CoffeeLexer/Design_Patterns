@@ -11,8 +11,8 @@ public class StaticPanel extends JPanel {
     private int size;
 
     public StaticPanel(int size, int width, int height) {
-        setPreferredSize(new Dimension(1920, 1080));
-        setBounds(0, 0, 1920, 1080);
+        setPreferredSize(new Dimension(1280, 1024));
+        setBounds(0, 0, 1280, 1024);
         setOpaque(false);
         this.size = size;
         grid = new GameObject[height][width];

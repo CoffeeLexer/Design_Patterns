@@ -1,14 +1,22 @@
 package client.gameObjects.tankDecorators;
 import client.gameObjects.*;
+import client.controls.ControlInput;
 
-public abstract class TankDecorator extends Tank {
+public abstract class TankDecorator extends GameObject implements ITankDecorator {
   protected Tank wrappee;
 
   public TankDecorator(Tank decoratedTank)
   {
-    super(decoratedTank);
+    super(decoratedTank.imagePath, decoratedTank.tankSize, true);
+    setPosition(decoratedTank.getPosition().x, decoratedTank.getPosition().y);
     this.wrappee = decoratedTank;
+    ControlInput.addControlListener(decoratedTank);
   }
+
+  // public Tank listensToInput() {
+  //   ControlInput.addControlListener(wrappee);
+  //   return wrappee;
+  // }
 
   public void decorate(String text) {
     wrappee.decorate(text);

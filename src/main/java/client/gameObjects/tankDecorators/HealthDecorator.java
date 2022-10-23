@@ -7,11 +7,11 @@ public class HealthDecorator extends TankDecorator {
       super(decoratedTank);
   }
 
-  public void displayHealth(double current, double max) {
+  private void displayHealth(double current, double max) {
     System.out.println("display health " + current + " / " + max);
   }
 
-  public void displayHealth(double current, double max, String color) {
+  private void displayHealth(double current, double max, String color) {
     System.out.println("display health " + current + " / " + max + " -- " + color);
   }
 
@@ -19,11 +19,13 @@ public class HealthDecorator extends TankDecorator {
   public void decorate(double a, double b)
   {
     displayHealth(a, b);
+    wrappee.decorate(a, b);
   }
 
   @Override
   public void decorate(double a, double b, String modifier)
   {
     displayHealth(a, b, modifier);
+    wrappee.decorate(a, b, modifier);
   }
 }

@@ -22,6 +22,7 @@ public abstract class GameObject {
     public int layer;
     public float rotation; // In degrees
     public String imagePath;
+    public String originalImagePath;
 
     protected int width;
     protected int height;
@@ -29,6 +30,7 @@ public abstract class GameObject {
     protected float boxSize;
 
     private BufferedImage texture;
+    private BufferedImage originalTexture;
 
     protected GameObject() {
     }
@@ -52,13 +54,22 @@ public abstract class GameObject {
         }
     }
 
-    private void setTexture(String imagePath) {
+    public void setTexture(String imagePath) {
+        this.originalImagePath = this.imagePath;
         this.imagePath = imagePath;
+        System.out.println("setting new texture to " + this.imagePath);
         try {
-            texture = ImageIO.read(new File(imagePath));
+            this.originalTexture = this.texture;
+            this.texture = ImageIO.read(new File(this.imagePath));
+            setDimensions(texture.getWidth(), texture.getHeight());
         } catch (IOException e) {
-            System.out.println("Resource was not found: " + imagePath);
+            System.out.println("Resource was not found: " + this.imagePath);
         }
+    }
+
+    public void resetTexture() {
+        this.imagePath = originalImagePath;
+        this.texture = originalTexture;
     }
 
     private void setDimensions(int width, int height) {

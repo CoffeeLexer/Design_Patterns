@@ -7,19 +7,27 @@ public class ShieldDecorator extends TankDecorator {
       super(decoratedTank);
   }
 
-  public void setShield(double amount) {
-    System.out.println("setting shield to " + amount);
+  private void setShield(double amount) {
+    System.out.println("set shield to " + amount);
     wrappee.setShield(amount);
   }
 
-  public void renderShield() {
-    System.out.println("render shield");
+  private void renderShield(double amount) {
+    if (amount > 0) {
+      System.out.println("render shield");
+      wrappee.movementSpeed = 1.0f;
+      // wrappee.setTexture("images/shielded-tank.png");
+    } else {
+      System.out.println("RESET shield");
+      // wrappee.resetTexture();
+    }
   }
 
   @Override
   public void decorate(double amount)
   {
     setShield(amount);
-    renderShield();
+    renderShield(amount);
+    wrappee.decorate(amount);
   }
 }
