@@ -68,7 +68,6 @@ public class GameObject implements Serializable, Prototype {
             GameComponent gc = entry.getValue();
             obj.addComponent(gc.clone());
         }
-        System.out.println("clone");
         obj.tag = this.tag;
         return obj;
     }
