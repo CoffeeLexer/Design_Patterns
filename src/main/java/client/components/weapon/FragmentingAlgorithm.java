@@ -1,23 +1,19 @@
 package client.components.weapon;
-
-import java.awt.geom.*;
 import java.util.concurrent.TimeUnit;
-
 import client.components.Transform;
 import client.gameObjects.Projectile;
 import network.server.SEngine;
 
 public class FragmentingAlgorithm extends ProjectileAlgorithm {
-
   private long end;
   private float speed;
 
-  public void createFragments(float rotation) {
+  public void createFragment(float rotation) {
     String fragmentImage = "images/fragment.png";
     Transform transform = gameObject.getComponent(Transform.Key());
 
     SEngine.GetInstance()
-        .Add(new Projectile(transform.position.x, transform.position.y, rotation, fragmentImage, 12)
+        .Add(new Projectile(transform.position.x, transform.position.y, rotation, fragmentImage, 11)
             .setAlgorithm(new StraightFlyAlgorithm(7, TimeUnit.MILLISECONDS, 300)));
   }
 
@@ -32,7 +28,7 @@ public class FragmentingAlgorithm extends ProjectileAlgorithm {
       SEngine.GetInstance().Destroy(gameObject);
       for (int i = 0; i < 8; i++) {
         float rotation = i * 45;
-        createFragments(rotation);
+        createFragment(rotation);
       }
 
       return;

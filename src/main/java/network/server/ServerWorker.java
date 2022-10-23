@@ -59,8 +59,8 @@ public class ServerWorker implements Runnable {
                             case KeyEvent.VK_W, KeyEvent.VK_S -> {
                                 KeyboardEvents.Drive(tank, keysPressed);
                             }
-                            case KeyEvent.VK_SPACE -> {
-                                KeyboardEvents.Shoot(tank);
+                            case KeyEvent.VK_N, KeyEvent.VK_M, KeyEvent.VK_J, KeyEvent.VK_K -> {
+                                KeyboardEvents.Shoot(tank, keyCode);
                             }
                         }
                     }
