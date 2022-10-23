@@ -6,6 +6,7 @@ import network.data.Handshake;
 import network.data.Payload;
 import network.factories.LevelFactory;
 import network.factories.CityFactory;
+import network.factories.DungeonFactory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -116,7 +117,7 @@ public class Server {
     }
 
     private void initializeGame() {
-        levelFactory = new CityFactory(32, 18, 60);
+        levelFactory = new DungeonFactory(32, 18, 60);
         levelFactory.buildLevel();
     }
 
