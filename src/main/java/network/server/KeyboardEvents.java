@@ -10,8 +10,8 @@ import java.util.Set;
 
 public class KeyboardEvents {
     public static class Constants {
-        public static final float drivingSpeed = 1.75f;
-        public static final float rotationSpeed = 1.0f;
+        public static final float drivingSpeed = 3f;
+        public static final float rotationSpeed = 2.25f;
     }
 
     public static void Rotate(Tank tank, Set<Integer> keysPressed) {
@@ -32,8 +32,8 @@ public class KeyboardEvents {
         if(keysPressed.contains(KeyEvent.VK_DOWN)) speed -= Constants.drivingSpeed;
         cs.speed = Math.min(Math.max(speed, -Constants.drivingSpeed), Constants.drivingSpeed);
     }
-    public static void Shoot(Tank tank) {
+    public static void Shoot(Tank tank, int keyCode) {
         Weapon weapon = tank.getComponent(Weapon.Key());
-        weapon.shoot();
+        weapon.shoot(keyCode);
     }
 }

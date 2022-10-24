@@ -1,9 +1,6 @@
 package client.components.weapon;
-import java.awt.geom.*;
 import java.util.concurrent.TimeUnit;
-
 import client.components.Transform;
-import client.gameObjects.Projectile;
 import network.server.SEngine;
 
 public class StraightFlyAlgorithm extends ProjectileAlgorithm {

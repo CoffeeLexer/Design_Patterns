@@ -29,7 +29,6 @@ public class Renderer extends GameComponent {
         this.imagePath = imagePath;
         BufferedImage texture = Assets.getInstance().getFile(imagePath);
         if (isWidth) {
-
             setDimensions(size, (int) ((float) size * texture.getHeight() / texture.getWidth()));
         } else {
             setDimensions((int) ((float) size * texture.getWidth() / texture.getHeight()), size);
