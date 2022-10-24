@@ -6,6 +6,8 @@ import client.gameObjects.Wall;
 import network.data.Connection;
 import network.data.Handshake;
 import network.data.Payload;
+import network.factories.LevelFactory;
+import network.factories.CityFactory;
 
 import java.io.IOException;
 import java.util.*;
@@ -19,6 +21,7 @@ public class SEngine {
     public static final int frameRate = 60;
     Map<Integer, GameObject> gameObjects = null;
     ReentrantLock lock = null;
+
     private static SEngine instance = new SEngine();
     public static SEngine GetInstance() {
         return instance;
@@ -29,9 +32,6 @@ public class SEngine {
         gameObjects = new ConcurrentSkipListMap<>();
         lock = new ReentrantLock();
         new Thread(this::Run).start();
-
-        Add(new Wall("images/wall.jpg", 25, 25));
-        Add(new Wall("images/wall.jpg", 25, 75));
     }
     public int Add(GameObject obj) {
         lock.lock();
