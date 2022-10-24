@@ -1,6 +1,7 @@
 package client.gameObjects;
 
 import client.components.*;
+import network.server.SEngine;
 
 public class Tank extends GameObject {
     public Tank(String imagePath) {
@@ -12,6 +13,10 @@ public class Tank extends GameObject {
         addComponent(new ConstantSpeed(0.0f));
         addComponent(new ConstantRotation(0.0f));
         addComponent(new Weapon());
+        addComponent(Collider.fromTexture(getComponent(Renderer.Key()), getComponent(Transform.Key())));
+        ((Collider)getComponent(Collider.Key())).setFunction(gameObject -> {
+            SEngine.GetInstance().Destroy(gameObject);
+        });
         tag = Tag.Dynamic;
     }
 }
