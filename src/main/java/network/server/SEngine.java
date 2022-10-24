@@ -1,5 +1,6 @@
 package network.server;
 
+import client.components.Collider;
 import client.gameObjects.GameObject;
 import client.gameObjects.Tag;
 import client.gameObjects.Wall;
@@ -30,8 +31,12 @@ public class SEngine {
         lock = new ReentrantLock();
         new Thread(this::Run).start();
 
-        Add(new Wall("images/wall.jpg", 25, 25));
-        Add(new Wall("images/wall.jpg", 25, 75));
+        for(int i = 0; i < 10; i++) {
+            for(int j = 0; j < 10; j++) {
+                Add(new Wall("images/wall.jpg", 50*i, 50*j));
+            }
+        }
+
     }
     public int Add(GameObject obj) {
         lock.lock();
@@ -113,6 +118,22 @@ public class SEngine {
                 GameObject parsed = obj.ClientParse();
                 Payload payload = new Payload(Handshake.Method.setGameObject, parsed);
                 Server.GetInstance().NotifyUDP(payload);
+            }
+            for(int i = 0; i < gameObjects.size() - 1; i++) {
+                GameObject obj = gameObjects.get(i);
+                if(obj == null) continue;
+                Collider collider = obj.getComponent(Collider.Key());
+                if(collider == null) continue;
+                for(int j = i + 1; j < gameObjects.size(); j++) {
+                    GameObject objOther = gameObjects.get(j);
+                    if(objOther == null) continue;
+                    Collider colliderOther = objOther.getComponent(Collider.Key());
+                    if(colliderOther == null) continue;
+                    if(collider.isColliding(colliderOther) && colliderOther.isColliding(collider)) {
+                        collider.onCollision(objOther);
+                        colliderOther.onCollision(obj);
+                    }
+                }
             }
             lock.unlock();
             try

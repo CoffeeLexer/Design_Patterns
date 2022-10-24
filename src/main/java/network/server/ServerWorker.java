@@ -68,7 +68,9 @@ public class ServerWorker implements Runnable {
                         int id = SEngine.GetInstance().Add(new Tank("images/tank-brown.png"));
                         playerID = id;
                         SEngine.GetInstance().SyncEngine(connection);
+                        connection.lock.lock();
                         connection.output.writeObject(new Payload(Handshake.Method.tagPlayer, id));
+                        connection.lock.unlock();
                     }
                 }
             }
