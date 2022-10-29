@@ -23,6 +23,7 @@ public class KeyboardEvents {
         if(keysPressed.contains(KeyEvent.VK_RIGHT)) speed += Constants.rotationSpeed;
         cr.speed = Math.min(Math.max(speed, -Constants.rotationSpeed), Constants.rotationSpeed);
     }
+
     public static void Drive(Tank tank, Set<Integer> keysPressed) {
         ConstantSpeed cs = tank.getComponent(ConstantSpeed.Key());
         float speed = 0;
@@ -32,8 +33,13 @@ public class KeyboardEvents {
         if(keysPressed.contains(KeyEvent.VK_DOWN)) speed -= Constants.drivingSpeed;
         cs.speed = Math.min(Math.max(speed, -Constants.drivingSpeed), Constants.drivingSpeed);
     }
+
     public static void Shoot(Tank tank, int keyCode) {
         Weapon weapon = tank.getComponent(Weapon.Key());
         weapon.shoot(keyCode);
+    }
+
+    public static void InvokeShield(Tank tank) {
+        tank.toggleShield();
     }
 }

@@ -39,9 +39,20 @@ public class CEngine {
                 needStaticRedraw = true;
             }
             case Dynamic -> {
-                if(obj.uniqueID == playerID) ((Renderer)obj.getComponent(Renderer.Key())).setTexture(playerTexture);
+                if(obj.uniqueID == playerID) {
+                    Renderer renderer = (Renderer)obj.getComponent(Renderer.Key());
+                    if (obj.imagePath != null) {
+                        // this is used for shield decorator
+                        renderer.setTexture(obj.imagePath);
+                        //System.out.println("server renders: " + obj.imagePath);
+                    } else {
+                        renderer.setTexture(playerTexture);
+                        //System.out.println("server renders default tank texture");
+                    }
+                }
                 gameObjects.put(obj.uniqueID, obj);
             }
+            case Undefined -> {}
         }
     }
     public void Remove(int id) {

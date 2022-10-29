@@ -14,6 +14,7 @@ public class GameObject implements Serializable {
     public int uniqueID = -1;
     Map<String, GameComponent> components;
     public Tag tag = Tag.Undefined;
+    public String imagePath;
 
     public GameObject() {
         components = new TreeMap<>();
@@ -21,6 +22,11 @@ public class GameObject implements Serializable {
 
     public void update(float delta) {
         components.values().forEach(e -> e.update(delta));
+    }
+
+    public void setImagePath(String path) {
+        System.out.println("setImagePath: " + path);
+        this.imagePath = path;
     }
 
     public void destroy() {
