@@ -21,6 +21,7 @@ public class HealthDecorator extends TankDecorator {
       Label label = new Label(x, y, text, this.wrappee, Color.RED);
       this.label = label;
       SEngine.GetInstance().Add(label);
+      wrappee.addChildID(label.uniqueID);
   }
 
   private void displayHealth(double current, double max) {

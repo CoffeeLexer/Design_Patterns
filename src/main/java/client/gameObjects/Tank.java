@@ -6,7 +6,7 @@ import client.components.tankDecorator.ShieldDecorator;
 import client.components.weapon.Weapon;
 import java.awt.Color;
 
-public class Tank extends GameObject implements ITankDecorator {
+public class Tank extends GameObject implements ITankDecorator {    
     public int tankSize = 50;
     private double maxHP = 3;
     private double currentHP = 3;
@@ -57,7 +57,7 @@ public class Tank extends GameObject implements ITankDecorator {
     // Shield has toggle functionality for Decoration pattern testing.
     // This simulates shield ability activation.
     public void toggleShield() {
-        if (this.shieldAmount > 0) {
+        if (getShieldAmount() > 0) {
             this.shieldDecorator.decorate(0); // set shield to 0
             this.healthDecorator.decorate(this.currentHP, this.maxHP);
         } else {

@@ -21,6 +21,7 @@ public class LabelDecorator extends TankDecorator {
     // render label on tank
     Label label = new Label(x, y, text, this.wrappee, Color.GREEN, yOffset);
     SEngine.GetInstance().Add(label);
+    wrappee.addChildID(label.uniqueID);
   }
 
   @Override
