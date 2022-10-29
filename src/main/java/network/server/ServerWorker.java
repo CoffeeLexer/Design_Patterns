@@ -64,7 +64,7 @@ public class ServerWorker implements Runnable {
                         }
                     }
                     case joinGame -> {
-                        Tank playerTank = new Tank("images/tank-yellow.png");
+                        Tank playerTank = new Tank("images/tank-blue.png");
                         LabelDecorator labelDecorator = new LabelDecorator(playerTank);
 
                         int id = SEngine.GetInstance().Add(playerTank);

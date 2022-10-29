@@ -13,9 +13,9 @@ public class ShieldDecorator extends TankDecorator {
 
   private void renderShield(double amount) {
     if (amount > 0) {
-      wrappee.setImagePath("images/shielded-tank.png");
+      wrappee.renderer.setTexture("images/shielded-tank.png");
     } else {
-      wrappee.setImagePath(null);
+      wrappee.renderer.setTexture(wrappee.originalImagePath);
     }
   }
 

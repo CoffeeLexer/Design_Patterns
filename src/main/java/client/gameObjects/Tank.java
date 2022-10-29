@@ -14,6 +14,8 @@ public class Tank extends GameObject implements ITankDecorator {
 
     private HealthDecorator healthDecorator;
     private ShieldDecorator shieldDecorator;
+    public Renderer renderer;
+    public String originalImagePath;
     
     public Tank(String imagePath) {
         this(100, 100, 15, imagePath);
@@ -25,13 +27,15 @@ public class Tank extends GameObject implements ITankDecorator {
 
     public Tank(float x, float y, float angle, String imagePath) {
         addComponent(new Transform().setPosition(x, y).setRotation(angle));
-        addComponent(new Renderer(imagePath, this.tankSize, true));
+        this.renderer = new Renderer(imagePath, this.tankSize, true);
+        addComponent(this.renderer);
         addComponent(new ConstantSpeed(0.0f));
         addComponent(new ConstantRotation(0.0f));
         addComponent(new Weapon(this.tankSize));
         tag = Tag.Dynamic;
         this.healthDecorator = new HealthDecorator(this);
         this.shieldDecorator = new ShieldDecorator(this);
+        this.originalImagePath = imagePath;
     }
 
     public double getShieldAmount() {
@@ -57,7 +61,7 @@ public class Tank extends GameObject implements ITankDecorator {
             this.shieldDecorator.decorate(0); // set shield to 0
             this.healthDecorator.decorate(this.currentHP, this.maxHP);
         } else {
-            this.shieldDecorator.decorate(1.2); // set shield to 1.2
+            this.shieldDecorator.decorate(1); // set shield to 1
             this.healthDecorator.decorate(this.currentHP + this.shieldAmount, this.maxHP, Color.CYAN);
         }
     }

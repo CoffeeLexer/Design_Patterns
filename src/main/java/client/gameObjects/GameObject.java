@@ -24,11 +24,6 @@ public class GameObject implements Serializable {
         components.values().forEach(e -> e.update(delta));
     }
 
-    public void setImagePath(String path) {
-        System.out.println("setImagePath: " + path);
-        this.imagePath = path;
-    }
-
     public void destroy() {
         components.values().forEach(GameComponent::destroy);
     }

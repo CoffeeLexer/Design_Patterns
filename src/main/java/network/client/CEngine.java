@@ -18,7 +18,6 @@ public class CEngine {
     public StaticPanel staticPanel = null;
     Map<Integer, GameObject> gameObjects = null;
 
-    public final String playerTexture = "images/tank-blue.png";
     public int playerID = -1;
     boolean needStaticRedraw;
     private static final CEngine instance = new CEngine();
@@ -39,17 +38,6 @@ public class CEngine {
                 needStaticRedraw = true;
             }
             case Dynamic -> {
-                if(obj.uniqueID == playerID) {
-                    Renderer renderer = (Renderer)obj.getComponent(Renderer.Key());
-                    if (obj.imagePath != null) {
-                        // this is used for shield decorator
-                        renderer.setTexture(obj.imagePath);
-                        //System.out.println("server renders: " + obj.imagePath);
-                    } else {
-                        renderer.setTexture(playerTexture);
-                        //System.out.println("server renders default tank texture");
-                    }
-                }
                 gameObjects.put(obj.uniqueID, obj);
             }
             case Undefined -> {}
