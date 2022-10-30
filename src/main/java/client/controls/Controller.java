@@ -18,5 +18,4 @@ public class Controller implements KeyListener {
     public void keyReleased(KeyEvent e) {
         Client.GetInstance().KeyReleased(e.getKeyCode());
     }
-
 }

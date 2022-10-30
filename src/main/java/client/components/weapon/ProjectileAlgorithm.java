@@ -10,7 +10,6 @@ import client.components.Transform;
 import client.gameObjects.Projectile;
 
 public abstract class ProjectileAlgorithm extends GameComponent {
-
   public abstract void fly(Transform transform, float delta);
 
   public void setProjectile(Projectile projectile) {

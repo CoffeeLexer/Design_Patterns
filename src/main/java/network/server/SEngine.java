@@ -6,6 +6,8 @@ import client.gameObjects.Wall;
 import network.data.Connection;
 import network.data.Handshake;
 import network.data.Payload;
+import network.factories.LevelFactory;
+import network.factories.CityFactory;
 
 import java.io.IOException;
 import java.util.*;
@@ -19,20 +21,21 @@ public class SEngine {
     public static final int frameRate = 60;
     Map<Integer, GameObject> gameObjects = null;
     ReentrantLock lock = null;
+
     private static SEngine instance = new SEngine();
+
     public static SEngine GetInstance() {
         return instance;
     }
+
     private SEngine()
     {
         //gameObjects = new TreeMap<>();
         gameObjects = new ConcurrentSkipListMap<>();
         lock = new ReentrantLock();
         new Thread(this::Run).start();
-
-        Add(new Wall("images/wall.jpg", 25, 25));
-        Add(new Wall("images/wall.jpg", 25, 75));
     }
+
     public int Add(GameObject obj) {
         lock.lock();
         int id = AvailableID(gameObjects);
@@ -41,41 +44,59 @@ public class SEngine {
         lock.unlock();
         return id;
     }
+
     public GameObject Get(int index) {
         return gameObjects.get(index);
     }
+
     public void Set(GameObject obj) {
         lock.lock();
         gameObjects.put(obj.uniqueID, obj);
         lock.unlock();
     }
+
+    // Used to destroy decorator labels added to tanks
+    private void DestroyObjectChildren(GameObject obj) {
+        List<Integer> childrenIDs = obj.getChildrenIDs();
+        for (Integer id: childrenIDs) {
+            Server.GetInstance().NotifyTCP(new Payload(Handshake.Method.removeGameObject, id));
+            gameObjects.remove(id);
+        }
+    }
+
     public void Destroy(GameObject gameObject) {
         lock.lock();
         gameObject.destroy();
+        DestroyObjectChildren(gameObject);
         Server.GetInstance().NotifyTCP(new Payload(Handshake.Method.removeGameObject, gameObject.uniqueID));
         gameObjects.remove(gameObject.uniqueID);
         lock.unlock();
     }
+
     public void Destroy(int id) {
         lock.lock();
         GameObject gameObject = gameObjects.get(id);
         if(gameObject == null) return;
         gameObject.destroy();
+        DestroyObjectChildren(gameObject);
         Server.GetInstance().NotifyTCP(new Payload(Handshake.Method.removeGameObject, gameObject.uniqueID));
         gameObjects.remove(gameObject.uniqueID);
         lock.unlock();
     }
+
     public static int AvailableID(Map<Integer, GameObject> map) {
         for(int i = 0;; i++)
             if(!map.containsKey(i))
                 return i;
     }
+
     public void Info() {
         for (var e: gameObjects.values()) {
             System.out.printf("Object %s: %s\n", e.uniqueID, e.getClass().getName());
         }
         System.out.print('\n');
     }
+
     public void SyncEngine(Connection connection) {
         List<GameObject> list = new ArrayList<>(gameObjects.size());
         for (GameObject obj: gameObjects.values()) {

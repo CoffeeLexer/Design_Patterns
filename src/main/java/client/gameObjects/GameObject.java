@@ -9,12 +9,16 @@ import java.awt.*;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.List;
+import java.util.ArrayList;
 
 public class GameObject implements Serializable, Prototype {
+    private List<Integer> childrenIDs = new ArrayList<Integer>();
     public boolean newState = true;
     public int uniqueID = -1;
     Map<String, GameComponent> components;
     public Tag tag = Tag.Undefined;
+    public String imagePath;
 
     public GameObject() {
         components = new TreeMap<>();
@@ -70,5 +74,12 @@ public class GameObject implements Serializable, Prototype {
         }
         obj.tag = this.tag;
         return obj;
+    }
+    public void addChildID(Integer id) {
+        this.childrenIDs.add(id);
+    }
+
+    public List<Integer> getChildrenIDs() {
+        return this.childrenIDs;
     }
 }

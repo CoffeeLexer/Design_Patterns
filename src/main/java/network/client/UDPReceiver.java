@@ -20,7 +20,9 @@ public class UDPReceiver {
                 socket = new DatagramSocket(port);
                 break;
             } catch (SocketException e) {
-                if(e.getMessage().equals("Address already in use"))
+                System.out.println(e.getMessage());
+                if(e.getMessage().equals("Address already in use")
+                    || e.getMessage().equals("Address already in use: bind"))
                     continue;
                 throw new RuntimeException(e);
             }
@@ -40,6 +42,10 @@ public class UDPReceiver {
 
             for (int i = 0; i < 4; ++i) {
                 size |= (data[3-i] & 0xff) << (i << 3);
+            }
+
+            if (size < 0) {
+                return null;
             }
 
             byte[] buffer = new byte[size];

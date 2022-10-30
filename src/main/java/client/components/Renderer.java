@@ -12,24 +12,38 @@ public class Renderer extends GameComponent {
     private Integer height;
     private String imagePath;
     private double boxSize;
+
+    private String text = "";
+    private boolean withImage = true;
+    private Color color;
+
     public void setTexture(String newTexture) {
-        imagePath = newTexture;
+        this.imagePath = newTexture;
+    }
+
+    // for rendering text instead of images
+    public Renderer(Integer width, Integer height, String text, Color color) {
+        this.withImage = false;
+        this.text = text;
+        this.color = color;
+        setDimensions(width, height);
     }
 
     public Renderer(String imagePath, Integer width, Integer height) {
         this.imagePath = imagePath;
         setDimensions(width, height);
     }
+
     public Renderer(String imagePath) {
         this.imagePath = imagePath;
         BufferedImage texture = Assets.getInstance().getFile(imagePath);
         setDimensions(texture.getWidth(), texture.getHeight());
     }
+
     public Renderer(String imagePath, int size, boolean isWidth) {
         this.imagePath = imagePath;
         BufferedImage texture = Assets.getInstance().getFile(imagePath);
         if (isWidth) {
-
             setDimensions(size, (int) ((float) size * texture.getHeight() / texture.getWidth()));
         } else {
             setDimensions((int) ((float) size * texture.getWidth() / texture.getHeight()), size);
@@ -41,6 +55,7 @@ public class Renderer extends GameComponent {
         this.width = width;
         boxSize = (int) Math.round(Point2D.distance(0, 0, width, height));
     }
+
     public BufferedImage getImage() {
         BufferedImage newImageFromBuffer = new BufferedImage((int) Math.ceil(boxSize), (int) Math.ceil(boxSize),
                 BufferedImage.TYPE_INT_ARGB);
@@ -60,22 +75,44 @@ public class Renderer extends GameComponent {
 
         return newImageFromBuffer;
     }
+
     public void render(Graphics2D g2d) {
-        BufferedImage image = getImage();
         Point2D.Float position = ((Transform)this.gameObject.getComponent(Transform.Key())).position;
-        g2d.drawImage(image, null, (int) Math.round(position.getX()), (int) Math.round(position.getY()));
+        int x = (int) Math.round(position.getX());
+        int y = (int) Math.round(position.getY());
+
+        if (this.withImage) {
+            BufferedImage image = getImage();
+            g2d.drawImage(image, null, x, y);
+        } else {
+            g2d.setColor(color);
+            g2d.drawString(this.text, x, y);
+            
+        }
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     @Override
     public String key() {
         return "Renderer";
     }
+
     public static String Key() {
         return "Renderer";
     }
 
     @Override
     public Renderer clone() {
-        return new Renderer(this.imagePath, this.width, this.height);
+        if (this.withImage) {
+            return new Renderer(this.imagePath, this.width, this.height);
+        }
+        return new Renderer(this.width, this.height, this.text, this.color);
     }
 }

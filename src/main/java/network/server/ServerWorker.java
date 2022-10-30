@@ -1,19 +1,15 @@
 package network.server;
 
+import client.components.tankDecorator.LabelDecorator;
 import client.gameObjects.Tank;
 import network.data.Connection;
 import network.data.Handshake;
 import network.data.Payload;
-
 import java.awt.event.KeyEvent;
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class ServerWorker implements Runnable {
     Connection connection = null;
@@ -59,8 +55,11 @@ public class ServerWorker implements Runnable {
                             case KeyEvent.VK_W, KeyEvent.VK_S -> {
                                 KeyboardEvents.Drive(tank, keysPressed);
                             }
-                            case KeyEvent.VK_SPACE -> {
-                                KeyboardEvents.Shoot(tank);
+                            case KeyEvent.VK_N, KeyEvent.VK_M, KeyEvent.VK_J, KeyEvent.VK_K -> {
+                                KeyboardEvents.Shoot(tank, keyCode);
+                            }
+                            case KeyEvent.VK_P -> {
+                                KeyboardEvents.InvokeShield(tank);
                             }
                             case KeyEvent.VK_C -> {
                                 KeyboardEvents.Clone(tank);
@@ -68,10 +67,16 @@ public class ServerWorker implements Runnable {
                         }
                     }
                     case joinGame -> {
-                        int id = SEngine.GetInstance().Add(new Tank("images/tank-brown.png"));
+                        Tank playerTank = new Tank("images/tank-blue.png");
+                        LabelDecorator labelDecorator = new LabelDecorator(playerTank);
+
+                        int id = SEngine.GetInstance().Add(playerTank);
                         playerID = id;
                         SEngine.GetInstance().SyncEngine(connection);
                         connection.output.writeObject(new Payload(Handshake.Method.tagPlayer, id));
+
+                        String playerName = "Player: " + Integer.toString(playerID);
+                        labelDecorator.decorate(playerName);
                     }
                 }
             }
