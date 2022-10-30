@@ -1,4 +1,10 @@
 package client.components.weapon;
+
+import java.awt.geom.*;
+import java.awt.geom.Point2D.Float;
+
+import org.apache.commons.lang3.NotImplementedException;
+
 import client.components.GameComponent;
 import client.components.Transform;
 import client.gameObjects.Projectile;
@@ -14,5 +20,9 @@ public abstract class ProjectileAlgorithm extends GameComponent {
   public void update(float delta) {
     Transform transform = gameObject.getComponent(Transform.Key());
     fly(transform, delta);
+  }
+  @Override
+  public ProjectileAlgorithm clone() {
+    throw new NotImplementedException();
   }
 }

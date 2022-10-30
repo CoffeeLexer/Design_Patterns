@@ -48,4 +48,8 @@ public class Weapon extends GameComponent {
 
         SEngine.GetInstance().Add(projectile);
     }
+    @Override
+    public Weapon clone() {
+        return new Weapon(this.parentSize);
+    }
 }
