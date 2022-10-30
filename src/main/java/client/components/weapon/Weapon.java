@@ -50,6 +50,6 @@ public class Weapon extends GameComponent {
     }
     @Override
     public Weapon clone() {
-        return new Weapon();
+        return new Weapon(this.parentSize);
     }
 }

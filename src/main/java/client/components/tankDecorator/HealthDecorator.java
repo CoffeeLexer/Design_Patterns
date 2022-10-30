@@ -47,4 +47,8 @@ public class HealthDecorator extends TankDecorator {
     displayHealth(a, b, color);
     wrappee.decorate(a, b, color);
   }
+  @Override
+  public HealthDecorator clone() {
+    return new HealthDecorator(this.wrappee);
+  }
 }

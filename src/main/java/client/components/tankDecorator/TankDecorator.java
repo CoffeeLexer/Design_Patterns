@@ -3,6 +3,8 @@ import client.components.GameComponent;
 import client.gameObjects.*;
 import java.awt.Color;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 public abstract class TankDecorator extends GameComponent implements ITankDecorator {
   protected Tank wrappee;
 
@@ -33,5 +35,9 @@ public abstract class TankDecorator extends GameComponent implements ITankDecora
 
   public static String Key() {
       return "TankDecorator";
+  }
+  @Override
+  public TankDecorator clone() {
+    throw new NotImplementedException();
   }
 }
