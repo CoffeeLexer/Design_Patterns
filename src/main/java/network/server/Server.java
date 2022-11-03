@@ -5,6 +5,7 @@ import network.data.Connection;
 import network.data.Handshake;
 import network.data.Payload;
 import network.factories.LevelFactory;
+import network.factories.StrongholdFactory;
 import network.factories.CityFactory;
 import network.factories.DungeonFactory;
 
@@ -117,7 +118,7 @@ public class Server {
     }
 
     private void initializeGame() {
-        levelFactory = new DungeonFactory(32, 18, 60);
+        levelFactory = new StrongholdFactory(32, 18, 60);
         levelFactory.buildLevel();
     }
 

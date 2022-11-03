@@ -1,18 +1,13 @@
 package network.factories;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
-import java.util.function.Function;
-
 import client.gameObjects.CityWall;
-import client.gameObjects.Wall;
 
 public class CityFactory extends LevelFactory {
 
     private Random random = new Random();
 
-    private double density = 0.75;
+    private double density = 1;
 
     public CityFactory(int gridWidth, int gridHeight, int wallSize) {
         super(gridWidth, gridHeight, wallSize);
@@ -61,6 +56,7 @@ public class CityFactory extends LevelFactory {
     @Override
     protected void buildWall(int x, int y) {
         add(new CityWall(x * wallSize, y * wallSize, wallSize));
+        spaceGrid[y][x] = true;
     }
 
 }

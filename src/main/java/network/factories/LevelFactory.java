@@ -10,10 +10,13 @@ public abstract class LevelFactory {
     protected int gridWidth;
     protected int wallSize;
 
+    public boolean[][] spaceGrid;
+
     public LevelFactory(int gridWidth, int gridHeight, int wallSize) {
         this.gridHeight = gridHeight;
         this.gridWidth = gridWidth;
         this.wallSize = wallSize;
+        spaceGrid = new boolean[gridHeight][gridWidth];
     }
 
     protected void add(GameObject gameObject) {
