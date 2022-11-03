@@ -11,13 +11,11 @@ public class DungeonFactory extends LevelFactory {
     Stack<Node> nodeStack = new Stack<>();
     private Random random = new Random();
 
-    private double density = 0.75;
+    private double density = 1;
 
-    private boolean[][] grid;
 
     public DungeonFactory(int gridWidth, int gridHeight, int wallSize) {
         super(gridWidth, gridHeight, wallSize);
-        grid = new boolean[gridHeight][gridWidth];
     }
 
     @Override
@@ -26,14 +24,14 @@ public class DungeonFactory extends LevelFactory {
         while (!nodeStack.empty()) {
             Node next = nodeStack.pop();
             if (isValid(next)) {
-                grid[next.y][next.x] = true;
+                spaceGrid[next.y][next.x] = true;
                 pushToStackRandomly(getNeighboors(next));
             }
         }
 
         for (int x = 0; x < gridWidth; x++) {
             for (int y = 0; y < gridHeight; y++) {
-                if (grid[y][x] && random.nextDouble() <= density) {
+                if (!spaceGrid[y][x] && random.nextDouble() <= density) {
                     buildWall(x, y);
                 }
             }
@@ -48,14 +46,14 @@ public class DungeonFactory extends LevelFactory {
     }
 
     private boolean isValid(Node node) {
-        if (grid[node.y][node.x]) {
+        if (spaceGrid[node.y][node.x]) {
             return false;
         }
 
         int neighboorCount = 0;
         for (int x = node.x - 1; x <= node.x + 1; x++) {
             for (int y = node.y - 1; y <= node.y + 1; y++) {
-                if (inBounds(x, y) && notNode(node, x, y) && grid[y][x]) {
+                if (inBounds(x, y) && notNode(node, x, y) && spaceGrid[y][x]) {
                     neighboorCount++;
                 }
             }
