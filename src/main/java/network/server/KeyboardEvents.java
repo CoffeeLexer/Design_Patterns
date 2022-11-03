@@ -2,10 +2,8 @@ package network.server;
 
 import client.components.ConstantRotation;
 import client.components.ConstantSpeed;
-import client.components.GameComponent;
 import client.components.Lifetime;
-import client.components.Transform;
-import client.components.weapon.Weapon;
+import client.components.weaponFacade.WeaponFacade;
 import client.gameObjects.GameObject;
 import client.gameObjects.Tank;
 
@@ -40,8 +38,8 @@ public class KeyboardEvents {
     }
 
     public static void Shoot(Tank tank, int keyCode) {
-        Weapon weapon = tank.getComponent(Weapon.Key());
-        weapon.shoot(keyCode);
+        WeaponFacade weaponFacade = tank.getComponent(WeaponFacade.Key());
+        weaponFacade.shoot(keyCode);
     }
 
     public static void InvokeShield(Tank tank) {
