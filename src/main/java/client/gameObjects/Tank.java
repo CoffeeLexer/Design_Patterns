@@ -3,7 +3,8 @@ import client.components.*;
 import client.components.tankDecorator.ITankDecorator;
 import client.components.tankDecorator.HealthDecorator;
 import client.components.tankDecorator.ShieldDecorator;
-import client.components.weapon.Weapon;
+import client.components.weaponFacade.WeaponFacade;
+
 import java.awt.Color;
 
 public class Tank extends GameObject implements ITankDecorator {    
@@ -31,7 +32,7 @@ public class Tank extends GameObject implements ITankDecorator {
         addComponent(this.renderer);
         addComponent(new ConstantSpeed(0.0f));
         addComponent(new ConstantRotation(0.0f));
-        addComponent(new Weapon(this.tankSize));
+        addComponent(new WeaponFacade(this.tankSize));
         tag = Tag.Dynamic;
         this.healthDecorator = new HealthDecorator(this);
         this.shieldDecorator = new ShieldDecorator(this);

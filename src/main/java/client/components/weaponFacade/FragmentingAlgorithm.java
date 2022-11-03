@@ -1,4 +1,4 @@
-package client.components.weapon;
+package client.components.weaponFacade;
 import java.util.concurrent.TimeUnit;
 import client.components.Transform;
 import client.gameObjects.Projectile;

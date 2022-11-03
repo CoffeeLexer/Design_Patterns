@@ -1,7 +1,7 @@
 package client.gameObjects;
 import client.components.Renderer;
 import client.components.Transform;
-import client.components.weapon.ProjectileAlgorithm;
+import client.components.weaponFacade.ProjectileAlgorithm;
 
 public class Projectile extends GameObject {
     public Projectile(float x, float y, float angle, String imagePath) {

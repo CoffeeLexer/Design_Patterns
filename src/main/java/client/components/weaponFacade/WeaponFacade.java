@@ -1,4 +1,4 @@
-package client.components.weapon;
+package client.components.weaponFacade;
 import java.util.concurrent.TimeUnit;
 import client.components.GameComponent;
 import client.components.Transform;
@@ -6,26 +6,26 @@ import client.gameObjects.Projectile;
 import network.server.SEngine;
 import java.awt.event.KeyEvent;
 
-public class Weapon extends GameComponent {
+public class WeaponFacade extends GameComponent {
     int parentSize;
 
-    public Weapon(int size) {
+    public WeaponFacade(int size) {
         this.parentSize = size;
     }
 
     @Override
     public String key() {
-        return Weapon.Key();
+        return WeaponFacade.Key();
     }
 
     public static String Key() {
-        return "Weapon";
+        return "WeaponFacade";
     }
 
     public void shoot(int keyCode) {
         Transform transform = gameObject.getComponent(Transform.Key());
 
-        // get the center coordinates of the parent object
+        // get the center (with an offset) coordinates of the parent object
         float xCoords = transform.position.x + this.parentSize / 2;
         float yCoords = transform.position.y + this.parentSize / 4;
 
@@ -49,11 +49,11 @@ public class Weapon extends GameComponent {
         SEngine.GetInstance().Add(projectile);
     }
     @Override
-    public Weapon cloneShallow() {
-        return new Weapon(this.parentSize);
+    public WeaponFacade cloneShallow() {
+        return new WeaponFacade(this.parentSize);
     }
     @Override
-    public Weapon cloneDeep() {
-        return new Weapon(Integer.valueOf(this.parentSize));
+    public WeaponFacade cloneDeep() {
+        return new WeaponFacade(Integer.valueOf(this.parentSize));
     }
 }
