@@ -51,7 +51,7 @@ public class KeyboardEvents {
         cs.speed = Constants.drivingSpeed;
         ConstantRotation cr = clone.getComponent(ConstantRotation.Key());
         cr.speed = 0;
-        clone.addComponent(new Lifetime(TimeUnit.SECONDS, 1));
+        clone.addComponent(new Lifetime(TimeUnit.SECONDS, 1, true));
         SEngine.GetInstance().Add(clone);
     }
 }
