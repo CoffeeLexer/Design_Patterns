@@ -33,7 +33,8 @@ public class SEngine {
 
         for(int i = 0; i < 10; i++) {
             for(int j = 0; j < 10; j++) {
-                Add(new Wall("images/wall.jpg", 50*i, 50*j));
+                if(i % 9 == 0 || j % 9 == 0)
+                    Add(new Wall("images/wall.jpg", 50*i, 50*j));
             }
         }
 
@@ -119,19 +120,23 @@ public class SEngine {
                 Payload payload = new Payload(Handshake.Method.setGameObject, parsed);
                 Server.GetInstance().NotifyUDP(payload);
             }
-            for(int i = 0; i < gameObjects.size() - 1; i++) {
-                GameObject obj = gameObjects.get(i);
+            ArrayList<GameObject> list = new ArrayList<>(gameObjects.size());
+            list.addAll(gameObjects.values());
+            for(int i = 0; i < list.size(); i++) {
+                GameObject obj = list.get(i);
                 if(obj == null) continue;
                 Collider collider = obj.getComponent(Collider.Key());
                 if(collider == null) continue;
-                for(int j = i + 1; j < gameObjects.size(); j++) {
-                    GameObject objOther = gameObjects.get(j);
+                for(int j = i + 1; j < list.size(); j++) {
+                    GameObject objOther = list.get(j);
                     if(objOther == null) continue;
                     Collider colliderOther = objOther.getComponent(Collider.Key());
                     if(colliderOther == null) continue;
                     if(collider.isColliding(colliderOther) && colliderOther.isColliding(collider)) {
                         collider.onCollision(objOther);
                         colliderOther.onCollision(obj);
+                        collider.isColliding(colliderOther);
+                        colliderOther.isColliding(collider);
                     }
                 }
             }

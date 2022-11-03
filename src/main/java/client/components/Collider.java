@@ -75,7 +75,8 @@ public class Collider extends GameComponent {
 //            float offset = dotProduct(axis, offsetVector);
 //            min += offset;
 //            max += offset;
-            if (range.x < min && min < range.y || range.x < max && max < range.y)
+//            if (max - range.x > 0 || range.y - min > 0)
+            if (range.x < min && min < range.y || range.x < max && max < range.y || min < range.x && range.x < max || min < range.y && range.y < max)
             {
                 continue;
             }

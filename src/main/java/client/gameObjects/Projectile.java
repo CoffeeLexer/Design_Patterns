@@ -1,9 +1,7 @@
 package client.gameObjects;
 
-import client.components.ConstantSpeed;
-import client.components.Lifetime;
-import client.components.Renderer;
-import client.components.Transform;
+import client.components.*;
+import network.server.SEngine;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,6 +11,10 @@ public class Projectile extends GameObject {
         addComponent(new Transform().setPosition(x, y).setRotation(angle));
         addComponent(new ConstantSpeed(15.0f));
         addComponent(new Lifetime(TimeUnit.SECONDS, 1));
+        addComponent(Collider.fromTexture(getComponent(Renderer.Key()), getComponent(Transform.Key())));
+        ((Collider)getComponent(Collider.Key())).setFunction(gameObject -> {
+
+        });
         tag = Tag.Dynamic;
     }
 }
