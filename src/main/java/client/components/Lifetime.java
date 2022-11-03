@@ -29,7 +29,10 @@ public class Lifetime extends GameComponent{
         return "Lifetime";
     }
     @Override
-    public Lifetime clone() {
+    public Lifetime cloneShallow() {
         return new Lifetime(end);
+    }
+    public Lifetime cloneDeep() {
+        return new Lifetime(Long.valueOf(end));
     }
 }

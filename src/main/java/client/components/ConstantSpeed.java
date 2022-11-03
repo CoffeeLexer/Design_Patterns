@@ -18,7 +18,11 @@ public class ConstantSpeed extends GameComponent{
         transform.moveForward(speed * delta);
     }
     @Override
-    public ConstantSpeed clone() {
+    public ConstantSpeed cloneShallow() {
         return new ConstantSpeed(speed);
+    }
+    @Override
+    public ConstantSpeed cloneDeep() {
+        return new ConstantSpeed(Float.valueOf(speed));
     }
 }

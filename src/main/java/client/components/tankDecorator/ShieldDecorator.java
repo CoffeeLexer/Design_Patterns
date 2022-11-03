@@ -27,7 +27,11 @@ public class ShieldDecorator extends TankDecorator {
     wrappee.decorate(amount);
   }
   @Override
-  public ShieldDecorator clone() {
+  public ShieldDecorator cloneShallow() {
+    return new ShieldDecorator(this.wrappee);
+  }
+  @Override
+  public ShieldDecorator cloneDeep() {
     return new ShieldDecorator(this.wrappee);
   }
 }

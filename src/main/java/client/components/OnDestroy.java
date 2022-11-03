@@ -22,7 +22,10 @@ public class OnDestroy extends GameComponent {
         return "OnDestroy";
     }
     @Override
-    public OnDestroy clone() {
+    public OnDestroy cloneShallow() {
+        return new OnDestroy(function);
+    }
+    public OnDestroy cloneDeep() {
         return new OnDestroy(function);
     }
 }

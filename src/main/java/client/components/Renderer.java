@@ -109,10 +109,17 @@ public class Renderer extends GameComponent {
     }
 
     @Override
-    public Renderer clone() {
+    public Renderer cloneShallow() {
         if (this.withImage) {
             return new Renderer(this.imagePath, this.width, this.height);
         }
         return new Renderer(this.width, this.height, this.text, this.color);
+    }
+    @Override
+    public Renderer cloneDeep() {
+        if (this.withImage) {
+            return new Renderer(String.valueOf(this.imagePath), Integer.valueOf(this.width), Integer.valueOf(this.height));
+        }
+        return new Renderer(Integer.valueOf(this.width), Integer.valueOf(this.height), String.valueOf(this.text), new Color(this.color.getRGB()));
     }
 }

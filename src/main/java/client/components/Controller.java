@@ -13,7 +13,11 @@ public class Controller extends GameComponent  {
         return "Controller";
     }
     @Override
-    public Controller clone() {
+    public Controller cloneShallow() {
+        return new Controller();
+    }
+    @Override
+    public Controller cloneDeep() {
         return new Controller();
     }
 }

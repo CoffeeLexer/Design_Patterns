@@ -22,7 +22,11 @@ public abstract class ProjectileAlgorithm extends GameComponent {
     fly(transform, delta);
   }
   @Override
-  public ProjectileAlgorithm clone() {
+  public ProjectileAlgorithm cloneShallow() {
+    throw new NotImplementedException();
+  }
+  @Override
+  public ProjectileAlgorithm cloneDeep() {
     throw new NotImplementedException();
   }
 }

@@ -48,7 +48,7 @@ public class KeyboardEvents {
         tank.toggleShield();
     }
     public static void Clone(Tank tank) {
-        GameObject clone = tank.cloneDeep();
+        GameObject clone = tank.cloneShallow();
         ConstantSpeed cs = clone.getComponent(ConstantSpeed.Key());
         cs.speed = Constants.drivingSpeed;
         ConstantRotation cr = clone.getComponent(ConstantRotation.Key());

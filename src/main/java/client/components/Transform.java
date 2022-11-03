@@ -4,7 +4,7 @@ import client.gameObjects.GameObject;
 
 import java.awt.geom.Point2D;
 
-public class Transform extends GameComponent implements Cloneable {
+public class Transform extends GameComponent {
     public Point2D.Float position;
     public float rotation;
     public float getAngle() {
@@ -60,7 +60,11 @@ public class Transform extends GameComponent implements Cloneable {
     }
 
     @Override
-    public Transform clone() {
+    public Transform cloneShallow() {
         return new Transform().setPosition(position.x, position.y).rotate(rotation);
+    }
+    @Override
+    public Transform cloneDeep() {
+        return new Transform().setPosition(Float.valueOf(position.x), Float.valueOf(position.y)).rotate(Float.valueOf(rotation));
     }
 }

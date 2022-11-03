@@ -31,7 +31,11 @@ public class LabelDecorator extends TankDecorator {
     wrappee.decorate(text);
   }
   @Override
-  public LabelDecorator clone() {
+  public LabelDecorator cloneShallow() {
+    return new LabelDecorator(this.wrappee);
+  }
+  @Override
+  public LabelDecorator cloneDeep() {
     return new LabelDecorator(this.wrappee);
   }
 }

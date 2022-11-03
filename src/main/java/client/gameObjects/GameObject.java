@@ -52,8 +52,8 @@ public class GameObject implements Serializable, Prototype {
 
     public GameObject ClientParse() {
         GameObject obj = new GameObject();
-        obj.addComponent(((Transform) this.getComponent(Transform.Key())).clone());
-        obj.addComponent(((Renderer) this.getComponent(Renderer.Key())).clone());
+        obj.addComponent(((Transform) this.getComponent(Transform.Key())).cloneShallow());
+        obj.addComponent(((Renderer) this.getComponent(Renderer.Key())).cloneShallow());
         obj.tag = this.tag;
         obj.uniqueID = this.uniqueID;
         return obj;
@@ -61,7 +61,10 @@ public class GameObject implements Serializable, Prototype {
     @Override
     public GameObject cloneShallow() {
         GameObject obj = new GameObject();
-        obj.components = this.components;
+        for (Map.Entry<String, GameComponent> entry : components.entrySet()) {
+            GameComponent gc = entry.getValue();
+            obj.addComponent((GameComponent)gc.cloneShallow());
+        }
         obj.tag = this.tag;
         return obj;
     }
@@ -70,7 +73,7 @@ public class GameObject implements Serializable, Prototype {
         GameObject obj = new GameObject();
         for (Map.Entry<String, GameComponent> entry : components.entrySet()) {
             GameComponent gc = entry.getValue();
-            obj.addComponent(gc.clone());
+            obj.addComponent((GameComponent)gc.cloneDeep());
         }
         obj.tag = this.tag;
         return obj;
