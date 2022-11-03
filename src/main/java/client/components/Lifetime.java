@@ -1,15 +1,17 @@
 package client.components;
 
-import network.client.CEngine;
 import network.server.SEngine;
-
 import java.util.concurrent.TimeUnit;
+import client.components.weaponFacade.WeaponFacade;
+import java.awt.event.KeyEvent;
 
 public class Lifetime extends GameComponent{
     long end;
+    boolean isTank = false;
 
-    public Lifetime(TimeUnit unit, long duration) {
+    public Lifetime(TimeUnit unit, long duration, boolean isTank) {
         end = System.currentTimeMillis() + unit.toMillis(duration);
+        this.isTank = isTank;
     }
     public Lifetime(long end) {
         this.end = end;
@@ -17,6 +19,10 @@ public class Lifetime extends GameComponent{
     @Override
     public void update(float delta) {
         if(System.currentTimeMillis() > end) {
+            if (this.isTank) {
+                WeaponFacade weaponFacade = gameObject.getComponent(WeaponFacade.Key());
+                weaponFacade.shoot(KeyEvent.VK_J); // shoot a shotgun projectile
+            }
             SEngine.GetInstance().Destroy(gameObject);
         }
     }
