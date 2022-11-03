@@ -33,20 +33,16 @@ public class WeaponFacade extends GameComponent {
 
         switch (keyCode) {
             case KeyEvent.VK_N -> {
-                StraightFlyAlgorithm algorithm = new StraightFlyAlgorithm(30, TimeUnit.MILLISECONDS, 300);
-                projectile.setAlgorithm(algorithm);
+                projectile.setAlgorithm(new StraightFlyAlgorithm(30, TimeUnit.MILLISECONDS, 300));
             }
             case KeyEvent.VK_M -> {
-                FragmentingAlgorithm algorithm = new FragmentingAlgorithm(30, TimeUnit.MILLISECONDS, 300);
-                projectile.setAlgorithm(algorithm);
+                projectile.setAlgorithm(new FragmentingAlgorithm(30, TimeUnit.MILLISECONDS, 300));
             }
             case KeyEvent.VK_J -> {
-                ShotgunAlgorithm algorithm = new ShotgunAlgorithm(20, TimeUnit.MILLISECONDS, 300);
-                projectile.setAlgorithm(algorithm);
+                projectile.setAlgorithm(new ShotgunAlgorithm(20, TimeUnit.MILLISECONDS, 300));
             }
             case KeyEvent.VK_K -> {
-                HoverAlgorithm algorithm = new HoverAlgorithm(15, TimeUnit.MILLISECONDS, 300);
-                projectile.setAlgorithm(algorithm);
+                projectile.setAlgorithm(new HoverAlgorithm(15, TimeUnit.MILLISECONDS, 300));
             }
         }
 
