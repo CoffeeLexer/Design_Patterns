@@ -11,27 +11,30 @@ public class DungeonFactory extends LevelFactory {
     Stack<Node> nodeStack = new Stack<>();
     private Random random = new Random();
 
-    private double density = 1;
+    private double density = 0.80;
 
+    private boolean[][] grid;
 
     public DungeonFactory(int gridWidth, int gridHeight, int wallSize) {
         super(gridWidth, gridHeight, wallSize);
+        grid = new boolean[gridHeight][gridWidth];
     }
 
     @Override
-    public void buildLevel() {
-        nodeStack.push(new Node(0, 0));
+    public void build() {
+        buildEdges();
+        nodeStack.push(new Node(1, 1));
         while (!nodeStack.empty()) {
             Node next = nodeStack.pop();
             if (isValid(next)) {
-                spaceGrid[next.y][next.x] = true;
+                grid[next.y][next.x] = true;
                 pushToStackRandomly(getNeighboors(next));
             }
         }
 
         for (int x = 0; x < gridWidth; x++) {
             for (int y = 0; y < gridHeight; y++) {
-                if (!spaceGrid[y][x] && random.nextDouble() <= density) {
+                if (!grid[y][x] && random.nextDouble() <= density) {
                     buildWall(x, y);
                 }
             }
@@ -46,14 +49,14 @@ public class DungeonFactory extends LevelFactory {
     }
 
     private boolean isValid(Node node) {
-        if (spaceGrid[node.y][node.x]) {
+        if (grid[node.y][node.x]) {
             return false;
         }
 
         int neighboorCount = 0;
         for (int x = node.x - 1; x <= node.x + 1; x++) {
             for (int y = node.y - 1; y <= node.y + 1; y++) {
-                if (inBounds(x, y) && notNode(node, x, y) && spaceGrid[y][x]) {
+                if (inBounds(x, y) && notNode(node, x, y) && grid[y][x]) {
                     neighboorCount++;
                 }
             }
@@ -76,7 +79,7 @@ public class DungeonFactory extends LevelFactory {
     }
 
     private boolean inBounds(int x, int y) {
-        return x < gridWidth && x >= 0 && y < gridHeight && y >= 0;
+        return x < gridWidth - 1 && x >= 1 && y < gridHeight - 1 && y >= 1;
     }
 
     private boolean notNode(Node node, int x, int y) {
@@ -89,7 +92,7 @@ public class DungeonFactory extends LevelFactory {
 
     @Override
     protected void buildWall(int x, int y) {
-        add(new DungeonWall(x * wallSize, y * wallSize, wallSize));
+        level.objects[y][x] = new DungeonWall(x * wallSize, y * wallSize, wallSize); 
     }
 
     private class Node {
