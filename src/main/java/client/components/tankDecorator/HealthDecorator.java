@@ -34,6 +34,11 @@ public class HealthDecorator extends TankDecorator {
     this.label.setColor(color);
   }
 
+    @Override
+    public void update(float delta) {
+        this.label.setText(wrappee.getCurrentHP() + " / " + wrappee.getMaxHP());
+    }
+
   @Override
   public void decorate(double a, double b)
   {

@@ -26,7 +26,7 @@ public class ServerWorker implements Runnable {
             boolean active = true;
             while(active)
             {
-                Payload payload = (Payload)connection.input.readObject();
+                Payload payload = (Payload)connection.readObject();
                 switch (payload.method) {
                     case info -> {
                         Server.GetInstance().Info();
@@ -73,7 +73,7 @@ public class ServerWorker implements Runnable {
                         int id = SEngine.GetInstance().Add(playerTank);
                         playerID = id;
                         SEngine.GetInstance().SyncEngine(connection);
-                        connection.output.writeObject(new Payload(Handshake.Method.tagPlayer, id));
+                        connection.writeObject(new Payload(Handshake.Method.tagPlayer, id));
 
                         String playerName = "Player: " + Integer.toString(playerID);
                         labelDecorator.decorate(playerName);

@@ -103,13 +103,11 @@ public class SEngine {
         for (GameObject obj: gameObjects.values()) {
             list.add(obj.ClientParse());
         }
-        connection.lock.lock();
         try {
-            connection.output.writeObject(new Payload(Handshake.Method.syncEngine, list));
+            connection.writeObject(new Payload(Handshake.Method.syncEngine, list));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        connection.lock.unlock();
     }
 
     private void Run()

@@ -1,5 +1,7 @@
 package client.components.weaponFacade;
 import java.util.concurrent.TimeUnit;
+
+import client.components.GameComponent;
 import client.components.Transform;
 import client.gameObjects.Projectile;
 import network.server.SEngine;
@@ -12,9 +14,11 @@ public class ShotgunAlgorithm extends ProjectileAlgorithm {
     String shellImage = "images/shell.png";
     Transform transform = gameObject.getComponent(Transform.Key());
 
-    SEngine.GetInstance()
-        .Add(new Projectile(transform.position.x, transform.position.y, rotation, shellImage)
-            .setAlgorithm(new StraightFlyAlgorithm(speed, TimeUnit.MILLISECONDS, duration)));
+    Projectile obj = new Projectile(transform.position.x, transform.position.y, rotation, shellImage)
+            .setAlgorithm(new StraightFlyAlgorithm(speed, TimeUnit.MILLISECONDS, duration));
+    obj.owner = ((Projectile)gameObject).owner;
+
+    SEngine.GetInstance().Add(obj);
   }
 
   public ShotgunAlgorithm(float speed, TimeUnit unit, long duration) {

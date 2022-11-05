@@ -7,21 +7,17 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 public class UDPSender {
-    DatagramSocket socket = null;
-    private final static UDPSender instance = new UDPSender();
+    static DatagramSocket socket;
 
-    public static UDPSender getInstance() {
-        return instance;
-    }
-
-    public UDPSender() {
+    static {
         try {
             socket = new DatagramSocket(8081);
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
     }
-    public <T extends Serializable> void Send(InetAddress address, int port, T dataObject) {
+    public UDPSender() {}
+    public void Send(InetAddress address, int port, Object dataObject) {
         try {
             ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(byteStream);

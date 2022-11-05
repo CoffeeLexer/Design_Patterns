@@ -1,6 +1,7 @@
 package client.components;
 
 import client.gameObjects.GameObject;
+import client.gameObjects.Projectile;
 import client.gameObjects.Tank;
 import client.gameObjects.Wall;
 import network.server.SEngine;
@@ -60,6 +61,13 @@ public class Colliders {
     public static BiFunction<GameObject, GameObject, Void> projectile = (me, other) -> {
         if(Wall.class.isAssignableFrom(other.getClass())) {
             SEngine.GetInstance().Destroy(me);
+        }
+        if(Tank.class.isAssignableFrom(other.getClass())) {
+            Projectile p = (Projectile)me;
+            if(p.owner.uniqueID != other.uniqueID) {
+                SEngine.GetInstance().Destroy(me);
+                ((Tank) other).setDamage(1);
+            }
         }
         return null;
     };

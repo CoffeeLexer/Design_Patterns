@@ -1,11 +1,9 @@
 package client.gameObjects;
-import client.components.Collider;
-import client.components.Colliders;
-import client.components.Renderer;
-import client.components.Transform;
+import client.components.*;
 import client.components.weaponFacade.ProjectileAlgorithm;
 
 public class Projectile extends GameObject {
+    public GameObject owner = null;
     public Projectile(float x, float y, float angle, String imagePath) {
         this(x, y, angle, imagePath, 25);
     }

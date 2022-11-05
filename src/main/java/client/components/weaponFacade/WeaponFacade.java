@@ -30,6 +30,7 @@ public class WeaponFacade extends GameComponent {
         float yCoords = transform.position.y + this.parentSize / 4;
 
         Projectile projectile = new Projectile(xCoords, yCoords, transform.rotation, "images/tank-projectile.png");
+        projectile.owner = gameObject;
 
         switch (keyCode) {
             case KeyEvent.VK_N -> {

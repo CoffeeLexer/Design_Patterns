@@ -59,16 +59,13 @@ public class Server {
                 Socket clientSocket = serverSocket.accept();
                 clientLock.lock();
 
-                Connection connection = new Connection();
-                connection.socket = clientSocket;
+                Connection connection = new Connection(clientSocket);
 
-                connection.output = new ObjectOutputStream(clientSocket.getOutputStream());
-                connection.input = new ObjectInputStream(clientSocket.getInputStream());
-                connection.lock = new ReentrantLock();
 
-                Payload payload = (Payload) connection.input.readObject();
+
+                Payload payload = (Payload) connection.readObject();
                 if (payload.method == Handshake.Method.login) {
-                    connection.udpPort = payload.GetData();
+                    connection.setUDPPort(payload.GetData());
                 } else {
                     System.out.println("First Invoking must be Method login!");
                 }
@@ -97,13 +94,11 @@ public class Server {
         while (i.hasNext()) {
             var connection = i.next();
 
-            connection.lock.lock();
+
             try {
-                connection.output.writeObject(payload);
+                connection.writeObject(payload);
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            } finally {
-                connection.lock.unlock();
             }
         }
         clientLock.unlock();
@@ -114,8 +109,9 @@ public class Server {
         var i = connections.iterator();
 
         while (i.hasNext()) {
-            var connection = i.next();
-            UDPSender.getInstance().Send(connection.socket.getInetAddress(), connection.udpPort, payload);
+            Connection connection = i.next();
+            var udp = new UDPConnectionAdapter(connection);
+            udp.writeObject(payload);
         }
         clientLock.unlock();
     }

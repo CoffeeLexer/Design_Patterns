@@ -4,9 +4,9 @@ import client.components.tankDecorator.ITankDecorator;
 import client.components.tankDecorator.HealthDecorator;
 import client.components.tankDecorator.ShieldDecorator;
 import client.components.weaponFacade.WeaponFacade;
+import network.server.SEngine;
 
 import java.awt.Color;
-import java.awt.geom.Point2D;
 
 public class Tank extends GameObject implements ITankDecorator {    
     public int tankSize = 50;
@@ -56,6 +56,14 @@ public class Tank extends GameObject implements ITankDecorator {
 
     public void setShield(double amount) {
         this.shieldAmount = amount;
+    }
+
+    public void setDamage(int damage) {
+        currentHP -= damage;
+        this.healthDecorator.decorate(this.currentHP, this.maxHP);
+        if(currentHP <= 0) {
+            SEngine.GetInstance().Destroy(this);
+        }
     }
 
     // Shield has toggle functionality for Decoration pattern testing.
