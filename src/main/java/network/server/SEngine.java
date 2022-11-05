@@ -1,5 +1,6 @@
 package network.server;
 
+import client.components.Collider;
 import client.gameObjects.GameObject;
 import client.gameObjects.Tag;
 import client.gameObjects.Wall;
@@ -134,6 +135,26 @@ public class SEngine {
                 GameObject parsed = obj.ClientParse();
                 Payload payload = new Payload(Handshake.Method.setGameObject, parsed);
                 Server.GetInstance().NotifyUDP(payload);
+            }
+            ArrayList<GameObject> list = new ArrayList<>(gameObjects.size());
+            list.addAll(gameObjects.values());
+            for(int i = 0; i < list.size(); i++) {
+                GameObject obj = list.get(i);
+                if(obj == null) continue;
+                Collider collider = obj.getComponent(Collider.Key());
+                if(collider == null) continue;
+                for(int j = i + 1; j < list.size(); j++) {
+                    GameObject objOther = list.get(j);
+                    if(objOther == null) continue;
+                    Collider colliderOther = objOther.getComponent(Collider.Key());
+                    if(colliderOther == null) continue;
+                    if(collider.isColliding(colliderOther) && colliderOther.isColliding(collider)) {
+                        collider.onCollision(obj, objOther);
+                        colliderOther.onCollision(objOther, obj);
+                        collider.isColliding(colliderOther);
+                        colliderOther.isColliding(collider);
+                    }
+                }
             }
             lock.unlock();
             try

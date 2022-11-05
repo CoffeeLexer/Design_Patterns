@@ -2,16 +2,19 @@ package client.components;
 
 import client.utilities.Assets;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Renderer extends GameComponent {
     private Integer width;
     private Integer height;
     private String imagePath;
-    private double boxSize;
+    private float boxSize;
 
     private String text = "";
     private boolean withImage = true;
@@ -75,7 +78,32 @@ public class Renderer extends GameComponent {
 
         return newImageFromBuffer;
     }
-
+    public Point2D.Float getCenter() {
+        Transform transform = gameObject.getComponent(Transform.Key());
+        if(transform == null) return new Point2D.Float();
+        return new Point2D.Float(transform.position.x + boxSize / 2, transform.position.y + boxSize / 2);
+    }
+    public List<Point2D.Float> getCorners() {
+        List<Point2D.Float> corners = new ArrayList<>();
+        corners.add(new Point2D.Float(-width, height));
+        corners.add(new Point2D.Float(width, height));
+        corners.add(new Point2D.Float(width, -height));
+        corners.add(new Point2D.Float(-width, -height));
+        var center = getCenter();
+        Transform transform = gameObject.getComponent(Transform.Key());
+        if(transform == null) return corners;
+        float rotation = (float) Math.toRadians(transform.rotation);
+        float c = (float)Math.cos(rotation);
+        float s = (float)Math.sin(rotation);
+        for(int i = 0; i < corners.size(); i++)
+        {
+            Point2D.Float vertex = corners.get(i);
+            float x = vertex.x * c - vertex.y * s;
+            float y = vertex.x * s + vertex.y * c;
+            corners.set(i, new Point2D.Float(x / 2 + center.x, y / 2 + center.y));
+        }
+        return corners;
+    }
     public void render(Graphics2D g2d) {
         Point2D.Float position = ((Transform)this.gameObject.getComponent(Transform.Key())).position;
         int x = (int) Math.round(position.getX());

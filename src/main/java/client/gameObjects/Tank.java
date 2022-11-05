@@ -6,6 +6,7 @@ import client.components.tankDecorator.ShieldDecorator;
 import client.components.weaponFacade.WeaponFacade;
 
 import java.awt.Color;
+import java.awt.geom.Point2D;
 
 public class Tank extends GameObject implements ITankDecorator {    
     public int tankSize = 50;
@@ -33,6 +34,8 @@ public class Tank extends GameObject implements ITankDecorator {
         addComponent(new ConstantSpeed(0.0f));
         addComponent(new ConstantRotation(0.0f));
         addComponent(new WeaponFacade(this.tankSize));
+        addComponent(Collider.fromTexture(this.renderer));
+        ((Collider)getComponent(Collider.Key())).setFunction(Colliders.tank);
         tag = Tag.Dynamic;
         this.healthDecorator = new HealthDecorator(this);
         this.shieldDecorator = new ShieldDecorator(this);
