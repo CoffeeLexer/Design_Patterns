@@ -2,6 +2,7 @@ package network.factories;
 
 import java.util.Random;
 import client.gameObjects.CityWall;
+import client.gameObjects.Wall;
 
 public class CityFactory extends LevelFactory {
 
@@ -14,11 +15,12 @@ public class CityFactory extends LevelFactory {
     }
 
     @Override
-    public void buildLevel() {
-        for (int i = 0; i < gridHeight / 4; i++) {
-            for (int j = 0; j < gridWidth / 4; j++) {
+    public void build() {
+        buildEdges();
+        for (int i = 0; i < (gridHeight - 1) / 4; i++) {
+            for (int j = 0; j < (gridWidth - 1) / 4; j++) {
                 if (random.nextDouble() <= density) {
-                    buildBuilding(j * 4, i * 4);
+                    buildBuilding(j * 4 + 1, i * 4 + 1);
                 }
             }
         }
@@ -52,11 +54,9 @@ public class CityFactory extends LevelFactory {
             }
         }
     }
-    
+
     @Override
     protected void buildWall(int x, int y) {
-        add(new CityWall(x * wallSize, y * wallSize, wallSize));
-        spaceGrid[y][x] = true;
+        level.objects[y][x] = new CityWall(x * wallSize, y * wallSize, wallSize);
     }
-
 }

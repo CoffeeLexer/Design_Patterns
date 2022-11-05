@@ -6,6 +6,7 @@ import network.data.Handshake;
 import network.data.Payload;
 import network.factories.LevelFactory;
 import network.factories.StrongholdFactory;
+import network.levelManagement.LevelManager;
 import network.factories.CityFactory;
 import network.factories.DungeonFactory;
 
@@ -17,6 +18,8 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
+import client.gameObjects.consumables.AmmunitionConsumable;
+
 public class Server {
     private ServerSocket serverSocket = null;
     private final Integer port = 8080;
@@ -24,7 +27,7 @@ public class Server {
     private ReentrantLock clientLock = null;
     private List<Connection> connections = null;
 
-    private LevelFactory levelFactory;
+    private LevelManager levelManager;
 
     private Server() {
         try {
@@ -118,8 +121,8 @@ public class Server {
     }
 
     private void initializeGame() {
-        levelFactory = new StrongholdFactory(32, 18, 60);
-        levelFactory.buildLevel();
+        levelManager = new LevelManager();
+        levelManager.buildNextLevel();
     }
 
     public static void main(String[] args) {
