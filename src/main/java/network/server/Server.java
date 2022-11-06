@@ -17,6 +17,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 
 import client.gameObjects.consumables.AmmunitionConsumable;
 
@@ -25,7 +26,7 @@ public class Server {
     private final Integer port = 8080;
     private ThreadGroup workers = null;
     private ReentrantLock clientLock = null;
-    private List<Connection> connections = null;
+    public List<Connection> connections = null;
 
     private LevelManager levelManager;
 
@@ -116,8 +117,14 @@ public class Server {
         clientLock.unlock();
     }
 
+    public void notifyConnections(Consumer<Connection> consumer){
+        for (Connection connection : connections) {
+            consumer.accept(connection);
+        }
+    }
+
     private void initializeGame() {
-        levelManager = new LevelManager();
+        levelManager = LevelManager.getInstance();
         levelManager.buildNextLevel();
     }
 

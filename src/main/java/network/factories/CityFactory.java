@@ -3,6 +3,7 @@ package network.factories;
 import java.util.Random;
 import client.gameObjects.CityWall;
 import client.gameObjects.Wall;
+import network.builders.Builder;
 
 public class CityFactory extends LevelFactory {
 
@@ -15,7 +16,7 @@ public class CityFactory extends LevelFactory {
     }
 
     @Override
-    public void build() {
+    public Builder build() {
         buildEdges();
         for (int i = 0; i < (gridHeight - 1) / 4; i++) {
             for (int j = 0; j < (gridWidth - 1) / 4; j++) {
@@ -24,6 +25,8 @@ public class CityFactory extends LevelFactory {
                 }
             }
         }
+
+        return this;
     }
 
     private void buildBuilding(int x, int y) {

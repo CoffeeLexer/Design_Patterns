@@ -2,9 +2,12 @@ package network.server;
 
 import client.components.tankDecorator.LabelDecorator;
 import client.gameObjects.Tank;
+import network.client.ClientId;
 import network.data.Connection;
 import network.data.Handshake;
 import network.data.Payload;
+import network.levelManagement.LevelManager;
+
 import java.awt.event.KeyEvent;
 import java.io.EOFException;
 import java.io.IOException;
@@ -14,7 +17,7 @@ import java.util.Set;
 public class ServerWorker implements Runnable {
     Connection connection = null;
     Set<Integer> keysPressed = null;
-    int playerID = -1;
+    ClientId playerID = new ClientId(-1);
     public ServerWorker(Connection connection) {
         this.connection = connection;
         this.keysPressed = new HashSet<>();
@@ -34,7 +37,7 @@ public class ServerWorker implements Runnable {
                     case keyReleased -> {
                         int keyCode = payload.GetData();
                         keysPressed.remove(keyCode);
-                        Tank tank = (Tank)SEngine.GetInstance().Get(playerID);
+                        Tank tank = (Tank)SEngine.GetInstance().Get(playerID.value);
                         switch (keyCode) {
                             case KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> {
                                 KeyboardEvents.Rotate(tank, keysPressed);
@@ -47,7 +50,7 @@ public class ServerWorker implements Runnable {
                     case keyPressed -> {
                         int keyCode = payload.GetData();
                         keysPressed.add(keyCode);
-                        Tank tank = (Tank)SEngine.GetInstance().Get(playerID);
+                        Tank tank = (Tank)SEngine.GetInstance().Get(playerID.value);
                         switch (keyCode) {
                             case KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> {
                                 KeyboardEvents.Rotate(tank, keysPressed);
@@ -67,16 +70,16 @@ public class ServerWorker implements Runnable {
                         }
                     }
                     case joinGame -> {
-                        Tank playerTank = new Tank("images/tank-blue.png");
-                        LabelDecorator labelDecorator = new LabelDecorator(playerTank);
+                        // Tank playerTank = new Tank("images/tank-blue.png");
+                        // LabelDecorator labelDecorator = new LabelDecorator(playerTank);
 
-                        int id = SEngine.GetInstance().Add(playerTank);
-                        playerID = id;
+                        // int id = SEngine.GetInstance().Add(playerTank);
+                        // playerID = id;
+                        // String playerName = "Player: " + Integer.toString(playerID);
+                        // labelDecorator.decorate(playerName);
+
                         SEngine.GetInstance().SyncEngine(connection);
-                        connection.writeObject(new Payload(Handshake.Method.tagPlayer, id));
-
-                        String playerName = "Player: " + Integer.toString(playerID);
-                        labelDecorator.decorate(playerName);
+                        connection.writeObject(new Payload(Handshake.Method.tagPlayer, LevelManager.getInstance().spawnPlayer(playerID)));
                     }
                 }
             }
@@ -103,7 +106,7 @@ public class ServerWorker implements Runnable {
             throw new RuntimeException(e);
         }
         finally {
-            SEngine.GetInstance().Destroy(playerID);
+            LevelManager.getInstance().disconnectPlayer(playerID);
         }
         System.out.printf("Stopping to listen! %s\n", Thread.currentThread().getName());
     }

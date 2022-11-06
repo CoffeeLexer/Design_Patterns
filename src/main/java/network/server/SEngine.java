@@ -65,6 +65,12 @@ public class SEngine {
         }
     }
 
+    public void syncAllConnections(){
+        for (var connection : Server.GetInstance().connections) {
+            SyncEngine(connection);
+        }
+    }
+
     public void Destroy(GameObject gameObject) {
         lock.lock();
         gameObject.destroy();

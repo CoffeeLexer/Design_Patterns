@@ -4,6 +4,7 @@ import client.components.tankDecorator.ITankDecorator;
 import client.components.tankDecorator.HealthDecorator;
 import client.components.tankDecorator.ShieldDecorator;
 import client.components.weaponFacade.WeaponFacade;
+import network.levelManagement.LevelManager;
 import network.server.SEngine;
 
 import java.awt.Color;
@@ -62,7 +63,7 @@ public class Tank extends GameObject implements ITankDecorator {
         currentHP -= damage;
         this.healthDecorator.decorate(this.currentHP, this.maxHP);
         if(currentHP <= 0) {
-            SEngine.GetInstance().Destroy(this);
+            LevelManager.getInstance().destroyPlayer(this);
         }
     }
 

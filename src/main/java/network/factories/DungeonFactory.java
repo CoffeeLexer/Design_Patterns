@@ -3,6 +3,7 @@ package network.factories;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
+import network.builders.Builder;
 
 import client.gameObjects.DungeonWall;
 
@@ -21,7 +22,7 @@ public class DungeonFactory extends LevelFactory {
     }
 
     @Override
-    public void build() {
+    public Builder build() {
         buildEdges();
         nodeStack.push(new Node(1, 1));
         while (!nodeStack.empty()) {
@@ -39,6 +40,8 @@ public class DungeonFactory extends LevelFactory {
                 }
             }
         }
+
+        return this;
     }
 
     private void pushToStackRandomly(ArrayList<Node> nodes) {
