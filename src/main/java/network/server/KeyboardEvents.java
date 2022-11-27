@@ -45,13 +45,21 @@ public class KeyboardEvents {
     public static void InvokeShield(Tank tank) {
         tank.toggleShield();
     }
+
+    public static void TimeTravel(Tank tank) {
+        tank.timeTravel();
+    }
+
     public static void Clone(Tank tank) {
-        GameObject clone = tank.cloneShallow();
-        ConstantSpeed cs = clone.getComponent(ConstantSpeed.Key());
-        cs.speed = Constants.drivingSpeed;
-        ConstantRotation cr = clone.getComponent(ConstantRotation.Key());
-        cr.speed = 0;
-        clone.addComponent(new Lifetime(TimeUnit.SECONDS, 1, true));
-        SEngine.GetInstance().Add(clone);
+        // do not allow to clone if tank is time travelling
+        if (!tank.isTimeTravelling()) {
+            GameObject clone = tank.cloneShallow();
+            ConstantSpeed cs = clone.getComponent(ConstantSpeed.Key());
+            cs.speed = Constants.drivingSpeed;
+            ConstantRotation cr = clone.getComponent(ConstantRotation.Key());
+            cr.speed = 0;
+            clone.addComponent(new Lifetime(TimeUnit.SECONDS, 1, true));
+            SEngine.GetInstance().Add(clone);
+        }
     }
 }

@@ -1,7 +1,6 @@
 package client.components.weaponFacade;
 import java.util.concurrent.TimeUnit;
 
-import client.components.GameComponent;
 import client.components.Transform;
 import client.gameObjects.Projectile;
 import network.server.SEngine;
