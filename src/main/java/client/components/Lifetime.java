@@ -7,11 +7,11 @@ import java.awt.event.KeyEvent;
 
 public class Lifetime extends GameComponent{
     long end;
-    boolean isTank = false;
+    boolean isTankClone = false;
 
-    public Lifetime(TimeUnit unit, long duration, boolean isTank) {
+    public Lifetime(TimeUnit unit, long duration, boolean isTankClone) {
         end = System.currentTimeMillis() + unit.toMillis(duration);
-        this.isTank = isTank;
+        this.isTankClone = isTankClone;
     }
     public Lifetime(long end) {
         this.end = end;
@@ -19,7 +19,7 @@ public class Lifetime extends GameComponent{
     @Override
     public void update(float delta) {
         if(System.currentTimeMillis() > end) {
-            if (this.isTank) {
+            if (this.isTankClone) {
                 WeaponFacade weaponFacade = gameObject.getComponent(WeaponFacade.Key());
                 weaponFacade.shoot(KeyEvent.VK_J); // shoot a shotgun projectile
             }
