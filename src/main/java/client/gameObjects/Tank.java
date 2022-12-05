@@ -75,6 +75,15 @@ public class Tank extends GameObject implements ITankDecorator {
         }
     }
 
+    public void setHealth(int health) {
+        currentHP = health;
+        maxHP = Math.max(currentHP, maxHP);
+        this.healthDecorator.decorate(this.currentHP, this.maxHP);
+        if(currentHP <= 0) {
+            LevelManager.getInstance().destroyPlayer(this);
+        }
+    }
+
     public boolean isTimeTravelling() {
         return this.isTimeTravelling;
     }
@@ -97,7 +106,7 @@ public class Tank extends GameObject implements ITankDecorator {
     // Tank is Originator
     public void timeTravel() {
         this.isTimeTravelling = true;
-        removeComponent(TimeTravel.Key()); // remove old timer component if it exists
+        this.removeComponent(TimeTravel.Key()); // remove old timer component if it exists
         addComponent(new TimeTravel(TimeUnit.SECONDS, 3, this));
     }
 

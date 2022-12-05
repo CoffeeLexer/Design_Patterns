@@ -1,5 +1,6 @@
 package client.gameObjects;
 
+import client.Primitive;
 import client.components.GameComponent;
 import client.components.Prototype;
 import client.components.Renderer;
@@ -12,7 +13,7 @@ import java.util.TreeMap;
 import java.util.List;
 import java.util.ArrayList;
 
-public class GameObject implements Serializable, Prototype {
+public class GameObject extends Primitive implements Serializable, Prototype {
     private List<Integer> childrenIDs = new ArrayList<Integer>();
     public boolean newState = true;
     public int uniqueID = -1;

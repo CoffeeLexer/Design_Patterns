@@ -62,8 +62,6 @@ public class Server {
 
                 Connection connection = new Connection(clientSocket);
 
-
-
                 Payload payload = (Payload) connection.readObject();
                 if (payload.method == Handshake.Method.login) {
                     connection.setUDPPort(payload.GetData());

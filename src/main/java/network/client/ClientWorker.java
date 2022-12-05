@@ -45,6 +45,9 @@ public class ClientWorker implements Runnable {
                     case removeGameObject -> {
                         CEngine.getInstance().Remove(payload.GetData());
                     }
+                    case interpreter -> {
+                        Client.GetInstance().blockingQueue.put(payload);
+                    }
                 }
             }
         }
@@ -65,6 +68,8 @@ public class ClientWorker implements Runnable {
         }
         catch (ClassNotFoundException e)
         {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

@@ -2,6 +2,7 @@ package network.server;
 
 import client.components.Collider;
 import client.gameObjects.GameObject;
+import client.gameObjects.GameObjectIterator;
 import client.gameObjects.Tag;
 import client.gameObjects.Wall;
 import network.data.Connection;
@@ -128,13 +129,20 @@ public class SEngine {
             delta = current - previous;
 
             lock.lock();
-            for (var obj: gameObjects.values())
+            GameObject obj = null;
+            var it = gameObjects.values().iterator();
+            //var it = new GameObjectIterator(gameObjects.values());
+            while(it.hasNext())
             {
+                obj = it.next();
                 if(obj.tag != Tag.Dynamic) continue;
                 obj.update(frameDelay / delta);
             }
-            for (var obj: gameObjects.values())
+            it = gameObjects.values().iterator();
+            //it = new GameObjectIterator(gameObjects.values());
+            while(it.hasNext())
             {
+                obj = it.next();
                 if(obj.tag != Tag.Dynamic) continue;
                 GameObject parsed = obj.ClientParse();
                 Payload payload = new Payload(Handshake.Method.setGameObject, parsed);
@@ -143,7 +151,7 @@ public class SEngine {
             ArrayList<GameObject> list = new ArrayList<>(gameObjects.size());
             list.addAll(gameObjects.values());
             for(int i = 0; i < list.size(); i++) {
-                GameObject obj = list.get(i);
+                obj = list.get(i);
                 if(obj == null) continue;
                 Collider collider = obj.getComponent(Collider.Key());
                 if(collider == null) continue;

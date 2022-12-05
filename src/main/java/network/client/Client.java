@@ -8,6 +8,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Client {
     Socket clientSocket = null;
@@ -30,6 +32,7 @@ public class Client {
             ClientWorker worker = new ClientWorker(clientSocket, input, output);
             listener = new Thread(worker);
             listener.start();
+            blockingQueue = new LinkedBlockingQueue<>();
         }
         catch (UnknownHostException e)
         {
@@ -62,6 +65,22 @@ public class Client {
         }
         catch (IOException e)
         {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public BlockingQueue<Payload> blockingQueue;
+    public synchronized Payload InvokeWithResponse(Payload payload) {
+        try
+        {
+            output.writeObject(payload);
+            return blockingQueue.take();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
