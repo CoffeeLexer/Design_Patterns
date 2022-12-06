@@ -3,6 +3,7 @@ package network.server;
 import client.components.tankDecorator.LabelDecorator;
 import client.gameObjects.Tank;
 import client.utilities.interpreter.Context;
+import client.utilities.interpreter.ServerExpression;
 import network.client.ClientId;
 import network.data.Connection;
 import network.data.Handshake;
@@ -34,6 +35,7 @@ public class ServerWorker implements Runnable {
                 switch (payload.method) {
                     case interpreter -> {
                         Context ctx = payload.GetData();
+                        ServerExpression.Response response = new ServerExpression.Response();
                         switch (ctx.method) {
                             case destroyObject -> {
                                 int v = -1;
@@ -42,19 +44,18 @@ public class ServerWorker implements Runnable {
                                 }
                                 catch (Exception ignored) {}
                                 if(v == -1) {
-                                    ctx.error = "Value is not integer!";
+                                    response.error = "Value is not integer!";
                                 }
                                 else {
                                     var obj = SEngine.GetInstance().gameObjects.get(v);
                                     if(obj == null) {
-                                        ctx.error = "Object not found!";
+                                        response.error = "Object not found!";
                                     }
                                     else {
                                         SEngine.GetInstance().Destroy(obj);
-                                        ctx.result = "Object destroyed!";
+                                        response.result = "Object destroyed!";
                                     }
                                 }
-                                connection.writeObject(new Payload(Handshake.Method.interpreter, ctx));
                             }
                             case kick -> {
                                 int p = -1;
@@ -63,19 +64,18 @@ public class ServerWorker implements Runnable {
                                 }
                                 catch (Exception ignored) {}
                                 if(p == -1) {
-                                    ctx.error = "Player is not id!";
+                                    response.error = "Player is not id!";
                                 }
                                 else {
                                     var obj = SEngine.GetInstance().gameObjects.get(p);
                                     if(obj == null || !obj.getClass().equals(Tank.class)) {
-                                        ctx.error = "Player not found!";
+                                        response.error = "Player not found!";
                                     }
                                     else {
                                         SEngine.GetInstance().Destroy(obj);
-                                        ctx.result = "Player Kicked!";
+                                        response.result = "Player Kicked!";
                                     }
                                 }
-                                connection.writeObject(new Payload(Handshake.Method.interpreter, ctx));
                             }
                             case kill -> {
                                 int p = -1;
@@ -84,35 +84,34 @@ public class ServerWorker implements Runnable {
                                 }
                                 catch (Exception ignored) {}
                                 if(p == -1) {
-                                    ctx.error = "Player is not id!";
+                                    response.error = "Player is not id!";
                                 }
                                 else {
                                     var obj = SEngine.GetInstance().gameObjects.get(p);
                                     if(obj == null || !obj.getClass().equals(Tank.class)) {
-                                        ctx.error = "Player not found!";
+                                        response.error = "Player not found!";
                                     }
                                     else {
                                         SEngine.GetInstance().Destroy(obj);
-                                        ctx.result = "Player Killed!";
+                                        response.result = "Player Killed!";
                                     }
                                 }
-                                connection.writeObject(new Payload(Handshake.Method.interpreter, ctx));
                             }
                             case listObjects -> {
                                 SEngine.GetInstance().gameObjects.values().forEach(e -> {
-                                    ctx.result += "Object " + e.uniqueID + ": ";
-                                    ctx.result += e + "\n";
+                                    response.result += "Object " + e.uniqueID + ": ";
+                                    response.result += e + "\n";
                                 });
-                                connection.writeObject(new Payload(Handshake.Method.interpreter, ctx));
+                                response.result = response.result.trim();
                             }
                             case listPlayers -> {
                                 SEngine.GetInstance().gameObjects.values().forEach(e -> {
                                     if(e.getClass().equals(Tank.class)) {
-                                        ctx.result += "Player " + e.uniqueID + ": ";
-                                        ctx.result += e + "\n";
+                                        response.result += "Player " + e.uniqueID + ": ";
+                                        response.result += e + "\n";
                                     }
                                 });
-                                connection.writeObject(new Payload(Handshake.Method.interpreter, ctx));
+                                response.result = response.result.trim();
                             }
                             case setHealth -> {
                                 int p = -1;
@@ -121,7 +120,7 @@ public class ServerWorker implements Runnable {
                                 }
                                 catch (Exception ignored) {}
                                 if(p == -1) {
-                                    ctx.error = "Player is not id!";
+                                    response.error = "Player is not id!";
                                 }
                                 else {
                                     var v = -1;
@@ -130,23 +129,23 @@ public class ServerWorker implements Runnable {
                                     }
                                     catch (Exception ignored) {}
                                     if(v < 1) {
-                                        ctx.error = "Value is not positive number!";
+                                        response.error = "Value is not positive number!";
                                     }
                                     else {
                                         var obj = SEngine.GetInstance().gameObjects.get(p);
                                         if(obj == null || !obj.getClass().equals(Tank.class)) {
-                                            ctx.error = "Player not found!";
+                                            response.error = "Player not found!";
                                         }
                                         else {
                                             var t = (Tank) obj;
                                             t.setHealth(v);
-                                            ctx.result = "Player health updated!";
+                                            response.result = "Player health updated!";
                                         }
                                     }
                                 }
-                                connection.writeObject(new Payload(Handshake.Method.interpreter, ctx));
                             }
                         }
+                        connection.writeObject(new Payload(Handshake.Method.interpreter, response));
                     }
                     case info -> {
                         Server.GetInstance().Info();

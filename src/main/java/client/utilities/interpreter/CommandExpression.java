@@ -1,32 +1,18 @@
 package client.utilities.interpreter;
 
 import client.utilities.chain.*;
+import client.utilities.visitor.IElement;
+import client.utilities.visitor.Visitor;
 
-public class CommandExpression extends Expression {
+public class CommandExpression extends Expression implements IElement {
 
-    private Handler<Context> root = null;
-
-    public CommandExpression() {
-        root = new DestroyObjectHandler();
-        var helpHandler = new HelpHandler();
-        var kickHandler = new KickHandler();
-        var killHandler = new KillHandler();
-        var listObjectHandler = new ListObjectsHandler();
-        var listPlayersHandler = new ListPlayersHandler();
-        var setHealthHandler = new SetHealthHandler();
-        var notFoundHandler = new NotFoundHandler();
-
-        root.setSuccessor(helpHandler);
-        helpHandler.setSuccessor(kickHandler);
-        kickHandler.setSuccessor(killHandler);
-        killHandler.setSuccessor(listObjectHandler);
-        listObjectHandler.setSuccessor(listPlayersHandler);
-        listPlayersHandler.setSuccessor(setHealthHandler);
-        setHealthHandler.setSuccessor(notFoundHandler);
-    }
-
+    public Handler<Context> root = null;
     @Override
     public void Interpret(Context ctx) {
-        if(ctx.error.equals("")) root.handle(ctx);
+        if(!ctx.criticalError) root.handle(ctx);
+    }
+    @Override
+    public void Accept(Visitor visitor) {
+        visitor.VisitCommand(this);
     }
 }

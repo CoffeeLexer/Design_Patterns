@@ -1,6 +1,9 @@
 package client.panels;
 
 import client.utilities.interpreter.*;
+import client.utilities.visitor.ClearErrorVisitor;
+import client.utilities.visitor.CollectErrorVisitor;
+import client.utilities.visitor.SetupVisitor;
 import network.client.Client;
 
 import javax.swing.*;
@@ -42,6 +45,10 @@ public class Debugger {
         list.add(new ValueExpression());
         list.add(new ServerExpression());
 
+        for (var e: list) {
+            e.Accept(new SetupVisitor());
+        }
+
         var resultLabel = new JLabel("Result:");
         textField.addActionListener(new ActionListener() {
             @Override
@@ -52,8 +59,15 @@ public class Debugger {
                 for (var e: list) {
                     e.Interpret(ctx);
                 }
-                if(!ctx.error.equals("")) {
-                    resultLabel.setText("<html>" + ctx.error.replaceAll("\n", "<br>").replaceAll("\t", "&ensp;") + "</html>");
+                var collect = new CollectErrorVisitor();
+                var clear = new ClearErrorVisitor();
+                for (var e: list) {
+                    e.Accept(collect);
+                    e.Accept(clear);
+                }
+                var error = collect.getTotalError();
+                if(!error.equals("")) {
+                    resultLabel.setText("<html>" + error.replaceAll("\n", "<br>").replaceAll("\t", "&ensp;") + "</html>");
                 }
                 else {
                     resultLabel.setText("<html>" + ctx.result.replaceAll("\n", "<br>").replaceAll("\t", "&ensp;") + "</html>");

@@ -13,7 +13,8 @@ public class Context implements Serializable {
         setHealth
     }
     public Method method;
-    public String error = "";
+    public boolean failed = false;
+    public boolean criticalError = false;
     public String data = "";
     public String result = "";
     public String[] args;
