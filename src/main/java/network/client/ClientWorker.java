@@ -1,6 +1,7 @@
 package network.client;
 
 import client.gameObjects.GameObject;
+import client.utilities.interpreter.ServerExpression;
 import network.data.Payload;
 import network.server.Server;
 
@@ -46,7 +47,8 @@ public class ClientWorker implements Runnable {
                         CEngine.getInstance().Remove(payload.GetData());
                     }
                     case interpreter -> {
-                        Client.GetInstance().blockingQueue.put(payload);
+                        ServerExpression.RealResponse res = payload.GetData();
+                        Client.GetInstance().blockingQueue.take().setReal(res);
                     }
                 }
             }

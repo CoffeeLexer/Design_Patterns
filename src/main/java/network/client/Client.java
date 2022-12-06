@@ -1,5 +1,6 @@
 package network.client;
 
+import client.utilities.interpreter.ServerExpression;
 import network.data.Handshake;
 import network.data.Payload;
 
@@ -70,12 +71,14 @@ public class Client {
     }
 
 
-    public BlockingQueue<Payload> blockingQueue;
-    public synchronized Payload InvokeWithResponse(Payload payload) {
+    public BlockingQueue<ServerExpression.Proxy> blockingQueue;
+    public synchronized ServerExpression.Proxy InvokeWithResponse(Payload payload) {
         try
         {
             output.writeObject(payload);
-            return blockingQueue.take();
+            var p = new ServerExpression.Proxy();
+            blockingQueue.put(p);
+            return p;
         }
         catch (IOException e)
         {

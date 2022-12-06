@@ -35,7 +35,7 @@ public class ServerWorker implements Runnable {
                 switch (payload.method) {
                     case interpreter -> {
                         Context ctx = payload.GetData();
-                        ServerExpression.Response response = new ServerExpression.Response();
+                        ServerExpression.RealResponse response = new ServerExpression.RealResponse();
                         switch (ctx.method) {
                             case destroyObject -> {
                                 int v = -1;
@@ -44,16 +44,16 @@ public class ServerWorker implements Runnable {
                                 }
                                 catch (Exception ignored) {}
                                 if(v == -1) {
-                                    response.error = "Value is not integer!";
+                                    response.setError("Value is not integer!");
                                 }
                                 else {
                                     var obj = SEngine.GetInstance().gameObjects.get(v);
                                     if(obj == null) {
-                                        response.error = "Object not found!";
+                                        response.setError("Object not found!");
                                     }
                                     else {
                                         SEngine.GetInstance().Destroy(obj);
-                                        response.result = "Object destroyed!";
+                                        response.setResult("Object destroyed!");
                                     }
                                 }
                             }
@@ -64,16 +64,16 @@ public class ServerWorker implements Runnable {
                                 }
                                 catch (Exception ignored) {}
                                 if(p == -1) {
-                                    response.error = "Player is not id!";
+                                    response.setError("Player is not id!");
                                 }
                                 else {
                                     var obj = SEngine.GetInstance().gameObjects.get(p);
                                     if(obj == null || !obj.getClass().equals(Tank.class)) {
-                                        response.error = "Player not found!";
+                                        response.setError("Player not found!");
                                     }
                                     else {
                                         SEngine.GetInstance().Destroy(obj);
-                                        response.result = "Player Kicked!";
+                                        response.setResult("Player Kicked!");
                                     }
                                 }
                             }
@@ -84,34 +84,34 @@ public class ServerWorker implements Runnable {
                                 }
                                 catch (Exception ignored) {}
                                 if(p == -1) {
-                                    response.error = "Player is not id!";
+                                    response.setError("Player is not id!");
                                 }
                                 else {
                                     var obj = SEngine.GetInstance().gameObjects.get(p);
                                     if(obj == null || !obj.getClass().equals(Tank.class)) {
-                                        response.error = "Player not found!";
+                                        response.setError("Player not found!");
                                     }
                                     else {
                                         SEngine.GetInstance().Destroy(obj);
-                                        response.result = "Player Killed!";
+                                        response.setResult("Player Killed!");
                                     }
                                 }
                             }
                             case listObjects -> {
                                 SEngine.GetInstance().gameObjects.values().forEach(e -> {
-                                    response.result += "Object " + e.uniqueID + ": ";
-                                    response.result += e + "\n";
+                                    response.setResult(response.getResult() + "Object " + e.uniqueID + ": ");
+                                    response.setResult(response.getResult() +  e + "\n");
                                 });
-                                response.result = response.result.trim();
+                                response.setResult(response.getResult().trim());
                             }
                             case listPlayers -> {
                                 SEngine.GetInstance().gameObjects.values().forEach(e -> {
                                     if(e.getClass().equals(Tank.class)) {
-                                        response.result += "Player " + e.uniqueID + ": ";
-                                        response.result += e + "\n";
+                                        response.setResult(response.getResult() +  "Player " + e.uniqueID + ": ");
+                                        response.setResult(response.getResult() + e + "\n");
                                     }
                                 });
-                                response.result = response.result.trim();
+                                response.setResult(response.getResult().trim());
                             }
                             case setHealth -> {
                                 int p = -1;
@@ -120,7 +120,7 @@ public class ServerWorker implements Runnable {
                                 }
                                 catch (Exception ignored) {}
                                 if(p == -1) {
-                                    response.error = "Player is not id!";
+                                    response.setError("Player is not id!");
                                 }
                                 else {
                                     var v = -1;
@@ -129,17 +129,17 @@ public class ServerWorker implements Runnable {
                                     }
                                     catch (Exception ignored) {}
                                     if(v < 1) {
-                                        response.error = "Value is not positive number!";
+                                        response.setError("Value is not positive number!");
                                     }
                                     else {
                                         var obj = SEngine.GetInstance().gameObjects.get(p);
                                         if(obj == null || !obj.getClass().equals(Tank.class)) {
-                                            response.error = "Player not found!";
+                                            response.setError("Player not found!");
                                         }
                                         else {
                                             var t = (Tank) obj;
                                             t.setHealth(v);
-                                            response.result = "Player health updated!";
+                                            response.setResult("Player health updated!");
                                         }
                                     }
                                 }

@@ -5,6 +5,9 @@ import client.gameObjects.GameObject;
 import java.awt.geom.Point2D;
 
 public class Transform extends GameComponent {
+
+    public Transform(){}
+
     public Point2D.Float position;
     public float rotation;
     public float getAngle() {
