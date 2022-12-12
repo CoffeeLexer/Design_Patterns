@@ -3,7 +3,6 @@ package network.factories;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
-import network.builders.Builder;
 
 import client.gameObjects.DungeonWall;
 
@@ -21,8 +20,7 @@ public class DungeonFactory extends LevelFactory {
         grid = new boolean[gridHeight][gridWidth];
     }
 
-    @Override
-    public Builder build() {
+    public void buildBody() {
         buildEdges();
         nodeStack.push(new Node(1, 1));
         while (!nodeStack.empty()) {
@@ -40,8 +38,6 @@ public class DungeonFactory extends LevelFactory {
                 }
             }
         }
-
-        return this;
     }
 
     private void pushToStackRandomly(ArrayList<Node> nodes) {
@@ -91,6 +87,18 @@ public class DungeonFactory extends LevelFactory {
 
     private boolean notCorner(Node node, int x, int y) {
         return !(node.x != x && node.y != y);
+    }
+
+    protected void buildEdges() {
+        for (int i = 0; i < gridWidth; i++) {
+            buildWall(i, 0);
+            buildWall(i, gridHeight - 1);
+        }
+        
+        for (int j = 1; j < gridHeight - 1; j++) {
+            buildWall(0, j);
+            buildWall(gridWidth - 1, j);
+        }
     }
 
     @Override

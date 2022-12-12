@@ -1,9 +1,6 @@
 package network.factories;
-
 import java.util.Random;
-
 import client.gameObjects.StrongholdWall;
-import network.builders.Builder;
 
 public class StrongholdFactory extends LevelFactory {
 
@@ -15,8 +12,7 @@ public class StrongholdFactory extends LevelFactory {
         super(gridWidth, gridHeight, wallSize);
     }
 
-    @Override
-    public Builder build() {
+    public void buildBody() {
         buildEdges();
         for (int x = 1 + gapSize, y = 1 + gapSize; y < gridHeight / 2; y = x += gapSize + 1) {
             for (int i = 0; i < gridWidth - x * 2; i++) {
@@ -29,13 +25,23 @@ public class StrongholdFactory extends LevelFactory {
                 buildWallRandomly(gridWidth - x - 1, y + j);
             }
         }
-
-        return this;
     }
 
     private void buildWallRandomly(int x, int y) {
         if (random.nextDouble() <= density) {
             buildWall(x, y);
+        }
+    }
+
+    protected void buildEdges() {
+        for (int i = 0; i < gridWidth; i++) {
+            buildWall(i, 0);
+            buildWall(i, gridHeight - 1);
+        }
+        
+        for (int j = 1; j < gridHeight - 1; j++) {
+            buildWall(0, j);
+            buildWall(gridWidth - 1, j);
         }
     }
 

@@ -1,9 +1,6 @@
 package network.factories;
 
-import java.util.ArrayList;
-
 import client.gameObjects.GameObject;
-import client.gameObjects.Wall;
 import network.builders.Builder;
 import network.builders.LevelProduct;
 import network.builders.Product;
@@ -28,17 +25,15 @@ public abstract class LevelFactory implements Builder {
         SEngine.GetInstance().Add(gameObject);
     }
 
-    protected void buildEdges() {
-        for (int i = 0; i < gridWidth; i++) {
-            buildWall(i, 0);
-            buildWall(i, gridHeight - 1);
-        }
-
-        for (int j = 1; j < gridHeight - 1; j++) {
-            buildWall(0, j);
-            buildWall(gridWidth - 1, j);
-        }
+    @Override
+    public Builder build() {
+        buildEdges();
+        buildBody();
+        return this;
     }
+
+    protected abstract void buildEdges();
+    protected abstract void buildBody();
 
     protected abstract void buildWall(int x, int y);
 
