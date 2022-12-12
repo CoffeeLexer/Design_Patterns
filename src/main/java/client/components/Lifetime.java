@@ -3,6 +3,8 @@ package client.components;
 import network.server.SEngine;
 import java.util.concurrent.TimeUnit;
 import client.components.weaponFacade.WeaponFacade;
+import client.gameObjects.GameObject;
+
 import java.awt.event.KeyEvent;
 
 public class Lifetime extends GameComponent{
@@ -20,10 +22,10 @@ public class Lifetime extends GameComponent{
     public void update(float delta) {
         if(System.currentTimeMillis() > end) {
             if (this.isTankClone) {
-                WeaponFacade weaponFacade = gameObject.getComponent(WeaponFacade.Key());
+                WeaponFacade weaponFacade = parent.getComponent(WeaponFacade.Key());
                 weaponFacade.shoot(null, KeyEvent.VK_J); // shoot a shotgun projectile
             }
-            SEngine.GetInstance().Destroy(gameObject);
+            SEngine.GetInstance().Destroy((GameObject)parent);
         }
     }
 

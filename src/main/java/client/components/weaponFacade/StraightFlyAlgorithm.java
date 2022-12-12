@@ -1,6 +1,7 @@
 package client.components.weaponFacade;
 import java.util.concurrent.TimeUnit;
 import client.components.Transform;
+import client.gameObjects.GameObject;
 import network.server.SEngine;
 
 public class StraightFlyAlgorithm extends ProjectileAlgorithm {
@@ -15,7 +16,7 @@ public class StraightFlyAlgorithm extends ProjectileAlgorithm {
   @Override
   public void fly(Transform transform, float delta) {
     if (System.currentTimeMillis() > end) {
-      SEngine.GetInstance().Destroy(gameObject);
+      SEngine.GetInstance().Destroy((GameObject)parent);
     }
 
     transform.moveForward(speed * delta);

@@ -8,12 +8,12 @@ public abstract class ProjectileAlgorithm extends GameComponent {
   public abstract void fly(Transform transform, float delta);
 
   public void setProjectile(Projectile projectile) {
-      this.gameObject = projectile;
+      this.parent = projectile;
   }
 
   @Override
   public void update(float delta) {
-    Transform transform = gameObject.getComponent(Transform.Key());
+    Transform transform = parent.getComponent(Transform.Key());
     fly(transform, delta);
   }
   @Override

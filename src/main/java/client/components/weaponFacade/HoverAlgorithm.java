@@ -1,6 +1,7 @@
 package client.components.weaponFacade;
 import java.util.concurrent.TimeUnit;
 import client.components.Transform;
+import client.gameObjects.GameObject;
 import network.server.SEngine;
 
 public class HoverAlgorithm extends ProjectileAlgorithm {
@@ -31,7 +32,7 @@ public class HoverAlgorithm extends ProjectileAlgorithm {
     } else if (currentTime <= secondFlyDuration) {
       transform.moveForward((flySpeed * 2) * delta);
     } else {
-      SEngine.GetInstance().Destroy(gameObject);
+      SEngine.GetInstance().Destroy((GameObject)parent);
     }
   }
 

@@ -1,7 +1,9 @@
 package client.components.weaponFacade;
 import java.util.concurrent.TimeUnit;
 
+import client.Primitive;
 import client.components.Transform;
+import client.gameObjects.GameObject;
 import client.gameObjects.Projectile;
 import network.server.SEngine;
 
@@ -11,12 +13,12 @@ public class FragmentingAlgorithm extends ProjectileAlgorithm {
 
   public void createFragment(float rotation) {
     String fragmentImage = "images/fragment.png";
-    Transform transform = gameObject.getComponent(Transform.Key());
+    Transform transform = parent.getComponent(Transform.Key());
 
     Projectile obj = new Projectile(transform.position.x, transform.position.y, rotation, fragmentImage, 11)
             .setAlgorithm(new StraightFlyAlgorithm(7, TimeUnit.MILLISECONDS, 300));
 
-    obj.owner = ((Projectile)gameObject).owner;
+    obj.owner = ((Projectile)parent).owner;
 
     SEngine.GetInstance()
         .Add(obj);
@@ -30,7 +32,7 @@ public class FragmentingAlgorithm extends ProjectileAlgorithm {
   @Override
   public void fly(Transform transform, float delta) {
     if (System.currentTimeMillis() > end) {
-      SEngine.GetInstance().Destroy(gameObject);
+      SEngine.GetInstance().Destroy((GameObject)parent);
       for (int i = 0; i < 8; i++) {
         float rotation = i * 45;
         createFragment(rotation);

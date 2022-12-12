@@ -66,7 +66,7 @@ public class Renderer extends GameComponent {
 
         AffineTransform at = new AffineTransform();
 
-        float rotation = ((Transform)this.gameObject.getComponent(Transform.Key())).getAngle();
+        float rotation = ((Transform)this.parent.getComponent(Transform.Key())).getAngle();
 
         at.setToRotation(Math.toRadians(rotation), boxSize / 2, boxSize / 2);
         at.translate((boxSize - width) / 2, (boxSize - height) / 2);
@@ -79,7 +79,7 @@ public class Renderer extends GameComponent {
         return newImageFromBuffer;
     }
     public Point2D.Float getCenter() {
-        Transform transform = gameObject.getComponent(Transform.Key());
+        Transform transform = parent.getComponent(Transform.Key());
         if(transform == null) return new Point2D.Float();
         return new Point2D.Float(transform.position.x + boxSize / 2, transform.position.y + boxSize / 2);
     }
@@ -90,7 +90,7 @@ public class Renderer extends GameComponent {
         corners.add(new Point2D.Float(width, -height));
         corners.add(new Point2D.Float(-width, -height));
         var center = getCenter();
-        Transform transform = gameObject.getComponent(Transform.Key());
+        Transform transform = parent.getComponent(Transform.Key());
         if(transform == null) return corners;
         float rotation = (float) Math.toRadians(transform.rotation);
         float c = (float)Math.cos(rotation);
@@ -105,7 +105,7 @@ public class Renderer extends GameComponent {
         return corners;
     }
     public void render(Graphics2D g2d) {
-        Point2D.Float position = ((Transform)this.gameObject.getComponent(Transform.Key())).position;
+        Point2D.Float position = ((Transform)this.parent.getComponent(Transform.Key())).position;
         int x = (int) Math.round(position.getX());
         int y = (int) Math.round(position.getY());
 

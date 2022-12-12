@@ -47,13 +47,13 @@ public class Collider extends GameComponent implements Prototype {
         function.apply(me, other);
     }
     public boolean isColliding(Collider other) {
-        Transform current = gameObject.getComponent(Transform.Key());
+        Transform current = parent.getComponent(Transform.Key());
         if(previous != current)
             previous = current.cloneDeep();
         updateAxes();
 
-        Transform transformThis = gameObject.getComponent(Transform.Key());
-        Transform transformOther = other.gameObject.getComponent(Transform.Key());
+        Transform transformThis = parent.getComponent(Transform.Key());
+        Transform transformOther = other.parent.getComponent(Transform.Key());
 
         Point2D.Float offsetVector = new Point2D.Float(
                 transformThis.position.x - transformOther.position.x,
@@ -85,7 +85,7 @@ public class Collider extends GameComponent implements Prototype {
 
     @Override
     public void update(float delta) {
-        Transform current = gameObject.getComponent(Transform.Key());
+        Transform current = parent.getComponent(Transform.Key());
         if(previous != current)
             previous = current.cloneDeep();
         updateAxes();
@@ -93,8 +93,8 @@ public class Collider extends GameComponent implements Prototype {
 
     public void updateAxes()
     {
-        if(gameObject != null) {
-            Renderer renderer = gameObject.getComponent(Renderer.Key());
+        if(parent != null) {
+            Renderer renderer = parent.getComponent(Renderer.Key());
             if(renderer != null)  {
                 vertices = renderer.getCorners();
             }
@@ -140,7 +140,7 @@ public class Collider extends GameComponent implements Prototype {
 
     @Override
     public Prototype cloneShallow() {
-        var c = Collider.fromTexture(gameObject.getComponent(Renderer.Key()));
+        var c = Collider.fromTexture(parent.getComponent(Renderer.Key()));
         c.previous = this.previous;
         c.function = this.function;
         return c;
@@ -148,7 +148,7 @@ public class Collider extends GameComponent implements Prototype {
 
     @Override
     public Prototype cloneDeep() {
-        var c = Collider.fromTexture(gameObject.getComponent(Renderer.Key()));
+        var c = Collider.fromTexture(parent.getComponent(Renderer.Key()));
         c.previous = this.previous;
         c.function = this.function;
         return c;

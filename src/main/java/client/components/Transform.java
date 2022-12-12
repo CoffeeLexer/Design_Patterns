@@ -43,8 +43,8 @@ public class Transform extends GameComponent {
         return this;
     }
     public void updateStateChange(boolean value) {
-        if(gameObject != null)
-            gameObject.newState = value;
+        if(parent != null)
+            ((GameObject)parent).newState = value;
     }
     public Transform rotate(float rotation) {
         updateStateChange(true);
@@ -53,7 +53,7 @@ public class Transform extends GameComponent {
         return this;
     }
     public Transform setParent(GameObject parent) {
-        gameObject = parent;
+        this.parent = parent;
         return this;
     }
     @Override

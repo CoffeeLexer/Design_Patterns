@@ -14,7 +14,7 @@ public class GameObject extends Primitive implements Serializable, Prototype {
     private List<Integer> childrenIDs = new ArrayList<Integer>();
     public boolean newState = true;
     public int uniqueID = -1;
-    Map<String, GameComponent> components;
+    Map<String, Primitive> components;
     public Tag tag = Tag.Undefined;
     public String imagePath;
 
@@ -27,24 +27,24 @@ public class GameObject extends Primitive implements Serializable, Prototype {
     }
 
     public void destroy() {
-        components.values().forEach(GameComponent::destroy);
+        components.values().forEach(Primitive::destroy);
     }
 
     public void render(Graphics2D g2d) {
         components.values().forEach(e -> e.render(g2d));
     }
 
-    public <T extends GameComponent> void addComponent(T component) {
-        component.gameObject = this;
-        if (!components.containsKey(component.key()))
-            components.put(component.key(), component);
+    public <T extends Primitive> void addComponent(T primitive) {
+        primitive.parent = this;
+        if (!components.containsKey(((GameComponent)primitive).key()))
+            components.put(((GameComponent)primitive).key(), primitive);
     }
 
-    public <T extends GameComponent> void removeComponent(String key) {
+    public <T extends Primitive> void removeComponent(String key) {
         components.remove(key);
     }
 
-    public <T extends GameComponent> T getComponent(String key) {
+    public <T extends Primitive> T getComponent(String key) {
         return (T) components.get(key);
     }
 
@@ -62,9 +62,9 @@ public class GameObject extends Primitive implements Serializable, Prototype {
     @Override
     public GameObject cloneShallow() {
         GameObject obj = new GameObject();
-        for (Map.Entry<String, GameComponent> entry : components.entrySet()) {
-            GameComponent gc = entry.getValue();
-            obj.addComponent((GameComponent)gc.cloneShallow());
+        for (var entry : components.entrySet()) {
+            Primitive gc = entry.getValue();
+            obj.addComponent((Primitive)((GameComponent)gc).cloneShallow());
         }
         obj.tag = this.tag;
         return obj;
@@ -72,9 +72,9 @@ public class GameObject extends Primitive implements Serializable, Prototype {
     @Override
     public GameObject cloneDeep() {
         GameObject obj = new GameObject();
-        for (Map.Entry<String, GameComponent> entry : components.entrySet()) {
-            GameComponent gc = entry.getValue();
-            obj.addComponent((GameComponent)gc.cloneDeep());
+        for (var entry : components.entrySet()) {
+            Primitive gc = entry.getValue();
+            obj.addComponent((Primitive)((GameComponent)gc).cloneDeep());
         }
         obj.tag = this.tag;
         return obj;
