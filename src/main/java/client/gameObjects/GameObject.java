@@ -36,8 +36,14 @@ public class GameObject extends Primitive implements Serializable, Prototype {
 
     public <T extends Primitive> void addComponent(T primitive) {
         primitive.parent = this;
-        if (!components.containsKey(((GameComponent)primitive).key()))
+        if (!components.containsKey(((GameComponent)primitive).key())) {
             components.put(((GameComponent)primitive).key(), primitive);
+        }
+    }
+    public void bind() {
+        for (var e: components.values()) {
+            e.parent = this;
+        }
     }
 
     public <T extends Primitive> void removeComponent(String key) {

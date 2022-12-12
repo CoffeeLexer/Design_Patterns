@@ -39,6 +39,7 @@ public class CEngine {
         new Thread(this::Run).start();
     }
     public void Set(GameObject obj) {
+        obj.bind();
         switch (obj.tag) {
             case Static -> {
                 gameObjects.put(obj.uniqueID, obj);
