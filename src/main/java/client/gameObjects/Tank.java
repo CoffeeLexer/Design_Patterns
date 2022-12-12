@@ -44,6 +44,7 @@ public class Tank extends GameObject implements ITankDecorator {
         addComponent(new WeaponFacade(this.tankSize));
         addComponent(Collider.fromTexture(this.renderer));
         addComponent(new Specs((int)currentHP, 10));
+        addComponent(new ClientReference());
         ((Collider)getComponent(Collider.Key())).setFunction(Colliders.tank);
 
         tag = Tag.Dynamic;

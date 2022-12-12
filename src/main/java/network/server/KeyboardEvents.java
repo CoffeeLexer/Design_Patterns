@@ -19,6 +19,7 @@ public class KeyboardEvents {
     }
 
     public static void Rotate(Tank tank, Set<Integer> keysPressed) {
+        if(tank == null) return;
         ConstantRotation cr = tank.getComponent(ConstantRotation.Key());
         float speed = 0;
         if(keysPressed.contains(KeyEvent.VK_A)) speed -= Constants.rotationSpeed;
@@ -29,6 +30,7 @@ public class KeyboardEvents {
     }
 
     public static void Drive(Tank tank, Set<Integer> keysPressed) {
+        if(tank == null) return;
         ConstantSpeed cs = tank.getComponent(ConstantSpeed.Key());
         float speed = 0;
         if(keysPressed.contains(KeyEvent.VK_W)) speed += Constants.drivingSpeed;

@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.Timer;
 
+import client.components.ClientReference;
 import client.gameObjects.Tank;
 import network.builders.Builder;
 import network.builders.ConsumablesBuilder;

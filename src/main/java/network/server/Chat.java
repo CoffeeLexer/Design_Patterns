@@ -14,10 +14,6 @@ public class Chat {
             players.put(playerClient.getId(), playerClient);
         }
     }
-    public void reAttach(PlayerClient playerClient, Integer oldId) {
-
-    }
-
     public void send(PlayerClient client, String msg) {
         var containObj = players.get(client.getId());
         var user = !Objects.equals(client.getUsername(), "") ? client.getUsername() : "Tank" + client.getId();

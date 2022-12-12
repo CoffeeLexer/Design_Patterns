@@ -1,5 +1,8 @@
 package network.server;
 
+import client.components.ClientReference;
+import client.components.Specs;
+import client.gameObjects.GameObject;
 import client.gameObjects.Tank;
 import client.utilities.interpreter.Context;
 import client.utilities.interpreter.ServerExpression;
@@ -154,38 +157,52 @@ public class ServerWorker implements Runnable {
                     case keyReleased -> {
                         int keyCode = payload.GetData();
                         keysPressed.remove(keyCode);
-                        Tank tank = (Tank)SEngine.GetInstance().Get(playerID.getId());
-                        switch (keyCode) {
-                            case KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> {
-                                KeyboardEvents.Rotate(tank, keysPressed);
-                            }
-                            case KeyEvent.VK_W, KeyEvent.VK_S -> {
-                                KeyboardEvents.Drive(tank, keysPressed);
+                        GameObject obj = SEngine.GetInstance().Get(playerID.getId());
+                        if(obj == null || !Tank.class.isAssignableFrom(obj.getClass())) {
+                            //playerID.receiveMessage("You are dead<br>No controls till new match!");
+                        }
+                        else {
+                            var tank = (Tank)obj;
+                            ((ClientReference)tank.getComponent(ClientReference.Key())).client = playerID;
+                            switch (keyCode) {
+                                case KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> {
+                                    KeyboardEvents.Rotate(tank, keysPressed);
+                                }
+                                case KeyEvent.VK_W, KeyEvent.VK_S -> {
+                                    KeyboardEvents.Drive(tank, keysPressed);
+                                }
                             }
                         }
                     }
                     case keyPressed -> {
                         int keyCode = payload.GetData();
                         keysPressed.add(keyCode);
-                        Tank tank = (Tank)SEngine.GetInstance().Get(playerID.getId());
-                        switch (keyCode) {
-                            case KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> {
-                                KeyboardEvents.Rotate(tank, keysPressed);
-                            }
-                            case KeyEvent.VK_W, KeyEvent.VK_S -> {
-                                KeyboardEvents.Drive(tank, keysPressed);
-                            }
-                            case KeyEvent.VK_N, KeyEvent.VK_M, KeyEvent.VK_J, KeyEvent.VK_K -> {
-                                KeyboardEvents.Shoot(playerID, tank, keyCode);
-                            }
-                            case KeyEvent.VK_P -> {
-                                KeyboardEvents.InvokeShield(tank);
-                            }
-                            case KeyEvent.VK_T -> {
-                                KeyboardEvents.TimeTravel(tank);
-                            }
-                            case KeyEvent.VK_C -> {
-                                KeyboardEvents.Clone(tank);
+                        GameObject obj = SEngine.GetInstance().Get(playerID.getId());
+                        if(obj == null || !Tank.class.isAssignableFrom(obj.getClass())) {
+                            playerID.receiveMessage("You are dead<br>No controls till new match!");
+                        }
+                        else {
+                            var tank = (Tank)obj;
+                            ((ClientReference)tank.getComponent(ClientReference.Key())).client = playerID;
+                            switch (keyCode) {
+                                case KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> {
+                                    KeyboardEvents.Rotate(tank, keysPressed);
+                                }
+                                case KeyEvent.VK_W, KeyEvent.VK_S -> {
+                                    KeyboardEvents.Drive(tank, keysPressed);
+                                }
+                                case KeyEvent.VK_N, KeyEvent.VK_M, KeyEvent.VK_J, KeyEvent.VK_K -> {
+                                    KeyboardEvents.Shoot(playerID, tank, keyCode);
+                                }
+                                case KeyEvent.VK_P -> {
+                                    KeyboardEvents.InvokeShield(tank);
+                                }
+                                case KeyEvent.VK_T -> {
+                                    KeyboardEvents.TimeTravel(tank);
+                                }
+                                case KeyEvent.VK_C -> {
+                                    KeyboardEvents.Clone(tank);
+                                }
                             }
                         }
                     }
