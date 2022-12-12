@@ -176,7 +176,7 @@ public class ServerWorker implements Runnable {
                                 KeyboardEvents.Drive(tank, keysPressed);
                             }
                             case KeyEvent.VK_N, KeyEvent.VK_M, KeyEvent.VK_J, KeyEvent.VK_K -> {
-                                KeyboardEvents.Shoot(tank, keyCode);
+                                KeyboardEvents.Shoot(playerID, tank, keyCode);
                             }
                             case KeyEvent.VK_P -> {
                                 KeyboardEvents.InvokeShield(tank);

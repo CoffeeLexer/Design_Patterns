@@ -16,6 +16,7 @@ public class Tank extends GameObject implements ITankDecorator {
     public int tankSize = 50;
     private double maxHP = 3;
     private double currentHP = 3;
+    private int ammo = 10;
     private double shieldAmount = 0;
     private boolean isTimeTravelling = false;
 
@@ -42,6 +43,7 @@ public class Tank extends GameObject implements ITankDecorator {
         addComponent(new ConstantRotation(0.0f));
         addComponent(new WeaponFacade(this.tankSize));
         addComponent(Collider.fromTexture(this.renderer));
+        addComponent(new Specs((int)currentHP, 10));
         ((Collider)getComponent(Collider.Key())).setFunction(Colliders.tank);
 
         tag = Tag.Dynamic;
@@ -49,6 +51,14 @@ public class Tank extends GameObject implements ITankDecorator {
         this.shieldDecorator = new ShieldDecorator(this);
         this.textureDecorator = new TextureDecorator(this);
         this.originalImagePath = imagePath;
+    }
+
+    public void setAmmo(int ammo) {
+        ((Specs)getComponent(Specs.Key())).ammo = ammo;
+    }
+
+    public int getAmmo() {
+        return ((Specs)getComponent(Specs.Key())).ammo;
     }
 
     public double getShieldAmount() {
@@ -69,6 +79,7 @@ public class Tank extends GameObject implements ITankDecorator {
 
     public void setDamage(int damage) {
         currentHP -= damage;
+        ((Specs)getComponent(Specs.Key())).health = (int)currentHP;
         this.healthDecorator.decorate(this.currentHP, this.maxHP);
         if(currentHP <= 0) {
             LevelManager.getInstance().destroyPlayer(this);
@@ -77,6 +88,7 @@ public class Tank extends GameObject implements ITankDecorator {
 
     public void setHealth(int health) {
         currentHP = health;
+        ((Specs)getComponent(Specs.Key())).health = (int)currentHP;
         maxHP = Math.max(currentHP, maxHP);
         this.healthDecorator.decorate(this.currentHP, this.maxHP);
         if(currentHP <= 0) {

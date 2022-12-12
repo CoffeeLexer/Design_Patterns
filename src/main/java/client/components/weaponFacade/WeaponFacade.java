@@ -1,8 +1,10 @@
 package client.components.weaponFacade;
 import java.util.concurrent.TimeUnit;
 import client.components.GameComponent;
+import client.components.Specs;
 import client.components.Transform;
 import client.gameObjects.Projectile;
+import network.client.PlayerClient;
 import network.server.SEngine;
 import java.awt.event.KeyEvent;
 
@@ -22,7 +24,7 @@ public class WeaponFacade extends GameComponent {
         return "WeaponFacade";
     }
 
-    public void shoot(int keyCode) {
+    public void shoot(PlayerClient player, int keyCode) {
         Transform transform = gameObject.getComponent(Transform.Key());
 
         // get the center (with an offset) coordinates of the parent object
@@ -32,22 +34,56 @@ public class WeaponFacade extends GameComponent {
         Projectile projectile = new Projectile(xCoords, yCoords, transform.rotation, "images/tank-projectile.png");
         projectile.owner = gameObject;
 
+        int ammo = 0;
+        if(player == null) ammo = 999;
+        else ammo = ((Specs)gameObject.getComponent(Specs.Key())).ammo;
+        boolean enoughAmmo = false;
+
         switch (keyCode) {
             case KeyEvent.VK_N -> {
-                projectile.setAlgorithm(new StraightFlyAlgorithm(30, TimeUnit.MILLISECONDS, 300));
+                if(ammo > 0) {
+                    projectile.setAlgorithm(new StraightFlyAlgorithm(30, TimeUnit.MILLISECONDS, 300));
+                    ((Specs)gameObject.getComponent(Specs.Key())).ammo = ammo - 1;
+                    enoughAmmo = true;
+                }
+                else {
+                    player.receiveMessage("<strong style=\"color: red;\">Straight projectile needs 1 ammo point</strong>");
+                }
             }
             case KeyEvent.VK_M -> {
-                projectile.setAlgorithm(new FragmentingAlgorithm(30, TimeUnit.MILLISECONDS, 300));
+                if(ammo > 7) {
+                    projectile.setAlgorithm(new FragmentingAlgorithm(30, TimeUnit.MILLISECONDS, 300));
+                    ((Specs)gameObject.getComponent(Specs.Key())).ammo = ammo - 8;
+                    enoughAmmo = true;
+                }
+                else {
+                    player.receiveMessage("<strong style=\"color: red;\">Fragment projectile needs 8 ammo points</strong>");
+                }
             }
             case KeyEvent.VK_J -> {
-                projectile.setAlgorithm(new ShotgunAlgorithm(20, TimeUnit.MILLISECONDS, 300));
+                if(ammo > 2) {
+                    projectile.setAlgorithm(new ShotgunAlgorithm(20, TimeUnit.MILLISECONDS, 300));
+                    ((Specs)gameObject.getComponent(Specs.Key())).ammo = ammo - 3;
+                    enoughAmmo = true;
+                }
+                    else {
+                    player.receiveMessage("<strong style=\"color: red;\">Fragment projectile needs 3 ammo points</strong>");
+                }
             }
             case KeyEvent.VK_K -> {
-                projectile.setAlgorithm(new HoverAlgorithm(15, TimeUnit.MILLISECONDS, 300));
+                if(ammo > 1) {
+                    projectile.setAlgorithm(new HoverAlgorithm(15, TimeUnit.MILLISECONDS, 300));
+                    ((Specs)gameObject.getComponent(Specs.Key())).ammo = ammo - 2;
+                    enoughAmmo = true;
+                }
+                else {
+                    player.receiveMessage("<strong style=\"color: red;\">Fragment projectile needs 2 ammo points</strong>");
+                }
             }
         }
 
-        SEngine.GetInstance().Add(projectile);
+        if(enoughAmmo)
+            SEngine.GetInstance().Add(projectile);
     }
     @Override
     public WeaponFacade cloneShallow() {

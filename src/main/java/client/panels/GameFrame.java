@@ -66,6 +66,7 @@ public class GameFrame extends JFrame {
                     chatText += "<br>Me: " + text;
                     log.setText(chatText + "</html>");
                 }
+                textField.setText("");
                 layeredPane.grabFocus();
             }
         });
@@ -76,6 +77,15 @@ public class GameFrame extends JFrame {
         JPanel logPanel = new JPanel();
         logPanel.setLayout(new BoxLayout(logPanel, BoxLayout.Y_AXIS));
 
+        var uiPanel = new JPanel();
+        uiPanel.setLayout(new BoxLayout(uiPanel, BoxLayout.Y_AXIS));
+
+        var healthText = new JLabel("Health: ");
+        var ammoText = new JLabel("Ammo: ");
+
+        CEngine.getInstance().healthText = healthText;
+        CEngine.getInstance().ammoText = ammoText;
+
         logPanel.add(log);
         CEngine.getInstance().log = log;
 
@@ -83,8 +93,16 @@ public class GameFrame extends JFrame {
         scroller.setAlignmentY(Component.TOP_ALIGNMENT);
         textField.setMaximumSize(new Dimension(Integer.MAX_VALUE, textField.getMinimumSize().height));
 
+        uiPanel.add(healthText);
+        uiPanel.add(ammoText);
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroller, layeredPane);
+        var UI_ScrollWrapper = new JPanel();
+        UI_ScrollWrapper.setLayout(new BoxLayout(UI_ScrollWrapper, BoxLayout.Y_AXIS));
+
+        UI_ScrollWrapper.add(uiPanel);
+        UI_ScrollWrapper.add(scroller);
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, UI_ScrollWrapper, layeredPane);
         mainPanel.add(splitPane, BorderLayout.CENTER);
 
         add(mainPanel);

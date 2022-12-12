@@ -2,6 +2,8 @@ package network.levelManagement;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import client.gameObjects.Tank;
 import network.builders.PlayerProduct;
@@ -12,7 +14,7 @@ public class Match {
     public int count = 0;
     public MatchState matchState;
 
-    public HashMap<PlayerClient, PlayerProduct> players = new HashMap<>();
+    public Map<PlayerClient, PlayerProduct> players = new ConcurrentSkipListMap<>();
     public HashSet<Tank> deadPlayers = new HashSet<>();
 
     public Match() {

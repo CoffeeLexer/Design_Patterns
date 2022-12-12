@@ -6,7 +6,9 @@ import java.awt.geom.Point2D;
 
 public class Transform extends GameComponent {
 
-    public Transform(){}
+    public Transform(){
+        position = new Point2D.Float(0, 0);
+    }
 
     public Point2D.Float position;
     public float rotation;

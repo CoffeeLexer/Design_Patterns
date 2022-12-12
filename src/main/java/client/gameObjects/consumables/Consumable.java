@@ -1,5 +1,6 @@
 package client.gameObjects.consumables;
 
+import client.components.Collider;
 import client.components.Renderer;
 import client.components.Transform;
 import client.gameObjects.GameObject;
@@ -14,6 +15,7 @@ public abstract class Consumable extends GameObject {
         transform = new Transform();
         addComponent(transform);
         addComponent(new Renderer(imagePath, width, true));
+        addComponent(Collider.fromTexture(((Renderer)getComponent(Renderer.Key()))));
         tag = Tag.Dynamic;
     }
 

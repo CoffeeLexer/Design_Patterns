@@ -21,7 +21,7 @@ public class Lifetime extends GameComponent{
         if(System.currentTimeMillis() > end) {
             if (this.isTankClone) {
                 WeaponFacade weaponFacade = gameObject.getComponent(WeaponFacade.Key());
-                weaponFacade.shoot(KeyEvent.VK_J); // shoot a shotgun projectile
+                weaponFacade.shoot(null, KeyEvent.VK_J); // shoot a shotgun projectile
             }
             SEngine.GetInstance().Destroy(gameObject);
         }

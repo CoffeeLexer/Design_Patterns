@@ -55,7 +55,7 @@ public class LevelProduct implements Product {
         for (GameObject[] objectsRow : objects) {
             for (GameObject object : objectsRow) {
                 if (object != null) {
-                    if(object instanceof Consumable){
+                    if(Consumable.class.isAssignableFrom(object.getClass())){
                         System.out.println("Deleting ammo consumable");
                     }
                     SEngine.GetInstance().Destroy(object);

@@ -6,6 +6,7 @@ import client.components.Lifetime;
 import client.components.weaponFacade.WeaponFacade;
 import client.gameObjects.GameObject;
 import client.gameObjects.Tank;
+import network.client.PlayerClient;
 
 import java.awt.event.KeyEvent;
 import java.util.Set;
@@ -37,9 +38,9 @@ public class KeyboardEvents {
         cs.speed = Math.min(Math.max(speed, -Constants.drivingSpeed), Constants.drivingSpeed);
     }
 
-    public static void Shoot(Tank tank, int keyCode) {
+    public static void Shoot(PlayerClient player, Tank tank, int keyCode) {
         WeaponFacade weaponFacade = tank.getComponent(WeaponFacade.Key());
-        weaponFacade.shoot(keyCode);
+        weaponFacade.shoot(player, keyCode);
     }
 
     public static void InvokeShield(Tank tank) {

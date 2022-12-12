@@ -5,6 +5,7 @@ import client.gameObjects.GameObject;
 import client.gameObjects.GameObjectIterator;
 import client.gameObjects.Tag;
 import client.gameObjects.Wall;
+import client.gameObjects.consumables.Consumable;
 import network.data.Connection;
 import network.data.Handshake;
 import network.data.Payload;
@@ -42,6 +43,10 @@ public class SEngine {
 
     public int Add(GameObject obj) {
         lock.lock();
+        if(obj.uniqueID != -1) {
+            lock.unlock();
+            return obj.uniqueID;
+        }
         int id = AvailableID(gameObjects);
         obj.uniqueID = id;
         gameObjects.put(id, obj);

@@ -1,9 +1,11 @@
 package network.client;
 
 import client.components.Renderer;
+import client.components.Specs;
 import client.components.Transform;
 import client.gameObjects.GameObject;
 import client.gameObjects.Tag;
+import client.gameObjects.Tank;
 import client.panels.DynamicPanel;
 import client.panels.StaticPanel;
 
@@ -19,6 +21,8 @@ public class CEngine {
     public DynamicPanel dynamicPanel = null;
     public StaticPanel staticPanel = null;
     public JLabel log = null;
+    public JLabel healthText = new JLabel("Health");
+    public JLabel ammoText = new JLabel("Ammo");
     Map<Integer, GameObject> gameObjects = null;
 
     public int playerID = -1;
@@ -43,6 +47,11 @@ public class CEngine {
             case Dynamic -> {
                 if(obj.uniqueID == playerID) {
                     ((Renderer)obj.getComponent(Renderer.Key())).setTexture("images/tank-brown.png");
+                    var t = (Specs) obj.getComponent(Specs.Key());
+                    if(t != null) {
+                        healthText.setText("Health: " + t.health);
+                        ammoText.setText("Ammo: " + t.ammo);
+                    }
                     var transform = (Transform) obj.getComponent(Transform.Key());
                     dynamicPanel.setTranslate(transform.position.x, transform.position.y);
                     staticPanel.setTranslate(transform.position.x, transform.position.y);

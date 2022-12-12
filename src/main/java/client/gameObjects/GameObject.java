@@ -1,10 +1,7 @@
 package client.gameObjects;
 
 import client.Primitive;
-import client.components.GameComponent;
-import client.components.Prototype;
-import client.components.Renderer;
-import client.components.Transform;
+import client.components.*;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -55,6 +52,9 @@ public class GameObject extends Primitive implements Serializable, Prototype {
         GameObject obj = new GameObject();
         obj.addComponent(((Transform) this.getComponent(Transform.Key())).cloneShallow());
         obj.addComponent(((Renderer) this.getComponent(Renderer.Key())).cloneShallow());
+        if(Tank.class.isAssignableFrom(this.getClass())) {
+            obj.addComponent((Specs) this.getComponent(Specs.Key()));
+        }
         obj.tag = this.tag;
         obj.uniqueID = this.uniqueID;
         return obj;

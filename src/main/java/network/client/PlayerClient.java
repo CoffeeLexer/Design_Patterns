@@ -1,11 +1,12 @@
 package network.client;
 
+import network.builders.PlayerProduct;
 import network.data.Connection;
 import network.data.Handshake;
 import network.data.Payload;
 import network.server.SEngine;
 
-public class PlayerClient {
+public class PlayerClient implements Comparable{
     private Integer id;
     private String username = "";
     public Connection connection;
@@ -40,5 +41,9 @@ public class PlayerClient {
                 e.printStackTrace();
             }
         }
+    }
+    @Override
+    public int compareTo(Object o) {
+        return id.compareTo(((PlayerClient)o).id);
     }
 }

@@ -5,6 +5,7 @@ import client.gameObjects.Projectile;
 import client.gameObjects.Tank;
 import client.gameObjects.Wall;
 import network.server.SEngine;
+import client.gameObjects.consumables.AmmunitionConsumable;
 
 import java.awt.geom.Point2D;
 import java.util.function.BiFunction;
@@ -55,6 +56,12 @@ public class Colliders {
             }
             transform.position.x += v.x;
             transform.position.y += v.y;
+        }
+        if(AmmunitionConsumable.class.isAssignableFrom(other.getClass())) {
+            var ammoConsumable = (AmmunitionConsumable) other;
+            var t = (Tank) me;
+            t.setAmmo(t.getAmmo() + 1);
+            SEngine.GetInstance().Destroy(ammoConsumable);
         }
         return null;
     };
