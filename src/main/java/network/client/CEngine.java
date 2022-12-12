@@ -1,11 +1,13 @@
 package network.client;
 
 import client.components.Renderer;
+import client.components.Transform;
 import client.gameObjects.GameObject;
 import client.gameObjects.Tag;
 import client.panels.DynamicPanel;
 import client.panels.StaticPanel;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -16,6 +18,7 @@ public class CEngine {
     public static final int frameRate = 60;
     public DynamicPanel dynamicPanel = null;
     public StaticPanel staticPanel = null;
+    public JLabel log = null;
     Map<Integer, GameObject> gameObjects = null;
 
     public int playerID = -1;
@@ -38,6 +41,12 @@ public class CEngine {
                 needStaticRedraw = true;
             }
             case Dynamic -> {
+                if(obj.uniqueID == playerID) {
+                    ((Renderer)obj.getComponent(Renderer.Key())).setTexture("images/tank-brown.png");
+                    var transform = (Transform) obj.getComponent(Transform.Key());
+                    dynamicPanel.setTranslate(transform.position.x, transform.position.y);
+                    staticPanel.setTranslate(transform.position.x, transform.position.y);
+                }
                 gameObjects.put(obj.uniqueID, obj);
             }
             case Undefined -> {}

@@ -2,12 +2,12 @@ package network.builders;
 
 import client.components.tankDecorator.LabelDecorator;
 import client.gameObjects.Tank;
-import network.client.ClientId;
+import network.client.PlayerClient;
 import network.server.SEngine;
 
 public class PlayerProduct implements Product {
 
-    public ClientId clientId;
+    public PlayerClient playerClient;
     public Integer playerId;
     public Tank tank;
 

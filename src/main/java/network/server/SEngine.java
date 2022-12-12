@@ -22,6 +22,7 @@ public class SEngine {
     // TODO: Lock for add/sync/remove
     public static final int frameRate = 60;
     Map<Integer, GameObject> gameObjects = null;
+    public Chat chat = null;
     ReentrantLock lock = null;
 
     private static SEngine instance = new SEngine();
@@ -35,6 +36,7 @@ public class SEngine {
         //gameObjects = new TreeMap<>();
         gameObjects = new ConcurrentSkipListMap<>();
         lock = new ReentrantLock();
+        chat = new Chat();
         new Thread(this::Run).start();
     }
 

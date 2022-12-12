@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.management.RuntimeErrorException;
 import javax.swing.Timer;
 
 import client.gameObjects.Tank;
@@ -17,8 +16,7 @@ import network.builders.ConsumablesBuilder;
 import network.builders.PlayerBuilder;
 import network.builders.PlayerProduct;
 import network.builders.Product;
-import network.client.ClientId;
-import network.data.Connection;
+import network.client.PlayerClient;
 import network.data.Handshake;
 import network.data.Payload;
 import network.factories.CityFactory;
@@ -87,15 +85,16 @@ public class LevelManager implements ActionListener {
         timer.start();
     }
 
-    public Integer spawnPlayer(ClientId idRef) {
+    public Integer spawnPlayer(PlayerClient idRef) {
         clientLock.lock();
         Builder playerBuilder = builders.get(PlayerBuilder.class);
         playerBuilder.addProduct(builtLevel);
         playerBuilder.build();
         Product player = playerBuilder.getProduct();
         player.spawn();
-        idRef.value = ((PlayerProduct) player).playerId;
-        ((PlayerProduct) player).clientId = idRef;
+        int id = ((PlayerProduct) player).playerId;
+        idRef.setId(id);
+        ((PlayerProduct) player).playerClient = idRef;
 
         match.addPlayer((PlayerProduct) player);
         if (match.players.size() > 1 && match.matchState == MatchState.waiting) {
@@ -103,10 +102,10 @@ public class LevelManager implements ActionListener {
         }
 
         clientLock.unlock();
-        return idRef.value;
+        return id;
     }
 
-    public void disconnectPlayer(ClientId idRef) {
+    public void disconnectPlayer(PlayerClient idRef) {
         clientLock.lock();
         match.disconnectPlayer(idRef);
         clientLock.unlock();
@@ -128,7 +127,7 @@ public class LevelManager implements ActionListener {
         Server.GetInstance().notifyConnections(conn -> {
             try {
                 conn.writeObject(new Payload(Handshake.Method.tagPlayer,
-                        spawnPlayer(playersIterator.next().getValue().clientId)));
+                        spawnPlayer(playersIterator.next().getValue().playerClient)));
             } catch (IOException e) {
             }
         });

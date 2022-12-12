@@ -1,21 +1,18 @@
 package network.levelManagement;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import javax.swing.plaf.metal.MetalBorders.PaletteBorder;
-
 import client.gameObjects.Tank;
 import network.builders.PlayerProduct;
-import network.client.ClientId;
+import network.client.PlayerClient;
 import network.server.SEngine;
 
 public class Match {
     public int count = 0;
     public MatchState matchState;
 
-    public HashMap<ClientId, PlayerProduct> players = new HashMap<>();
+    public HashMap<PlayerClient, PlayerProduct> players = new HashMap<>();
     public HashSet<Tank> deadPlayers = new HashSet<>();
 
     public Match() {
@@ -30,12 +27,12 @@ public class Match {
     }
 
     public void addPlayer(PlayerProduct player) {
-        players.put(player.clientId, player);
+        players.put(player.playerClient, player);
     }
 
-    public void disconnectPlayer(ClientId idRef) {
+    public void disconnectPlayer(PlayerClient idRef) {
         players.remove(idRef);
-        SEngine.GetInstance().Destroy(idRef.value);
+        SEngine.GetInstance().Destroy(idRef.getId());
         if (players.size() < 2) {
             matchState = MatchState.waiting;
             count = 0;

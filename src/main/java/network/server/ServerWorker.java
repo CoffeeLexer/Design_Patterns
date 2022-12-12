@@ -1,10 +1,9 @@
 package network.server;
 
-import client.components.tankDecorator.LabelDecorator;
 import client.gameObjects.Tank;
 import client.utilities.interpreter.Context;
 import client.utilities.interpreter.ServerExpression;
-import network.client.ClientId;
+import network.client.PlayerClient;
 import network.data.Connection;
 import network.data.Handshake;
 import network.data.Payload;
@@ -14,14 +13,16 @@ import java.awt.event.KeyEvent;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class ServerWorker implements Runnable {
     Connection connection = null;
     Set<Integer> keysPressed = null;
-    ClientId playerID = new ClientId(-1);
+    PlayerClient playerID = new PlayerClient(-1);
     public ServerWorker(Connection connection) {
         this.connection = connection;
+        this.playerID.setConnection(connection);
         this.keysPressed = new HashSet<>();
     }
     @Override
@@ -153,7 +154,7 @@ public class ServerWorker implements Runnable {
                     case keyReleased -> {
                         int keyCode = payload.GetData();
                         keysPressed.remove(keyCode);
-                        Tank tank = (Tank)SEngine.GetInstance().Get(playerID.value);
+                        Tank tank = (Tank)SEngine.GetInstance().Get(playerID.getId());
                         switch (keyCode) {
                             case KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> {
                                 KeyboardEvents.Rotate(tank, keysPressed);
@@ -166,7 +167,7 @@ public class ServerWorker implements Runnable {
                     case keyPressed -> {
                         int keyCode = payload.GetData();
                         keysPressed.add(keyCode);
-                        Tank tank = (Tank)SEngine.GetInstance().Get(playerID.value);
+                        Tank tank = (Tank)SEngine.GetInstance().Get(playerID.getId());
                         switch (keyCode) {
                             case KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> {
                                 KeyboardEvents.Rotate(tank, keysPressed);
@@ -199,6 +200,19 @@ public class ServerWorker implements Runnable {
 
                         SEngine.GetInstance().SyncEngine(connection);
                         connection.writeObject(new Payload(Handshake.Method.tagPlayer, LevelManager.getInstance().spawnPlayer(playerID)));
+                    }
+                    case chat -> {
+                        String s = payload.GetData();
+
+                        if(s.substring(0, Math.max(s.indexOf(' '), 0)).equals("/username")) {
+                            s = s.substring(s.indexOf(' ') + 1);
+                            var user = !Objects.equals(playerID.getUsername(), "") ? playerID.getUsername() : "Tank" + playerID.getId();
+                            playerID.setUsername(s);
+                            SEngine.GetInstance().chat.send(playerID, "Changed username from " + user);
+                        }
+                        else {
+                            SEngine.GetInstance().chat.send(playerID, s);
+                        }
                     }
                 }
             }

@@ -16,6 +16,7 @@ public abstract class Handshake implements Serializable {
         removeGameObject,
         tagPlayer,
         interpreter,
+        chat,
     }
     public Method method = Method.empty;
 }

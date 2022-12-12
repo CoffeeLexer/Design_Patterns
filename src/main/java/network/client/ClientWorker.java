@@ -50,6 +50,12 @@ public class ClientWorker implements Runnable {
                         ServerExpression.RealResponse res = payload.GetData();
                         Client.GetInstance().blockingQueue.take().setReal(res);
                     }
+                    case chat -> {
+                        var chatText = CEngine.getInstance().log.getText();
+                        chatText = chatText.replace("</html>", "");
+                        chatText += "<br>" + payload.GetData();
+                        CEngine.getInstance().log.setText(chatText + "</html>");
+                    }
                 }
             }
         }
