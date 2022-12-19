@@ -2,12 +2,12 @@ package game.server;
 
 import game.data.MouseEventData;
 import game.protocol.TCP;
-
 import java.awt.event.KeyEvent;
 
+// Specifically describes what the server should do on interaction events
 public class ResponseToInput {
     public static class Keyboard {
-        // Invoked on specific input UI elements (Text Field, etc.)
+        // Invoked on specific input UI elements (for example Text Field)
         public static void Typed(TCP.Client client, int key, Engine engine) {
             switch (key) {
                 case KeyEvent.VK_E -> {
@@ -20,6 +20,9 @@ public class ResponseToInput {
             }
         }
 
+        // Fires on key press. "Holding" works for all keys in this switch but for
+        // demonstration purposes try using "Q" since it has "Released" event handling on it.
+        // * Once an event is triggered, you can receive and modify client attachment data
         public static void Pressed(TCP.Client client, int key, Engine engine) {
             switch (key) {
                 case KeyEvent.VK_Q -> {
@@ -48,6 +51,7 @@ public class ResponseToInput {
             }
         }
 
+        // Fires on key release
         public static void Released(TCP.Client client, int key, Engine engine) {
             switch (key) {
                 case KeyEvent.VK_Q -> {
@@ -60,6 +64,8 @@ public class ResponseToInput {
             }
         }
     }
+
+    // Mouse events and position capturing
     public static class Mouse {
         public static void Pressed(TCP.Client client, MouseEventData mouse, Engine engine) {
             System.out.printf("%s - Pressed %s. %s\n", client.identify(), mouse.x, mouse.y);
@@ -73,7 +79,6 @@ public class ResponseToInput {
         public static void Entered(TCP.Client client, MouseEventData mouse, Engine engine) {
             System.out.printf("%s - Entered %s. %s\n", client.identify(), mouse.x, mouse.y);
         }
-
         public static void Exited(TCP.Client client, MouseEventData mouse, Engine engine) {
             System.out.printf("%s - Exited %s. %s\n", client.identify(), mouse.x, mouse.y);
         }

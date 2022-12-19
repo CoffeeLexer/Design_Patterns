@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Engine implements Runnable {
-
     // Framerate cap
     public static final int frameRate = 60;
     // Engine state
@@ -34,6 +33,7 @@ public class Engine implements Runnable {
     public int createObject(GameObject object) {
         lock.lock();
 
+        // each object has unique ID
         int id = findAvailableId();
         object.id = id;
         objects.put(id, object);
@@ -45,6 +45,7 @@ public class Engine implements Runnable {
         return id;
     }
 
+    // Update object
     public void setObject(GameObject object) {
         if(object.id == -1) throw new RuntimeException("setObject() called without createObject() call beforehand.\n" +
                 "createObject() binds object to available id in engine!");
@@ -79,6 +80,8 @@ public class Engine implements Runnable {
         }
         return i;
     }
+
+    // Send all clients the most recent data of all static objects
     public void synchronizeStaticObjects(TCP.Client client) {
         for (var obj: objects.values()) {
             if(obj.tag.equals(GameObject.Tag.Static)) {
@@ -86,6 +89,7 @@ public class Engine implements Runnable {
             }
         }
     }
+
     public void start(TCP.ConnectionListener clientListeners, UDP.Sender udp) {
         this.clientListeners = clientListeners;
         this.udpSender = udp;
@@ -119,11 +123,13 @@ public class Engine implements Runnable {
         long current, previous, delta, delay;
         float frameDelay = (float)Math.ceil(1000.0f / frameRate);
         current = System.currentTimeMillis();
+
         while (isRunning) {
             previous = current;
             current = System.currentTimeMillis();
             delta = current - previous;
 
+            // Update Dynamic objects on each frame
             lock.lock();
             long finalDelta = delta;
             objects.values().forEach(object -> {
@@ -131,11 +137,15 @@ public class Engine implements Runnable {
                 object.update(frameDelay / finalDelta);
             });
             lock.unlock();
+
+            // Notify all clients about updated Dynamic objects
             objects.values().forEach(object -> {
                 if(object.tag != game.data.GameObject.Tag.Dynamic) return;
                 Payload payload = new Payload(Payload.Method.setObject, object);
                 clientListeners.notifyAll(udpSender, payload);
             });
+
+            // Sleep thread for set delay
             try
             {
                 delay = (long)frameDelay - (System.currentTimeMillis() - current);

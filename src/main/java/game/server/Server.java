@@ -5,6 +5,7 @@ import game.data.GameObject_Example;
 import game.data.Vector;
 import game.protocol.TCP;
 import game.protocol.UDP;
+import java.util.concurrent.TimeUnit; // import is used for commented code
 
 public class Server {
     public static void main(String[] args) {
@@ -12,7 +13,7 @@ public class Server {
         UDP.Sender udp = new UDP.Sender();
         // Create server engine to run game
         Engine engine = new Engine();
-        // Create TCP listeners. Used for users to login and work with important data
+        // Create TCP listeners. Used for users to login and work with data
         TCP.ConnectionListener clientListener = new TCP.ConnectionListener();
 
         // Create TCP listener remapped callback
@@ -24,17 +25,17 @@ public class Server {
             attachment.bindToEngine(engine);
         });
 
-        // Start server with TCP ir UDP bindings
+        // Start server with TCP and UDP bindings
         engine.start(clientListener, udp);
 
         // Start listening to client TCP protocols
         clientListener.listen();
 
         //######################################################
-        // Example object manipulation with server
+        // Example of object manipulation with the server
         //######################################################
 
-        // Static objects are updated only once they are used in
+        // Static objects are updated only once they are used in:
         // Engine::createObject()
         // Engine::setObject()
         // Engine::destroyObject()
@@ -43,10 +44,10 @@ public class Server {
         obj_0.tag = GameObject.Tag.Static;
         obj_0.texture = "images/wall.jpg";
 
-        // Dynamic objects are updated every frame
-        // If packet is lost client will have object out of sync.
-        // 'Tis the reason why we send dynamic objects every frame
-        // If packet is lost next frame we will get new one
+        // Dynamic objects are updated every frame.
+        // * If a packet is lost, client will have the object out of sync.
+        //   This is the reason why we send dynamic objects every frame.
+        // * If a packet is lost, next frame we will get new one
         var obj_1 = new GameObject_Example();
         obj_1.position = new Vector(200, 200);
         obj_1.rotation = Math.toRadians(25);
@@ -56,7 +57,9 @@ public class Server {
         engine.createObject(obj_0);
         engine.createObject(obj_1);
 
-        /*while(true) {
+        // example of creating an object and removing it once very second
+        /*
+        while(true) {
             try {
                 engine.createObject(obj_0);
                 TimeUnit.SECONDS.sleep(1);
@@ -68,7 +71,7 @@ public class Server {
         }
         */
 
-        // Wait for engine to stop working aka. will wait till engine runs.
+        // Wait for engine to stop working. In order words, the project will work till server engine stops.
         engine.join();
     }
 }

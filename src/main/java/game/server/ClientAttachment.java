@@ -9,7 +9,6 @@ public class ClientAttachment {
     public boolean amSleeping;
     public GameObject playerExample;
 
-
     // Default values setup
     public ClientAttachment() {
         amSleeping = false;
