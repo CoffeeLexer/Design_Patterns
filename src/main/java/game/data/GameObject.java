@@ -24,11 +24,16 @@ public class GameObject implements Serializable {
     public void update(float delta) {}
 
     public void render(Graphics2D g2d) {
+        // Get texture from image file path
         var textureData = Textures.getTexture(texture);
         AffineTransform transform = AffineTransform.getTranslateInstance(position.x, position.y);
+
+        // Set game object position, rotation and scale
         transform.rotate(rotation);
         transform.scale(dimensions.x / textureData.getWidth(), dimensions.y / textureData.getHeight());
         transform.translate(-textureData.getWidth() * pivot.x, -textureData.getHeight() * pivot.y);
+
+        // Draw the specified texture in the previously set position
         BufferedImageOp imageOp = new AffineTransformOp(transform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
         //g2d.drawImage(textureData, imageOp, (int)position.x, (int)position.y);
         g2d.drawImage(textureData, imageOp, 0, 0);

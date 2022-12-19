@@ -71,7 +71,7 @@ public class UDP {
         }
     }
 
-    public static class Receiver implements Runnable{
+    public static class Receiver implements Runnable {
         private final DatagramSocket socket;
         private Consumer<Payload> autonomousResponse;
         private boolean isListening = false;
@@ -144,6 +144,7 @@ public class UDP {
         }
     }
 
+    // Used to identify where to send the message
     public static class Identifier implements Serializable {
         public InetAddress address;
         public Integer port;
