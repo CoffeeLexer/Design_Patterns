@@ -14,7 +14,9 @@ public class _UDP {
         sender.send(address, port, new Payload(Payload.Method.empty));
 
         // If Sender.send(...) sends packet which is lost, this will cause deadlock!
-        // Recommendation is to use BlockingQueue and Multi-Threading
+        // Recommendation is to use BlockingQueue and Multi-Threading. Then you would
+        // need to use /src/main/java/game/client/ResponseToServer.java to communicate
+        // with the server.
         Payload p = (Payload) receiver.receive();
 
         System.out.println(p.method.toString());

@@ -4,7 +4,7 @@ import game.data.GameObject;
 import java.awt.*;
 import javax.swing.*;
 
-// Panel where Static objects are rendered
+// Panel where Static objects are rendered when they are requested
 public class StaticPanel extends JPanel {
     public Engine engine;
 

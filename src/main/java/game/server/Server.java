@@ -72,7 +72,7 @@ public class Server {
         }
         */
 
-        // Wait for engine to stop working. In order words, the project will work till server engine stops.
+        // Wait for engine to stop working. In order words, the server will work until the server engine stops.
         engine.join();
     }
 }

@@ -4,7 +4,7 @@ import game.data.Payload;
 import game.protocol.TCP;
 import game.protocol.UDP;
 
-// Describes what the server should do when a client sends a message to the server
+// Describes what the server should do when a client communicates with to the server
 public class ResponseToClient {
     public static void Respond(TCP.Client client, Payload payload, Engine engine) {
         switch (payload.method) {

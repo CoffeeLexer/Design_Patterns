@@ -29,6 +29,7 @@ public class ResponseToInput {
                     System.out.printf("%s - HOLDING!\n", client.identify());
                 }
                 case KeyEvent.VK_S -> {
+                    // Example of toggling (updating) attachment data
                     ClientAttachment attachment = client.getAttachment();
                     if(attachment.amSleeping)
                         System.out.println("Going To Sleep!");
@@ -37,12 +38,16 @@ public class ResponseToInput {
                     attachment.amSleeping = !attachment.amSleeping;
                 }
                 case KeyEvent.VK_D -> {
+                    // Example of updating attachment data
                     ClientAttachment attachment = client.getAttachment();
                     attachment.playerExample.rotation += 1/3.14;
+                    System.out.printf("+ rotation. New value: %f\n", attachment.playerExample.rotation);
                 }
                 case KeyEvent.VK_A -> {
+                    // Example of updating attachment data
                     ClientAttachment attachment = client.getAttachment();
                     attachment.playerExample.rotation -= 1/3.14;
+                    System.out.printf("- rotation. New value: %f\n", attachment.playerExample.rotation);
                 }
                 default -> {
                     //  DEBUGGING PURPOSES

@@ -10,6 +10,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Client extends JFrame {
+    // Start the Client
+    public static void main(String[] args) {
+        javax.swing.SwingUtilities.invokeLater(Client::new);
+    }
+
     public Client() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -78,10 +83,5 @@ public class Client extends JFrame {
         setSize(1600, 900);
         setVisible(true);
         setLocationRelativeTo(null);
-    }
-
-    // Start the Client
-    public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(Client::new);
     }
 }

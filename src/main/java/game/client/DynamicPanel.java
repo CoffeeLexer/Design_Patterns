@@ -4,7 +4,7 @@ import game.data.GameObject;
 import java.awt.*;
 import javax.swing.*;
 
-// Panel where Dynamic objects are rendered
+// Panel where Dynamic objects are rendered every frame
 public class DynamicPanel extends JPanel {
     private Engine engine;
 
