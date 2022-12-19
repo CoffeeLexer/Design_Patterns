@@ -18,7 +18,6 @@ public class GameObject implements Serializable {
     public String texture;
     public Tag tag;
 
-
     /**
      * @param delta float value of seconds from last frame update
      */

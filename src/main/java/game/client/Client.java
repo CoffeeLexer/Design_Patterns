@@ -13,6 +13,7 @@ public class Client extends JFrame {
     public Client() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // Create new TCP Client socket
         TCP.Client serverClient;
         try {
             serverClient = new TCP.Client(new Socket("localhost", 8080));
@@ -21,28 +22,37 @@ public class Client extends JFrame {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        UDP.Receiver udp = new UDP.Receiver();
 
+        // bind UDP
+        UDP.Receiver udp = new UDP.Receiver();
         UDP.Identifier identifier = udp.getIdentifier();
         serverClient.send(new Payload(Payload.Method.bindUDP, identifier));
 
+        // Create panels where objects are rendered
         StaticPanel staticPanel = new StaticPanel();
         DynamicPanel dynamicPanel = new DynamicPanel();
-        Engine engine = new Engine(staticPanel, dynamicPanel);
 
+        // Start Client engine
+        Engine engine = new Engine(staticPanel, dynamicPanel);
         engine.start();
 
+        // Layered pane allows Static and Dynamic panels to overlap
         JLayeredPane layeredPane = new JLayeredPane();
 
+        // Add keyboard listeners
         var keyboardListener = new Controller.Keyboard(serverClient);
         layeredPane.addKeyListener(keyboardListener);
+
+        // Add mouse listeners (also allow "focus" event with mouse)
         var mouseListener = new Controller.Mouse(serverClient);
         layeredPane.addMouseListener(mouseListener);
         layeredPane.setFocusable(true);
 
+        // Add Static and Dynamic panels to the layered pane
         layeredPane.add(staticPanel, 1);
         layeredPane.add(dynamicPanel, 0);
 
+        // Start listening to TCP
         serverClient.autonomousListen((self, payload) -> {
             switch (payload.method) {
                 case setObject -> engine.setObject(payload.getData());
@@ -51,8 +61,10 @@ public class Client extends JFrame {
             }
         });
 
+        // Synchronize all Static objects
         serverClient.send(new Payload(Payload.Method.syncEngine));
 
+        // Start listening to UDp
         udp.autonomousListen((payload) -> {
             switch (payload.method) {
                 case setObject -> engine.setObject(payload.getData());
@@ -61,13 +73,14 @@ public class Client extends JFrame {
             }
         });
 
+        // Finally create the window where everything will be displayed for the Client
         add(layeredPane);
-
         setSize(1600, 900);
         setVisible(true);
         setLocationRelativeTo(null);
     }
 
+    // Start the Client
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(Client::new);
     }

@@ -9,9 +9,13 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.function.Consumer;
 
+// Describes UDP Sender, Receiver and Identifier classes
 public class UDP {
     public static class Sender {
         private final DatagramSocket socket;
+        private ByteArrayOutputStream byteStream;
+        private ObjectOutputStream oos;
+
         public Sender() {
             try {
                 socket = new DatagramSocket();
@@ -46,8 +50,7 @@ public class UDP {
                 throw new RuntimeException(e);
             }
         }
-        private ByteArrayOutputStream byteStream;
-        private ObjectOutputStream oos;
+
         public void send(DatagramPacket packet, Payload data) {
             try {
                 ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -67,11 +70,13 @@ public class UDP {
             }
         }
     }
+
     public static class Receiver implements Runnable{
         private final DatagramSocket socket;
         private Consumer<Payload> autonomousResponse;
         private boolean isListening = false;
         private Thread thread;
+
         public Receiver() {
             try {
                 socket = new DatagramSocket();
@@ -80,12 +85,15 @@ public class UDP {
                 throw new RuntimeException(e);
             }
         }
+
         public InetAddress getAddress() {
             return socket.getLocalAddress();
         }
+
         public int getPort() {
             return socket.getLocalPort();
         }
+
         public Identifier getIdentifier() {
             var identifier = new Identifier();
             identifier.address = getAddress();
@@ -94,7 +102,7 @@ public class UDP {
         }
 
         /**@warning Sometimes UDP packets are lost. If you call this method and no packets are sent, this will cause deadlock!
-         * @return Returns raw object. Need to cast to same class which was sent through Sender
+         * @return Returns raw object. Need to cast to the same class which was sent through Sender
          */
         public Payload receive() {
             try {
@@ -115,15 +123,18 @@ public class UDP {
                 throw new RuntimeException(e);
             }
         }
+
         public void autonomousListen(Consumer<Payload> listen) {
             autonomousResponse = listen;
             isListening = true;
             thread = new Thread(this);
             thread.start();
         }
+
         public void stop() {
 
         }
+
         @Override
         public void run() {
             while(isListening) {
@@ -132,6 +143,7 @@ public class UDP {
             }
         }
     }
+
     public static class Identifier implements Serializable {
         public InetAddress address;
         public Integer port;

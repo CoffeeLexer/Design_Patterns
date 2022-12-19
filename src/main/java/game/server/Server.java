@@ -8,6 +8,7 @@ import game.protocol.UDP;
 import java.util.concurrent.TimeUnit; // import is used for commented code
 
 public class Server {
+    // Start the Server
     public static void main(String[] args) {
         // Create UDP sender to send data through UDP protocol
         UDP.Sender udp = new UDP.Sender();

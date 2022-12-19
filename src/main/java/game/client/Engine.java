@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+// Client engine
 public class Engine {
     // Framerate cap
     public static final int frameRate = 60;
@@ -39,6 +40,7 @@ public class Engine {
         lock.unlock();
     }
 
+    // Update object
     public void setObject(GameObject object) {
         lock.lock();
 
@@ -65,21 +67,26 @@ public class Engine {
 
         lock.unlock();
     }
+
     public void start() {
         isRunning = true;
         thread = new Thread(this::run);
         thread.start();
     }
+
     public void run() {
         System.out.println("Engine loop started!");
         long current, delay;
         float frameDelay = (float)Math.ceil(1000.0f / frameRate);
         current = System.currentTimeMillis();
+
         while (isRunning) {
             current = System.currentTimeMillis();
 
+            // Rerender all Dynamic object every frame
             dynamicPanel.repaint();
 
+            // Sleep thread for set delay
             try
             {
                 delay = (long)frameDelay - (System.currentTimeMillis() - current);

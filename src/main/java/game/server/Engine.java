@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+// Server engine
 public class Engine implements Runnable {
     // Framerate cap
     public static final int frameRate = 60;

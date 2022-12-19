@@ -1,11 +1,10 @@
 package game.client;
 
 import game.data.GameObject;
-
 import java.awt.*;
 import javax.swing.*;
 
-
+// Panel where Static objects are rendered
 public class StaticPanel extends JPanel {
     public Engine engine;
 
@@ -13,9 +12,11 @@ public class StaticPanel extends JPanel {
         setBounds(0, 0, 1920, 1080);
         setOpaque(false);
     }
+
     public void bind(Engine engine) {
         this.engine = engine;
     }
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

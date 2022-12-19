@@ -9,6 +9,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+// Send a message to server on Mouse or Keyboard event
 public class Controller {
     public static class Keyboard implements KeyListener {
         private final TCP.Client tcp;
@@ -32,6 +33,7 @@ public class Controller {
             tcp.send(new Payload(Payload.Method.keyReleased, e.getKeyCode()));
         }
     }
+
     public static class Mouse implements MouseListener {
         private final TCP.Client tcp;
 

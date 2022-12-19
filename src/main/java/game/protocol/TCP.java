@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+// Describes TCP Client and Connectionlistener classes
 public class TCP {
     public static class Client implements Runnable {
         private ObjectInputStream input;
@@ -38,7 +39,9 @@ public class TCP {
                 throw new RuntimeException(e);
             }
         }
+
         public ClientAttachment getAttachment() {return attachment;}
+
         public String identify() {
             return Objects.requireNonNullElseGet(thread, Thread::currentThread).getName();
         }
@@ -60,6 +63,7 @@ public class TCP {
                 throw new RuntimeException(e);
             }
         }
+
         public Payload receive() {
             try {
                 return (Payload) input.readObject();
@@ -72,6 +76,7 @@ public class TCP {
                 throw new RuntimeException(e);
             }
         }
+
         public void bindUDP(InetAddress address, int port) {
             udpAddress = address;
             udpPort = port;
@@ -82,12 +87,14 @@ public class TCP {
             if(udpPort != null)
                 udp.send(packet, payload);
         }
+
         public void autonomousListen(BiConsumer<Client, Payload> listen) {
             autonomousResponse = listen;
             isListening = true;
             thread = new Thread(this);
             thread.start();
         }
+
         @Override
         public void run() {
             System.out.printf("%s - started listening\n", identify());
@@ -103,6 +110,7 @@ public class TCP {
             System.out.printf("%s - stopped listening\n", identify());
         }
     }
+
     public static class ConnectionListener implements Runnable {
         private ServerSocket serverSocket;
         private Queue<Client> clients;
@@ -110,6 +118,7 @@ public class TCP {
         private Thread thread;
         private BiConsumer<Client, Payload> defaultResponse;
         private Consumer<ClientAttachment> attachmentBinder;
+
         public ConnectionListener() {
             try {
                 serverSocket = new ServerSocket(8080);
@@ -125,9 +134,11 @@ public class TCP {
         public void setDefaultAutonomousResponse(BiConsumer<Client, Payload> response) {
             defaultResponse = response;
         }
+
         public void setAttachmentBinder(Consumer<ClientAttachment> binder) {
             attachmentBinder = binder;
         }
+
         public void listen() {
             isListening = true;
             thread = new Thread(this);
@@ -169,7 +180,8 @@ public class TCP {
             }
             System.out.println("Stopped listening to new TCP Sockets");
         }
-        /**UDP protocol notification to all clients
+
+        /** UDP protocol notification to all clients
          * @param payload object to send using TCP
          */
         public void notifyAll(UDP.Sender udp, Payload payload) {
@@ -178,7 +190,7 @@ public class TCP {
             }
         }
 
-        /**TCP protocol notification to all clients
+        /** TCP protocol notification to all clients
          * @param payload object to send using TCP
          */
         public void notifyAll(Payload payload) {
